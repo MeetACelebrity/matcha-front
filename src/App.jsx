@@ -5,7 +5,7 @@ import NavBar from './components/NavBar.jsx';
 import BottomBar from './components/BottomBar.jsx';
 import Routes from './Routes.jsx';
 
-function App() {
+export default function App() {
     return (
         <Router>
             <div className="w-screen min-h-screen bg-gray-100">
@@ -18,5 +18,3 @@ function App() {
         </Router>
     );
 }
-
-export default App;

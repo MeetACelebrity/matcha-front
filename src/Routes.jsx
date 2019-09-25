@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Home from './pages/Home.jsx';
 
@@ -30,8 +30,8 @@ export function mapRoutes(routes = []) {
 
 export default function Routes() {
     return (
-        <>
+        <Switch>
             <Route exact path={RoutesEnum.HOME} component={Home} />
-        </>
+        </Switch>
     );
 }
