@@ -3,3 +3,7 @@
 @tailwind components;
 
 @tailwind utilities;
+
+.font-title {
+    font-family: 'Saira', sans-serif;
+}

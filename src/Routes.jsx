@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import Home from './pages/Home.jsx';
+import { Home, SignIn, SignUp } from './pages';
 
 export const RoutesEnum = {
     HOME: '/proposals',
@@ -10,6 +10,9 @@ export const RoutesEnum = {
     USER: '/user',
     CHAT: '/chat',
     NOTIFICATIONS: '/notifications',
+
+    SIGN_IN: '/sign-in',
+    SIGN_UP: '/sign-up',
 };
 
 const RoutesMap = new Map([
@@ -32,6 +35,8 @@ export default function Routes() {
     return (
         <Switch>
             <Route exact path={RoutesEnum.HOME} component={Home} />
+            <Route path={RoutesEnum.SIGN_IN} component={SignIn} />
+            <Route path={RoutesEnum.SIGN_UP} component={SignUp} />
         </Switch>
     );
 }
