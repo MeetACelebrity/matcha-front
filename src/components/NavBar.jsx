@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from 'classnames';
+import { Link } from 'react-router-dom';
 
 import Button from './Button.jsx';
 import { mapRoutes, RoutesEnum } from '../Routes.jsx';
@@ -13,12 +14,14 @@ export default function NavBar() {
 
     return (
         <header className="flex justify-between items-center px-6 py-2 bg-white shadow">
-            <h1
-                style={{ fontFamily: `'Saira', sans-serif` }}
-                className="uppercase"
-            >
-                Meet A Celebrity
-            </h1>
+            <Link to={RoutesEnum.HOME}>
+                <h1
+                    style={{ fontFamily: `'Saira', sans-serif` }}
+                    className="uppercase"
+                >
+                    Meet A Celebrity
+                </h1>
+            </Link>
 
             <nav className="flex">
                 {icons.map(({ to, icon, showOnMobile }, i) => (
