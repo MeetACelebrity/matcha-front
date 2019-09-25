@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+import NavBar from './components/NavBar.jsx';
+import BottomBar from './components/BottomBar.jsx';
+import Routes from './Routes.jsx';
 
 function App() {
-    const [lol] = useState(0);
-
-    useEffect(() => {
-        console.log('effect called with value', lol);
-    }, [lol]);
-
     return (
-        <main className="w-screen h-screen bg-blue-200">
-            <button className="bg-blue-600">test</button>
-        </main>
+        <Router>
+            <div>
+                <NavBar />
+
+                <Routes />
+
+                <BottomBar />
+            </div>
+        </Router>
     );
 }
 
