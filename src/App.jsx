@@ -8,7 +8,7 @@ import Routes from './Routes.jsx';
 function App() {
     return (
         <Router>
-            <div>
+            <div className="w-screen min-h-screen bg-gray-100">
                 <NavBar />
 
                 <Routes />
