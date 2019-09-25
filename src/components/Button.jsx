@@ -14,7 +14,7 @@ export default function Button({
     className,
 }) {
     const cssClasses = classes(
-        'button stroke-current rounded-full bg-white p-2',
+        'button stroke-current rounded-full bg-white p-2 cursor-pointer',
         className,
         {
             'bg-gray-300': !flat,
