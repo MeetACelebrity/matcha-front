@@ -6,11 +6,10 @@ export default function SignUp() {
 
         e.preventDefault();
     }
-    const inputClass = "border rounded shadow mb-2";
-    const labelClass = "block my-2 focus:shadow-outline";
+    const inputClass = 'border rounded shadow mb-2';
+    const labelClass = 'block my-2 focus:shadow-outline';
 
     return (
-
         <section className="flex justify-center">
             <article className="flex justify-center flex-wrap w-64 mt-10 shadow-xl rounded-lg bg-white">
                 <h2 className="w-full text-center py-2 mx-6 my-3 border-b border-gray-400 text-gray-900 font-bold">
@@ -21,12 +20,30 @@ export default function SignUp() {
                     onSubmit={onSubmit}
                 >
                     <div>
-                        <label className={ labelClass } >Username</label>
-                        <input className={ inputClass } type="text" />
+                        <label
+                            className={labelClass}
+                            htmlFor="username-sign-up"
+                        >
+                            Username
+                        </label>
+                        <input
+                            id="username-sign-up"
+                            className={inputClass}
+                            type="text"
+                        />
                     </div>
                     <div>
-                        <label className={ labelClass } >Password</label>
-                        <input className={ inputClass } type="password" />
+                        <label
+                            htmlFor="password-sign-up"
+                            className={labelClass}
+                        >
+                            Password
+                        </label>
+                        <input
+                            id="password-sign-up"
+                            className={inputClass}
+                            type="password"
+                        />
                     </div>
                     <button type="submit">Sign up</button>
                 </form>
