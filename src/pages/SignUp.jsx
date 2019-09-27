@@ -1,12 +1,13 @@
 import React from 'react';
 
+import Input from '../components/Input.jsx';
+
 export default function SignUp() {
     function onSubmit(e) {
         console.log('submit');
 
         e.preventDefault();
     }
-    const inputClass = 'border rounded shadow mb-2';
     const labelClass = 'block my-2 focus:shadow-outline';
 
     return (
@@ -26,11 +27,8 @@ export default function SignUp() {
                         >
                             Username
                         </label>
-                        <input
-                            id="username-sign-up"
-                            className={inputClass}
-                            type="text"
-                        />
+
+                        <Input id="username-sign-up" />
                     </div>
                     <div>
                         <label
@@ -39,11 +37,8 @@ export default function SignUp() {
                         >
                             Password
                         </label>
-                        <input
-                            id="password-sign-up"
-                            className={inputClass}
-                            type="password"
-                        />
+
+                        <Input id="password-sign-up" type="password" />
                     </div>
                     <button type="submit">Sign up</button>
                 </form>
