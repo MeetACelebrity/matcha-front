@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
+import FormField from '../components/FormField.jsx';
 
-import Input from '../components/Input.jsx';
 
 export default function SignUp() {
     function onSubmit(e) {
-        console.log('submit');
-
         e.preventDefault();
+        console.log(JSON.stringify(data));
+        console.log(data);
     }
-    const labelClass = 'block my-2 focus:shadow-outline';
+
+
+    //hooks
+    const [data, setData] = useState({ email: '', username: '', givenName: '', familyName: '', password: '' });
+
+
+    //Field Generator
+    const field = ['email', 'username', 'givenName', 'familyName', 'password'];
+
+    const listField = field.map((fieldName) => {
+        return (
+            <FormField key={fieldName} labelName={fieldName} name={fieldName} defaultValue={data[fieldName]} onChange={e => setData({ ...data, [fieldName]: e.target.value })
+            } />
+        );
+    })
 
     return (
         <section className="flex justify-center">
@@ -16,33 +30,16 @@ export default function SignUp() {
                 <h2 className="w-full text-center py-2 mx-6 my-3 border-b border-gray-400 text-gray-900 font-bold">
                     Sign Up
                 </h2>
+
                 <form
                     className="flex flex-col items-center pb-2"
                     onSubmit={onSubmit}
                 >
-                    <div>
-                        <label
-                            className={labelClass}
-                            htmlFor="username-sign-up"
-                        >
-                            Username
-                        </label>
-
-                        <Input id="username-sign-up" />
-                    </div>
-                    <div>
-                        <label
-                            htmlFor="password-sign-up"
-                            className={labelClass}
-                        >
-                            Password
-                        </label>
-
-                        <Input id="password-sign-up" type="password" />
-                    </div>
+                    {listField}
                     <button type="submit">Sign up</button>
                 </form>
             </article>
         </section>
+
     );
 }
