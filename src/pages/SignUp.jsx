@@ -9,7 +9,7 @@ export default function SignUp() {
         const apiRoute = "/auth/sign-up";
 
         e.preventDefault();
-        console.log(JSON.stringify(data));
+
         fetch(apiUrl + ':' + apiPort + apiRoute, {
             method: 'POST',
             body: JSON.stringify(data),
@@ -18,6 +18,14 @@ export default function SignUp() {
             .then(res => res.json())
             .then(response => console.log(response));
     }
+
+    /**
+      * TODO:
+      *      1: create "flash message" for show error of api or if all good, ask user to check his mail
+      *      2: implement validations function for check input (maybe we could reuse the api validator)
+      *      3: Improve style
+      *      4: Create link section bellow --> (sign-up, forgot password ...)
+      */
 
 
     /**
@@ -30,14 +38,35 @@ export default function SignUp() {
 
     //hooks
     const [data, setData] = useState({ email: '', username: '', givenName: '', familyName: '', password: '' });
+    const [valid, setValid] = useState({ email: true, username: true, givenName: true, familyName: true, password: true });
 
     //Field Generator
     const fields = ['email', 'username', 'givenName', 'familyName', 'password'];
-    const labelNames = ['Email', 'Username', 'First Name', 'Last Name', 'Password']
+    const labelNames = ['Email', 'Username', 'First Name', 'Last Name', 'Password'];
+
+    //implement here validation function that we want (need to return true if it's valid, or the oposit if isn't)
+    function isValid(fieldName) {
+        let validator;
+
+        switch (fieldName) {
+            case 'email':
+                validator = false;
+                break;
+            case 'password':
+                validator = false;
+                break;
+            default:
+                validator = true;
+        }
+        setValid({ ...valid, [fieldName]: validator });
+
+    }
+
 
     const listField = fields.map((fieldName) => {
         return (
-            <FormField key={fieldName} labelName={labelNames[fields.indexOf(fieldName)]} name={fieldName} defaultValue={data[fieldName]} onChange={e => setData({ ...data, [fieldName]: e.target.value })
+            <FormField key={fieldName} isOk={valid[fieldName]} labelName={labelNames[fields.indexOf(fieldName)]} name={fieldName} defaultValue={data[fieldName]} onChange={
+                e => { isValid(fieldName); setData({ ...data, [fieldName]: e.target.value }) }
             } />
         );
     })

@@ -8,10 +8,12 @@ export default function Input({
     onChange,
     className,
     type = 'text',
+    isOk,
 }) {
     const cssClasses = classes(
-        'border-b-2 border-transparent focus:border-blue-500 mb-2 outline-none',
-        className
+        'border-b-2 border-transparent focus:border-blue-500 mb-2 outline-none displayErrors',
+        className,
+        isOk ? '' : 'border-red-500'
     );
 
     return (
@@ -22,6 +24,8 @@ export default function Input({
             value={value}
             onInput={onChange}
             className={cssClasses}
+            onChange={onChange}
+            required
         />
     );
 }
