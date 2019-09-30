@@ -3,7 +3,7 @@ import FormField from '../components/FormField.jsx';
 
 export default function SignUp() {
     function onSubmit(e) {
-        const apiUrl = 'http://e2r3p10.42.fr';
+        const apiUrl = 'http://e1r8p8.42.fr';
         const apiPort = '8080';
         const apiRoute = '/auth/sign-up';
 
@@ -77,21 +77,19 @@ export default function SignUp() {
         setValid({ ...valid, [fieldName]: validator });
     }
 
-    const listField = fields.map(fieldName => {
-        return (
-            <FormField
-                key={fieldName}
-                isOk={valid[fieldName]}
-                labelName={labelNames[fields.indexOf(fieldName)]}
-                name={fieldName}
-                defaultValue={data[fieldName]}
-                onChange={e => {
-                    isValid(fieldName);
-                    setData({ ...data, [fieldName]: e.target.value });
-                }}
-            />
-        );
-    });
+    const listField = fields.map(fieldName => (
+        <FormField
+            key={fieldName}
+            isOk={valid[fieldName]}
+            labelName={labelNames[fields.indexOf(fieldName)]}
+            name={fieldName}
+            defaultValue={data[fieldName]}
+            onChange={e => {
+                isValid(fieldName);
+                setData({ ...data, [fieldName]: e.target.value });
+            }}
+        />
+    ));
 
     return (
         <section className="flex justify-center">
