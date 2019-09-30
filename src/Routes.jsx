@@ -33,10 +33,12 @@ export function mapRoutes(routes = []) {
 
 export default function Routes() {
     return (
-        <Switch>
-            <Route exact path={RoutesEnum.HOME} component={Home} />
-            <Route path={RoutesEnum.SIGN_IN} component={SignIn} />
-            <Route path={RoutesEnum.SIGN_UP} component={SignUp} />
-        </Switch>
+        <main className="flex-1">
+            <Switch>
+                <Route exact path={RoutesEnum.HOME} component={Home} />
+                <Route path={RoutesEnum.SIGN_IN} component={SignIn} />
+                <Route path={RoutesEnum.SIGN_UP} component={SignUp} />
+            </Switch>
+        </main>
     );
 }

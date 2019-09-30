@@ -1,35 +1,97 @@
 import React from 'react';
+import FeatherIcon from 'feather-icons-react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const BaseInput = styled.input`
-    ${tw`border-b-2 border-transparent focus:border-blue-500 mb-2 outline-none`}
+    transition: border-color 200ms;
 
-    ${({ className }) => className}
+    ${tw`border-b-2 border-blue-200 text-gray-900 bg-transparent outline-none py-1 my-1 w-64`}
 
-    ${({ isOk }) => isOk && tw`border-red-500`}
+    ${({ isOk }) => isOk === false && tw`border-red-500`}
+
+    &::placeholder {
+        ${tw`text-gray-700`}
+    }
+
+    &:focus {
+        ${({ isOk }) => isOk && tw`border-blue-400`}
+    }
 `;
+
+const CloseIconContainer = styled.div`
+    ${tw`absolute inset-y-0 right-0 flex flex-col justify-center items-end text-gray-500`}
+`;
+
+const ErrorsListItem = styled.div`
+    transition: all 200ms;
+
+    ${tw`text-red-700`}
+
+    transform: translateY(
+        ${({ state }) =>
+            state === 'entering' || state === 'exiting' ? -5 : 0}px
+    );
+    opacity: ${({ state }) =>
+        state === 'entering' || state === 'exiting' ? 0 : 1};
+`;
+
+function ErrorsList({ errors = [] }) {
+    return (
+        <TransitionGroup>
+            {Array.isArray(errors) &&
+                errors.map((error, i) => (
+                    <CSSTransition
+                        key={i}
+                        timeout={{ appear: 200, enter: 0, exit: 200 }}
+                    >
+                        {state => (
+                            <ErrorsListItem state={state}>
+                                {error}
+                            </ErrorsListItem>
+                        )}
+                    </CSSTransition>
+                ))}
+        </TransitionGroup>
+    );
+}
 
 export default function Input({
     id,
     value,
+    setValue,
     label,
-    onChange,
-    className,
     type = 'text',
     isOk,
+    closable = false,
+    errors,
 }) {
     return (
-        <BaseInput
-            id={id}
-            type={type}
-            label={label}
-            value={value}
-            onInput={onChange}
-            className={className}
-            isOk={isOk}
-            onChange={onChange}
-            required
-        />
+        <div>
+            <div className="relative">
+                <BaseInput
+                    id={id}
+                    placeholder={label}
+                    type={type}
+                    label={label}
+                    value={value}
+                    isOk={isOk}
+                    onChange={e => setValue(e.target.value)}
+                />
+
+                {closable === true && (
+                    <CloseIconContainer>
+                        <FeatherIcon
+                            icon="x"
+                            onClick={() => setValue('')}
+                            className="cursor-pointer"
+                        />
+                    </CloseIconContainer>
+                )}
+            </div>
+
+            <ErrorsList errors={errors} />
+        </div>
     );
 }
