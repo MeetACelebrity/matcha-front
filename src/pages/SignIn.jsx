@@ -13,6 +13,7 @@ export default function SignIn() {
             method: 'POST',
             body: JSON.stringify(data),
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
         })
             .then(res => res.json())
             .then(response => console.log(response));
