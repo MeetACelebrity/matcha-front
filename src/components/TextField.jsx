@@ -10,16 +10,18 @@ function isCorrectEmail(text) {
 
 function isMaxRespected(maximum) {
     return text =>
-        text.length < maximum || `Don't exceed ${maximum} characters`;
+        text.length < maximum ||
+        `Don't exceed ${maximum} character${maximum > 1 ? 's' : ''}`;
 }
 
 function isMinRespected(minimum) {
     return text => {
-        console.log('text =', text, 'min =', minimum);
-        return (
-            text.length >= minimum ||
-            `At least ${minimum} characters are required`
-        );
+        if (text.length >= minimum) return true;
+
+        const subtext =
+            minimum > 1 ? `characters are required` : `character is required`;
+
+        return text.length >= minimum || `At least ${minimum} ${subtext}`;
     };
 }
 
@@ -36,6 +38,7 @@ export default function TextField(props) {
         isValid,
         setIsValid,
         setValue: setParentValue,
+        triggerValidation,
     } = props;
 
     function setValue(value) {
@@ -53,7 +56,17 @@ export default function TextField(props) {
 
         if (min > -1) checkers.push(isMinRespected(min));
 
-        if (lazy !== true || value.length > 0 || hasBeenUsed === true) {
+        if (
+            // If a validation has been requested explicitly
+            triggerValidation === true ||
+            // If the lazy mode has not been activated
+            lazy !== true ||
+            // If the string length is greater than 0
+            value.length > 0 ||
+            // ... or if the text-field has already been used
+            hasBeenUsed === true
+            // => validate the field
+        ) {
             const checkersResult = checkers.map(checker => checker(value));
 
             setErrors(
@@ -62,7 +75,16 @@ export default function TextField(props) {
 
             setIsValid(checkersResult.every(entry => entry === true));
         }
-    }, [value, email, lazy, max, min, setIsValid, hasBeenUsed]);
+    }, [
+        value,
+        email,
+        lazy,
+        max,
+        min,
+        setIsValid,
+        hasBeenUsed,
+        triggerValidation,
+    ]);
 
     return (
         <Input {...props} isOk={isValid} errors={errors} setValue={setValue} />

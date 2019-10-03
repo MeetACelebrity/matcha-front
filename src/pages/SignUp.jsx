@@ -90,13 +90,12 @@ export default function SignUp() {
             min: 6,
         },
     ];
+    const [isValid, FormComponent] = useForm({ fields, onSubmit });
 
-    function onSubmit(e) {
+    function onSubmit() {
         const apiUrl = 'http://e1r8p8.42.fr';
         const apiPort = '8080';
         const apiRoute = '/auth/sign-up';
-
-        e.preventDefault();
 
         fetch(apiUrl + ':' + apiPort + apiRoute, {
             method: 'POST',
@@ -114,8 +113,6 @@ export default function SignUp() {
             .then(response => console.log(response));
     }
 
-    const [isValid, FormComponent] = useForm({ fields, onSubmit });
-
     return (
         <section className="flex justify-center">
             <article className="flex justify-center flex-wrap w-64 mt-10">
@@ -123,7 +120,11 @@ export default function SignUp() {
                     Sign Up - {isValid ? 'valid' : 'not valid'}
                 </h2>
 
-                <FormComponent onSubmit={onSubmit} fields={fields} />
+                <FormComponent
+                    onSubmit={onSubmit}
+                    fields={fields}
+                    isValid={isValid}
+                />
             </article>
         </section>
     );

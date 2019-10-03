@@ -3,7 +3,6 @@ import React from 'react';
 import Input from './Input.jsx';
 
 export default function FormField({
-    //labelName,
     name,
     defaultValue,
     onChange,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
@@ -8,21 +8,42 @@ const FormContainer = styled.form`
     ${tw`flex flex-col items-stretch`}
 `;
 
-function FormComponent({ onSubmit, fields }) {
+function FormComponent({ isValid, onSubmit, fields }) {
+    const [triggerValidation, setTriggerValidation] = useState(false);
+
+    function submitHandler(e) {
+        e.preventDefault();
+
+        setTriggerValidation(true);
+
+        // We must wait for validation termination, in 100ms it will be finished
+        setTimeout(() => {
+            if (isValid.current) {
+                onSubmit(e);
+            }
+        }, 100);
+    }
+
     return (
-        <FormContainer onSubmit={onSubmit}>
+        <FormContainer onSubmit={submitHandler}>
             {fields.map((props, i) => (
-                <TextField key={i} {...props} />
+                <TextField
+                    key={i}
+                    {...props}
+                    triggerValidation={triggerValidation}
+                />
             ))}
+
+            <button type="submit">Send</button>
         </FormContainer>
     );
 }
 
 export default function useForm({ fields = [] }) {
-    const [isValid, setFormIsValid] = useState(false);
+    let isValid = useRef(false);
 
     useEffect(() => {
-        setFormIsValid(!fields.some(field => field.isValid === false));
+        isValid.current = !fields.some(field => field.isValid === false);
     }, [fields]);
 
     return [isValid, FormComponent];
