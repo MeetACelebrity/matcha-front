@@ -8,22 +8,22 @@ const FormContainer = styled.form`
     ${tw`flex flex-col items-stretch`}
 `;
 
-export default function useForm({ fields = [], onSubmit }) {
+function FormComponent({ onSubmit, fields }) {
+    return (
+        <FormContainer onSubmit={onSubmit}>
+            {fields.map((props, i) => (
+                <TextField key={i} {...props} />
+            ))}
+        </FormContainer>
+    );
+}
+
+export default function useForm({ fields = [] }) {
     const [isValid, setFormIsValid] = useState(false);
 
     useEffect(() => {
         setFormIsValid(!fields.some(field => field.isValid === false));
     }, [fields]);
-
-    function FormComponent() {
-        return (
-            <FormContainer onSubmit={onSubmit}>
-                {fields.map((props, i) => (
-                    <TextField key={i} {...props} />
-                ))}
-            </FormContainer>
-        );
-    }
 
     return [isValid, FormComponent];
 }

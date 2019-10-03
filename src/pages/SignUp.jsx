@@ -63,6 +63,7 @@ export default function SignUp() {
             setValue: setUsername,
             isValid: isUsernameValid,
             setIsValid: setUsernameIsValid,
+            min: 1,
         },
         {
             label: 'First Name',
@@ -70,6 +71,7 @@ export default function SignUp() {
             setValue: setGivenName,
             isValid: isGivenNameValid,
             setIsValid: setGivenNameIsValid,
+            min: 1,
         },
         {
             label: 'Last Name',
@@ -77,6 +79,7 @@ export default function SignUp() {
             setValue: setFamilyName,
             isValid: isFamilyNameValid,
             setIsValid: setFamilyNameIsValid,
+            min: 1,
         },
         {
             label: 'Password',
@@ -120,7 +123,7 @@ export default function SignUp() {
                     Sign Up - {isValid ? 'valid' : 'not valid'}
                 </h2>
 
-                <FormComponent />
+                <FormComponent onSubmit={onSubmit} fields={fields} />
             </article>
         </section>
     );

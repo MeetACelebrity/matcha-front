@@ -14,12 +14,18 @@ function isMaxRespected(maximum) {
 }
 
 function isMinRespected(minimum) {
-    return text =>
-        text.length >= minimum || `At least ${minimum} characters are required`;
+    return text => {
+        console.log('text =', text, 'min =', minimum);
+        return (
+            text.length >= minimum ||
+            `At least ${minimum} characters are required`
+        );
+    };
 }
 
 export default function TextField(props) {
     const [errors, setErrors] = useState([]);
+    const [hasBeenUsed, setHasBeenUsed] = useState(false);
 
     const {
         value,
@@ -29,7 +35,14 @@ export default function TextField(props) {
         lazy = true,
         isValid,
         setIsValid,
+        setValue: setParentValue,
     } = props;
+
+    function setValue(value) {
+        if (hasBeenUsed === false) setHasBeenUsed(true);
+
+        setParentValue(value);
+    }
 
     useEffect(() => {
         const checkers = [];
@@ -40,7 +53,7 @@ export default function TextField(props) {
 
         if (min > -1) checkers.push(isMinRespected(min));
 
-        if (lazy !== true || value.length > 0) {
+        if (lazy !== true || value.length > 0 || hasBeenUsed === true) {
             const checkersResult = checkers.map(checker => checker(value));
 
             setErrors(
@@ -49,7 +62,9 @@ export default function TextField(props) {
 
             setIsValid(checkersResult.every(entry => entry === true));
         }
-    }, [value, email, lazy, max, min, setIsValid]);
+    }, [value, email, lazy, max, min, setIsValid, hasBeenUsed]);
 
-    return <Input {...props} isOk={isValid} errors={errors} />;
+    return (
+        <Input {...props} isOk={isValid} errors={errors} setValue={setValue} />
+    );
 }
