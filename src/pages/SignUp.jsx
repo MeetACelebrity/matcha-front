@@ -1,27 +1,8 @@
 import React from 'react';
 
-// import FormField from '../components/FormField.jsx';
-
 import useForm, { useFormField } from '../components/Form.jsx';
 
 export default function SignUp() {
-    /**
-     * TODO:
-     *      1: create "flash message" for show error of api or if all good, ask user to check his mail
-     *      2: implement validations function for check input (maybe we could reuse the api validator)
-     *      3: Improve style
-     *      4: Create link section bellow --> (sign-up, forgot password ...)
-     */
-
-    /**
-     * HOW TO ADD A FIELD ?
-     *      1: add name of your field in the hooks
-     *      2: add name of your field in "fields" array
-     *      3: Add the text that will be print for yout field in "labelName"
-     *      4: Done, you create a new field ready to send to the back
-     */
-
-    //hooks
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
     const [
         username,

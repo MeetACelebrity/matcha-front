@@ -8,6 +8,29 @@ const FormContainer = styled.form`
     ${tw`flex flex-col items-stretch`}
 `;
 
+const FormButton = styled.button`
+    ${tw`px-3 py-1 rounded text-white bg-blue-700 mt-3 uppercase shadow-md relative z-10`}
+
+    font-family: 'Saira', sans-serif;
+    transition: all 300ms ease-in-out;
+
+    &::after {
+        ${tw`shadow-lg opacity-0 rounded absolute inset-0 z-0`}
+
+        content: '';
+        transition: opacity 300ms ease-in-out;
+    }
+
+    &:focus {
+        ${tw`outline-none`}
+    }
+
+    &:hover::after,
+    &:focus::after {
+        ${tw`opacity-100`}
+    }
+`;
+
 function FormComponent({ isValid, onSubmit, fields }) {
     const [triggerValidation, setTriggerValidation] = useState(false);
 
@@ -34,7 +57,7 @@ function FormComponent({ isValid, onSubmit, fields }) {
                 />
             ))}
 
-            <button type="submit">Send</button>
+            <FormButton type="submit">Send</FormButton>
         </FormContainer>
     );
 }

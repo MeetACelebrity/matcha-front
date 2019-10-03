@@ -1,17 +1,52 @@
-import React, { useState } from 'react';
-import FormField from '../components/FormField.jsx';
+import React from 'react';
 
-export default function SignIn() {
-    function onSubmit(e) {
+import useForm, { useFormField } from '../components/Form.jsx';
+
+export default function SignUp() {
+    const [
+        username,
+        setUsername,
+        isUsernameValid,
+        setUsernameIsValid,
+    ] = useFormField('');
+    const [
+        password,
+        setPassword,
+        isPasswordValid,
+        setPasswordIsValid,
+    ] = useFormField('');
+
+    const fields = [
+        {
+            label: 'Username',
+            value: username,
+            setValue: setUsername,
+            isValid: isUsernameValid,
+            setIsValid: setUsernameIsValid,
+            min: 1,
+        },
+        {
+            label: 'Password',
+            value: password,
+            setValue: setPassword,
+            isValid: isPasswordValid,
+            setIsValid: setPasswordIsValid,
+            min: 6,
+        },
+    ];
+    const [isValid, FormComponent] = useForm({ fields, onSubmit });
+
+    function onSubmit() {
         const apiUrl = 'http://e1r8p8.42.fr';
         const apiPort = '8080';
-        const apiRoute = '/auth/sign-in';
-
-        e.preventDefault();
+        const apiRoute = '/auth/sign-up';
 
         fetch(apiUrl + ':' + apiPort + apiRoute, {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                username,
+                password,
+            }),
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
         })
@@ -19,58 +54,18 @@ export default function SignIn() {
             .then(response => console.log(response));
     }
 
-    const [data, setData] = useState({ username: '', password: '' });
-    const [valid, setValid] = useState({ username: true, password: true });
-
-    const fields = ['username', 'password'];
-    const labelNames = ['Username', 'Password'];
-
-    function isValid(fieldName) {
-        let validator;
-
-        switch (fieldName) {
-            case 'username':
-                validator = false;
-                break;
-            case 'password':
-                validator = false;
-                break;
-            default:
-                validator = true;
-        }
-        setValid({ ...valid, [fieldName]: validator });
-    }
-
-    const listField = fields.map(fieldName => {
-        return (
-            <FormField
-                key={fieldName}
-                isOk={valid[fieldName]}
-                labelName={labelNames[fields.indexOf(fieldName)]}
-                name={fieldName}
-                defaultValue={data[fieldName]}
-                onChange={e => {
-                    isValid(fieldName);
-                    setData({ ...data, [fieldName]: e.target.value });
-                }}
-            />
-        );
-    });
-
     return (
         <section className="flex justify-center">
-            <article className="flex justify-center flex-wrap w-64 mt-10 shadow-xl rounded-lg bg-white">
-                <h2 className="w-full text-center py-2 mx-6 my-3 border-b border-gray-400 text-gray-900 font-bold">
-                    Sign In
+            <article className="flex justify-center flex-wrap w-64 mt-10">
+                <h2 className="w-full text-center py-2 mx-6 my-3 text-gray-900 font-bold text-3xl font-title uppercase">
+                    Sign in - {isValid ? 'valid' : 'not valid'}
                 </h2>
 
-                <form
-                    className="flex flex-col items-center pb-2"
+                <FormComponent
                     onSubmit={onSubmit}
-                >
-                    {listField}
-                    <button type="submit">Sign up</button>
-                </form>
+                    fields={fields}
+                    isValid={isValid}
+                />
             </article>
         </section>
     );
