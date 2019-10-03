@@ -1,9 +1,22 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Icon from 'feather-icons-react';
-import classes from 'classnames';
+import styled from 'styled-components';
+import tw from 'tailwind.macro';
 
-import '../styles/Button.css';
+const BaseButton = styled.button`
+    ${tw`bg-blue-600 stroke-current rounded-full bg-white p-2 cursor-pointer`}
+
+    &.active.outlined {
+        ${tw`text-blue-600`}
+    }
+
+    ${({ className }) => className}
+
+    ${({ flat }) => !flat && tw`bg-gray-300`}
+
+    ${({ outlined }) => outlined && tw`outlined`}
+`;
 
 export default function Button({
     to,
@@ -13,24 +26,19 @@ export default function Button({
     children,
     className,
 }) {
-    const cssClasses = classes(
-        'button stroke-current rounded-full bg-white p-2 cursor-pointer',
-        className,
-        {
-            'bg-gray-300': !flat,
-            outlined: outlined,
-        }
-    );
-
     const child = icon ? <Icon icon={icon} /> : children;
 
     if (to === undefined) {
-        return <button className={cssClasses}>{child}</button>;
+        return (
+            <BaseButton className={className} flat={flat} outlined={outlined}>
+                {child}
+            </BaseButton>
+        );
     }
 
     return (
-        <NavLink exact className={cssClasses} to={to}>
+        <BaseButton as={NavLink} exact className={className} to={to}>
             {child}
-        </NavLink>
+        </BaseButton>
     );
 }

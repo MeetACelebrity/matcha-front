@@ -1,6 +1,8 @@
 import React from 'react';
 
+import { API_ENDPOINT } from '../constants';
 import useForm, { useFormField } from '../components/Form.jsx';
+import LayoutSignOn from '../layouts/SignOn.jsx';
 
 export default function SignUp() {
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
@@ -71,14 +73,11 @@ export default function SignUp() {
             min: 6,
         },
     ];
+
     const [isValid, FormComponent] = useForm({ fields, onSubmit });
 
     function onSubmit() {
-        const apiUrl = 'http://e1r8p8.42.fr';
-        const apiPort = '8080';
-        const apiRoute = '/auth/sign-up';
-
-        fetch(apiUrl + ':' + apiPort + apiRoute, {
+        fetch(`${API_ENDPOINT}/auth/sign-up`, {
             method: 'POST',
             body: JSON.stringify({
                 email,
@@ -95,18 +94,12 @@ export default function SignUp() {
     }
 
     return (
-        <section className="flex justify-center">
-            <article className="flex justify-center flex-wrap w-64 mt-10">
-                <h2 className="w-full text-center py-2 mx-6 my-3 text-gray-900 font-bold text-3xl font-title uppercase">
-                    Sign Up - {isValid ? 'valid' : 'not valid'}
-                </h2>
-
-                <FormComponent
-                    onSubmit={onSubmit}
-                    fields={fields}
-                    isValid={isValid}
-                />
-            </article>
-        </section>
+        <LayoutSignOn title={`Sign Up - ${isValid ? 'valid' : 'not valid'}`}>
+            <FormComponent
+                onSubmit={onSubmit}
+                fields={fields}
+                isValid={isValid}
+            />
+        </LayoutSignOn>
     );
 }

@@ -1,7 +1,14 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-import { Home, SignIn, SignUp } from './pages';
+import {
+    Home,
+    SignIn,
+    SignUp,
+    PasswordResetEmailAsking,
+    PasswordResetPasswordAsking,
+} from './pages';
+import { AppContext } from './app-context';
 
 export const RoutesEnum = {
     HOME: '/proposals',
@@ -13,6 +20,8 @@ export const RoutesEnum = {
 
     SIGN_IN: '/sign-in',
     SIGN_UP: '/sign-up',
+    RESET_PASSWORD_EMAIL: '/reset-password/email',
+    RESET_PASSWORD_PASSWORD: '/reset-password/password/:uuid/:token',
 };
 
 const RoutesMap = new Map([
@@ -32,13 +41,32 @@ export function mapRoutes(routes = []) {
 }
 
 export default function Routes() {
+    const {
+        user: { loggedIn = false },
+    } = useContext(AppContext);
+
     return (
         <main className="flex-1">
-            <Switch>
-                <Route exact path={RoutesEnum.HOME} component={Home} />
-                <Route path={RoutesEnum.SIGN_IN} component={SignIn} />
-                <Route path={RoutesEnum.SIGN_UP} component={SignUp} />
-            </Switch>
+            {loggedIn ? (
+                <Switch>
+                    <Route exact path={RoutesEnum.HOME} component={Home} />
+                    <Redirect from="/" to={RoutesEnum.HOME} />
+                </Switch>
+            ) : (
+                <Switch>
+                    <Route path={RoutesEnum.SIGN_IN} component={SignIn} />
+                    <Route path={RoutesEnum.SIGN_UP} component={SignUp} />
+                    <Route
+                        path={RoutesEnum.RESET_PASSWORD_EMAIL}
+                        component={PasswordResetEmailAsking}
+                    />
+                    <Route
+                        path={RoutesEnum.RESET_PASSWORD_PASSWORD}
+                        component={PasswordResetPasswordAsking}
+                    />
+                    <Redirect from="/" to={RoutesEnum.SIGN_UP} />
+                </Switch>
+            )}
         </main>
     );
 }
