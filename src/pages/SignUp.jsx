@@ -120,7 +120,7 @@ export default function SignUp() {
                     Sign Up - {isValid ? 'valid' : 'not valid'}
                 </h2>
 
-                {FormComponent}
+                <FormComponent />
             </article>
         </section>
     );

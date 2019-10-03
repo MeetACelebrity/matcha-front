@@ -15,15 +15,17 @@ export default function useForm({ fields = [], onSubmit }) {
         setFormIsValid(!fields.some(field => field.isValid === false));
     }, [fields]);
 
-    const form = (
-        <FormContainer onSubmit={onSubmit}>
-            {fields.map((props, i) => (
-                <TextField key={i} {...props} />
-            ))}
-        </FormContainer>
-    );
+    function FormComponent() {
+        return (
+            <FormContainer onSubmit={onSubmit}>
+                {fields.map((props, i) => (
+                    <TextField key={i} {...props} />
+                ))}
+            </FormContainer>
+        );
+    }
 
-    return [isValid, form];
+    return [isValid, FormComponent];
 }
 
 export function useFormField() {
