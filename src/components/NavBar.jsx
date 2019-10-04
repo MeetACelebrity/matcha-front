@@ -23,9 +23,11 @@ export default function NavBar() {
         user: { loggedIn },
     } = useContext(AppContext);
 
+    const homeLink = loggedIn ? RoutesEnum.HOME : RoutesEnum.SIGN_UP;
+
     return (
         <Header>
-            <Link to={RoutesEnum.HOME}>
+            <Link to={homeLink}>
                 <h1 className="uppercase font-title">Meet A Celebrity</h1>
             </Link>
 
