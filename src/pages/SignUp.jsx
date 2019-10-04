@@ -86,7 +86,7 @@ export default function SignUp() {
         },
     ];
 
-    const [isValid, FormComponent] = useForm({ fields, onSubmit });
+    const [isValidRef, FormComponent] = useForm({ fields, onSubmit });
 
     function onSubmit() {
         fetch(`${API_ENDPOINT}/auth/sign-up`, {
@@ -106,11 +106,11 @@ export default function SignUp() {
     }
 
     return (
-        <LayoutSignOn title={`Sign Up - ${isValid ? 'valid' : 'not valid'}`}>
+        <LayoutSignOn title="Sign up">
             <FormComponent
                 onSubmit={onSubmit}
                 fields={fields}
-                isValid={isValid}
+                isValid={isValidRef}
             />
         </LayoutSignOn>
     );
