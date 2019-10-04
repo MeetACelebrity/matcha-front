@@ -19,7 +19,9 @@ export default function NavBar() {
         RoutesEnum.NOTIFICATIONS,
     ]);
 
-    const { loggedIn } = useContext(AppContext);
+    const {
+        user: { loggedIn },
+    } = useContext(AppContext);
 
     return (
         <Header>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import useForm, { useFormField } from '../components/Form.jsx';
 
+import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
+import { API_ENDPOINT } from '../constants';
 
 export default function PasswordResetPasswordAsking() {
     const { uuid, token } = useParams();
@@ -16,7 +17,7 @@ export default function PasswordResetPasswordAsking() {
 
     const fields = [
         {
-            label: 'Password',
+            label: 'New Password',
             value: password,
             setValue: setPassword,
             isValid: isPasswordValid,
@@ -27,11 +28,23 @@ export default function PasswordResetPasswordAsking() {
 
     const [isValid, FormComponent] = useForm({ fields, onSubmit });
 
-    function onSubmit() {}
+    function onSubmit() {
+        fetch(`${API_ENDPOINT}/auth/reset-password/changing/`, {
+            method: 'POST',
+            body: JSON.stringify({
+                uuid,
+                token,
+                password,
+            }),
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(response => console.log(response));
+    }
 
     return (
-        <LayoutSignOn title="What is your password ?">
-            pornhub {uuid} {token}
+        <LayoutSignOn title="But today... Is your lucky day">
             <FormComponent
                 onSubmit={onSubmit}
                 fields={fields}
