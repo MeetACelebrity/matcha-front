@@ -5,13 +5,13 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
 const BaseButton = styled.button`
-    ${tw`bg-blue-600 stroke-current rounded-full bg-white p-2 cursor-pointer`}
+    font-family: 'Saira', sans-serif;
+
+    ${tw`bg-blue-600 stroke-current rounded-full bg-white p-2 cursor-pointer uppercase`}
 
     &.active.outlined {
         ${tw`text-blue-600`}
     }
-
-    ${({ className }) => className}
 
     ${({ flat }) => !flat && tw`bg-gray-300`}
 
@@ -30,14 +30,25 @@ export default function Button({
 
     if (to === undefined) {
         return (
-            <BaseButton className={className} flat={flat} outlined={outlined}>
+            <BaseButton
+                className={className}
+                flat={flat}
+                outlined={outlined}
+                icon={icon}
+            >
                 {child}
             </BaseButton>
         );
     }
 
     return (
-        <BaseButton as={NavLink} exact className={className} to={to}>
+        <BaseButton
+            as={NavLink}
+            exact
+            className={className}
+            to={to}
+            icon={icon}
+        >
             {child}
         </BaseButton>
     );

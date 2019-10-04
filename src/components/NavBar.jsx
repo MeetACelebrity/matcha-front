@@ -30,7 +30,7 @@ export default function NavBar() {
             </Link>
 
             <nav className="flex">
-                {loggedIn &&
+                {loggedIn ? (
                     icons.map(({ to, icon, showOnMobile }, i) => (
                         <Button
                             key={icon}
@@ -43,12 +43,13 @@ export default function NavBar() {
                                 'md:block': showOnMobile !== true,
                             })}
                         />
-                    ))}
-
-                {!loggedIn && (
+                    ))
+                ) : (
                     <>
                         <Button to="/sign-in">Sign in</Button>
-                        <Button to="/sign-up">Sign up</Button>
+                        <Button to="/sign-up" className="ml-2">
+                            Sign up
+                        </Button>
                     </>
                 )}
             </nav>
