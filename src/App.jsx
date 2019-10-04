@@ -11,7 +11,7 @@ import { AppContext } from './app-context.js';
 const Container = styled.div`
     font-family: 'Roboto';
 
-    ${tw`w-screen min-h-screen bg-gray-100 flex flex-col`}
+    ${tw`w-screen min-h-screen overflow-x-hidden bg-gray-100 flex flex-col`}
 `;
 
 export default function App() {
