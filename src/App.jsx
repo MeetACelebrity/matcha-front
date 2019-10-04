@@ -17,7 +17,7 @@ const Container = styled.div`
 export default function App() {
     const [user, setUser] = useState({
         username: 'jen mich',
-        loggedIn: true,
+        loggedIn: false,
     });
 
     useEffect(() => {

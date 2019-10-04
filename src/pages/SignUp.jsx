@@ -33,14 +33,19 @@ export default function SignUp() {
 
     const fields = [
         {
+            name: 'email',
+            autocomplete: 'email',
             label: 'Email',
             value: email,
             setValue: setEmail,
             isValid: isEmailValid,
             setIsValid: setEmailIsValid,
+            type: 'email',
             email: true,
         },
         {
+            name: 'nickname',
+            autocomplete: 'nickname',
             label: 'Username',
             value: username,
             setValue: setUsername,
@@ -49,6 +54,8 @@ export default function SignUp() {
             min: 1,
         },
         {
+            name: 'given-name',
+            autocomplete: 'given-name',
             label: 'First Name',
             value: givenName,
             setValue: setGivenName,
@@ -57,6 +64,8 @@ export default function SignUp() {
             min: 1,
         },
         {
+            name: 'family-name',
+            autocomplete: 'family-name',
             label: 'Last Name',
             value: familyName,
             setValue: setFamilyName,
@@ -65,11 +74,14 @@ export default function SignUp() {
             min: 1,
         },
         {
+            name: 'new-password',
+            autocomplete: 'new-password',
             label: 'Password',
             value: password,
             setValue: setPassword,
             isValid: isPasswordValid,
             setIsValid: setPasswordIsValid,
+            type: 'password',
             min: 6,
         },
     ];

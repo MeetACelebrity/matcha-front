@@ -33,6 +33,7 @@ export default function SignUp() {
             setValue: setPassword,
             isValid: isPasswordValid,
             setIsValid: setPasswordIsValid,
+            type: 'password',
             min: 6,
         },
     ];

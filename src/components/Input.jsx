@@ -59,6 +59,8 @@ function ErrorsList({ errors = [] }) {
 
 export default function Input({
     id,
+    name,
+    autocomplete,
     value,
     setValue,
     label,
@@ -72,6 +74,8 @@ export default function Input({
             <div className="relative">
                 <BaseInput
                     id={id}
+                    name={name}
+                    autoComplete={autocomplete}
                     placeholder={label}
                     type={type}
                     label={label}
