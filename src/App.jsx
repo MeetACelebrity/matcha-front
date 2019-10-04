@@ -42,7 +42,7 @@ export default function App() {
 
                     <Routes />
 
-                    <BottomBar />
+                    {user.loggedIn && <BottomBar />}
                 </Container>
             </Router>
         </AppContext.Provider>
