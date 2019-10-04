@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import Media from 'react-media';
 
 import {
     Home,
@@ -7,6 +8,8 @@ import {
     SignUp,
     PasswordResetEmailAsking,
     PasswordResetPasswordAsking,
+    UserProfile,
+    UserProfileModify,
 } from './pages';
 import { AppContext } from './app-context';
 
@@ -17,6 +20,7 @@ export const RoutesEnum = {
     USER: '/user',
     CHAT: '/chat',
     NOTIFICATIONS: '/notifications',
+    ME_EDIT: '/me/edit',
 
     SIGN_IN: '/sign-in',
     SIGN_UP: '/sign-up',
@@ -49,7 +53,43 @@ export default function Routes() {
         <main className="flex-1">
             {loggedIn ? (
                 <Switch>
-                    <Route exact path={RoutesEnum.HOME} component={Home} />
+                    {/**
+                        When the width is less than 768px, me must separate HOME and ME routes.
+                        On a large screen device, these both views are shown on HOME route.
+                    */}
+                    <Media query={{ maxWidth: 768 }}>
+                        {screenIsSmall =>
+                            screenIsSmall ? (
+                                <>
+                                    <Route
+                                        path={RoutesEnum.HOME}
+                                        component={Home}
+                                    />
+                                    <Route
+                                        path={RoutesEnum.ME}
+                                        component={UserProfile}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <Route
+                                        path={RoutesEnum.HOME}
+                                        component={Home}
+                                    />
+                                    <Redirect
+                                        exact
+                                        from={RoutesEnum.ME}
+                                        to={RoutesEnum.HOME}
+                                    />
+                                </>
+                            )
+                        }
+                    </Media>
+
+                    <Route
+                        path={RoutesEnum.ME_EDIT}
+                        component={UserProfileModify}
+                    />
                     <Redirect from="/" to={RoutesEnum.HOME} />
                 </Switch>
             ) : (
