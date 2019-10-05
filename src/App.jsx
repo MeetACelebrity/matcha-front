@@ -7,6 +7,7 @@ import NavBar from './components/NavBar.jsx';
 import BottomBar from './components/BottomBar.jsx';
 import Routes from './Routes.jsx';
 import { AppContext } from './app-context.js';
+import { API_ENDPOINT } from './constants.js';
 
 const Container = styled.div`
     font-family: 'Roboto';
@@ -16,22 +17,20 @@ const Container = styled.div`
 
 export default function App() {
     const [user, setUser] = useState({
-        username: 'jen mich',
-        loggedIn: true,
+        user: {},
+        loggedIn: false,
     });
 
     useEffect(() => {
-        /*
-            // fetch the api to know if the user is logged in ! :tada:
+        // fetch the api to know if the user is logged in ! :tada:
 
-            const apiEndpoint = 'http://localhost:3000'
-
-            fetch(`${apiEndpoint}/me`, {
-                credentials: 'include',
-            })
-                .then(res => res.json())
-                .then(user => setUser(user));
-        */
+        fetch(`${API_ENDPOINT}/me`, {
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(user =>
+                setUser({ user, loggedIn: user === null ? false : true })
+            );
     }, []);
 
     return (
