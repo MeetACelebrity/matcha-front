@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Media from 'react-media';
+import styled from 'styled-components';
+import tw from 'tailwind.macro';
 
 import {
     Home,
@@ -44,13 +46,21 @@ export function mapRoutes(routes = []) {
     return routes.map(route => RoutesMap.get(route));
 }
 
+const Main = styled.main`
+    ${tw`flex-1 flex`}
+
+    & > * {
+        ${tw`min-h-full`}
+    }
+`;
+
 export default function Routes() {
     const {
         user: { loggedIn = false },
     } = useContext(AppContext);
 
     return (
-        <main className="flex-1">
+        <Main>
             {loggedIn ? (
                 <Switch>
                     {/**
@@ -107,6 +117,6 @@ export default function Routes() {
                     <Redirect from="/" to={RoutesEnum.SIGN_UP} />
                 </Switch>
             )}
-        </main>
+        </Main>
     );
 }

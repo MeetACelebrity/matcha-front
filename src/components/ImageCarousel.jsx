@@ -63,7 +63,7 @@ const Footer = styled.footer`
 `;
 
 const Dot = styled.button`
-    ${tw`bg-gray-800 shadow w-3 h-3 rounded-full relative mx-1`}
+    ${tw`bg-gray-500 shadow w-3 h-3 rounded-full relative mx-1`}
 
     transition: background-color 200ms ease-out;
 
@@ -72,7 +72,7 @@ const Dot = styled.button`
         ${tw`outline-none`}
     }
 
-    ${({ active }) => active && tw`bg-gray-500`}
+    ${({ active }) => active && tw`bg-gray-800`}
 
     &::after {
         content: '';

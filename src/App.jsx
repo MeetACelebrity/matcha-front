@@ -18,7 +18,7 @@ const Container = styled.div`
 export default function App() {
     const [user, setUser] = useState({
         user: {},
-        loggedIn: false,
+        loggedIn: true,
     });
 
     useEffect(() => {
@@ -30,7 +30,8 @@ export default function App() {
             .then(res => res.json())
             .then(user =>
                 setUser({ user, loggedIn: user === null ? false : true })
-            );
+            )
+            .catch(console.error);
     }, []);
 
     return (
