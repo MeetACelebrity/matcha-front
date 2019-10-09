@@ -4,7 +4,7 @@ import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 
 const Container = styled.div`
-    ${tw`relative max-w-full h-64`}
+    ${tw`relative max-w-full h-64 overflow-x-hidden`}
 `;
 
 const ImagesContainer = styled.div`

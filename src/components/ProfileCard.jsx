@@ -8,7 +8,13 @@ import ProfileCardTags from './ProfileCardTags.jsx';
 import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
 
 const Container = styled.article`
-    ${tw`overflow-x-hidden h-full relative`}
+    ${tw`relative shadow-xl`}
+
+    /**
+     * This creates a new layer thanks to which the floating button (position: fixed)
+     * will be positioned according to this new layer.
+    */
+    transform: translate(0);
 `;
 
 const Section = styled.section`
@@ -43,6 +49,10 @@ const TextContainer = styled.div`
     }
 `;
 
+const Address = styled.p`
+    ${tw`text-gray-600 mx-1`}
+`;
+
 export default function ProfileCard({
     // uuid,
     username,
@@ -50,6 +60,8 @@ export default function ProfileCard({
     familyName,
     profilePicture,
     pictures,
+    children,
+    className,
 }) {
     /*const {
         user: { uuid: currentUserUuid },
@@ -60,7 +72,7 @@ export default function ProfileCard({
     const images = [profilePicture, ...pictures];
 
     return (
-        <Container>
+        <Container className={className}>
             <header>
                 <ImageCarousel images={images} />
             </header>
@@ -80,6 +92,12 @@ export default function ProfileCard({
                     <h4>{'30 years old'}</h4>
                 </TextContainer>
 
+                <Address>
+                    {
+                        '10 Rue de Penthievre, Paris 8e Arrondissement, Île-de-France, France'
+                    }
+                </Address>
+
                 <ProfileCardTags
                     tags={[
                         'chiens',
@@ -92,9 +110,9 @@ export default function ProfileCard({
                 />
             </Section>
 
-            <footer>
-                <ProfileCardFloatingButton edit={isCurrentUser} />
-            </footer>
+            {children}
+
+            <ProfileCardFloatingButton edit={isCurrentUser} />
         </Container>
     );
 }

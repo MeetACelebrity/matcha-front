@@ -47,10 +47,14 @@ export function mapRoutes(routes = []) {
 }
 
 const Main = styled.main`
-    ${tw`flex-1 flex`}
+    ${tw`overflow-y-auto relative flex items-stretch`}
 
-    & > * {
-        ${tw`min-h-full`}
+    min-height: calc(
+        100vh - var(--nav-bar--height) - var(--bottom-bar--height)
+    );
+
+    > * {
+        ${tw`min-h-full overflow-y-auto overflow-x-hidden`}
     }
 `;
 

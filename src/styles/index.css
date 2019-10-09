@@ -7,3 +7,14 @@
 .font-title {
     font-family: 'Saira', sans-serif;
 }
+
+:root {
+    --nav-bar--height: 56px;
+    --bottom-bar--height: 64px;
+}
+
+@media (min-width: 768px) {
+    :root {
+        --bottom-bar--height: 0px;
+    }
+}

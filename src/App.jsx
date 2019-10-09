@@ -12,7 +12,12 @@ import { API_ENDPOINT } from './constants.js';
 const Container = styled.div`
     font-family: 'Roboto';
 
-    ${tw`w-screen min-h-screen overflow-x-hidden bg-gray-100 flex flex-col`}
+    ${tw`w-screen h-screen overflow-x-hidden bg-gray-100`}
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto 1fr;
 `;
 
 export default function App() {

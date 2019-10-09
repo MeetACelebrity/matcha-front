@@ -6,7 +6,7 @@ import Button from './Button.jsx';
 import { mapRoutes, RoutesEnum } from '../Routes.jsx';
 
 const Nav = styled.nav`
-    ${tw`block md:hidden flex justify-around fixed inset-x-0 bottom-0 px-2 py-3 bg-white shadow z-50`}
+    ${tw`block md:hidden flex justify-around px-2 py-3 bg-white shadow z-50`}
 `;
 
 export default function BottomBar() {
