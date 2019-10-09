@@ -65,12 +65,17 @@ export default function Routes() {
 
     return (
         <Main>
+            {/**
+                When the width is less than 768px, me must separate HOME and ME routes.
+                On a large screen device, these both views are shown on HOME route.
+            */}
             {loggedIn ? (
                 <Switch>
-                    {/**
-                        When the width is less than 768px, me must separate HOME and ME routes.
-                        On a large screen device, these both views are shown on HOME route.
-                    */}
+                    <Route
+                        path={RoutesEnum.ME_EDIT}
+                        component={UserProfileModify}
+                    />
+
                     <Media query={{ maxWidth: 768 }}>
                         {screenIsSmall =>
                             screenIsSmall ? (
@@ -100,10 +105,6 @@ export default function Routes() {
                         }
                     </Media>
 
-                    <Route
-                        path={RoutesEnum.ME_EDIT}
-                        component={UserProfileModify}
-                    />
                     <Redirect from="/" to={RoutesEnum.HOME} />
                 </Switch>
             ) : (

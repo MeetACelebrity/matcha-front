@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default function UserProfileModifyPage() {
-    return null;
+    return <div>lol</div>;
 }
