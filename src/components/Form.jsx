@@ -31,7 +31,7 @@ const FormButton = styled.button`
     }
 `;
 
-function FormComponent({ isValid, onSubmit, fields }) {
+function FormComponent({ isValid, onSubmit, fields, hideButton = false }) {
     const [triggerValidation, setTriggerValidation] = useState(false);
 
     function submitHandler(e) {
@@ -57,7 +57,7 @@ function FormComponent({ isValid, onSubmit, fields }) {
                 />
             ))}
 
-            <FormButton type="submit">Send</FormButton>
+            {!hideButton && <FormButton type="submit">Send</FormButton>}
         </FormContainer>
     );
 }

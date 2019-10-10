@@ -6,8 +6,9 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const BaseInput = styled.input`
     transition: border-color 200ms;
+    min-width: 16rem;
 
-    ${tw`border-b-2 border-blue-200 text-gray-900 bg-transparent outline-none py-1 my-1 w-64`}
+    ${tw`border-b-2 border-blue-200 text-gray-900 bg-transparent outline-none py-1 my-1 w-full`}
 
     ${({ isOk }) => isOk === false && tw`border-red-500`}
 
