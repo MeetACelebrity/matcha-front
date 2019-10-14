@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import MaskedInput from 'react-text-mask';
 
 import Input from './Input.jsx';
 
@@ -39,6 +40,8 @@ export default function TextField(props) {
         setIsValid,
         setValue: setParentValue,
         triggerValidation,
+        mask,
+        label,
     } = props;
 
     function setValue(value) {
@@ -85,6 +88,21 @@ export default function TextField(props) {
         hasBeenUsed,
         triggerValidation,
     ]);
+
+    if (Array.isArray(mask)) {
+        return (
+            <MaskedInput
+                mask={mask}
+                label={label}
+                isOk={isValid}
+                errors={errors}
+                setValue={setValue}
+                render={(ref, maskedProps) => (
+                    <Input ref={ref} {...maskedProps} />
+                )}
+            />
+        );
+    }
 
     return (
         <Input {...props} isOk={isValid} errors={errors} setValue={setValue} />

@@ -58,22 +58,27 @@ function ErrorsList({ errors = [] }) {
     );
 }
 
-export default function Input({
-    id,
-    name,
-    autocomplete,
-    value,
-    setValue,
-    label,
-    type = 'text',
-    isOk,
-    closable = false,
-    errors,
-}) {
+const Input = React.forwardRef(function Input(
+    {
+        id,
+        name,
+        autocomplete,
+        value,
+        setValue,
+        label,
+        type = 'text',
+        isOk,
+        closable = false,
+        errors,
+        onChange,
+    },
+    ref
+) {
     return (
         <div>
             <div className="relative">
                 <BaseInput
+                    ref={ref}
                     id={id}
                     name={name}
                     autoComplete={autocomplete}
@@ -82,7 +87,13 @@ export default function Input({
                     label={label}
                     value={value}
                     isOk={isOk}
-                    onChange={e => setValue(e.target.value)}
+                    onChange={e => {
+                        if (typeof onChange === 'function') {
+                            onChange(e);
+                        }
+
+                        setValue(e.target.value);
+                    }}
                 />
 
                 {closable === true && (
@@ -99,4 +110,6 @@ export default function Input({
             <ErrorsList errors={errors} />
         </div>
     );
-}
+});
+
+export default Input;
