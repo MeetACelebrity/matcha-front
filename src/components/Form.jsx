@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
 import TextField from './TextField.jsx';
+import Textarea from './Textarea.jsx';
 import SegmentedControl from './SegmentedControl.jsx';
 
 const FormContainer = styled.form`
@@ -60,6 +61,10 @@ function FormComponent({ isValid, onSubmit, fields, hideButton = false }) {
                             {...props}
                         />
                     );
+                }
+
+                if (props.textarea === true) {
+                    return <Textarea key={`textarea-${i}`} {...props} />;
                 }
 
                 return (

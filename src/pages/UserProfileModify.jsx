@@ -5,6 +5,8 @@ import tw from 'tailwind.macro';
 import UserProfileModifyProfileImage from '../components/UserProfileModifyProfileImage.jsx';
 import UserProfileModifyGeneral from '../components/UserProfileModifyGeneral.jsx';
 import UserProfileModifyOtherInformations from '../components/UserProfileModifyOtherInformations.jsx';
+import UserProfileModifyBiography from '../components/UserProfileModifyBiography.jsx';
+import UserProfileModifyAddress from '../components/UserProfileModifyAddress.jsx';
 
 import remy from '../assets/remy.png';
 
@@ -39,6 +41,8 @@ export default function UserProfileModifyPage() {
 
             <UserProfileModifyGeneral />
             <UserProfileModifyOtherInformations />
+            <UserProfileModifyBiography />
+            <UserProfileModifyAddress />
         </Container>
     );
 }

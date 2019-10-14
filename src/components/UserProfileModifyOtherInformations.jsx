@@ -51,9 +51,7 @@ export default function UserProfileModifyOtherInformations() {
         },
     ];
 
-    const [isValid, Form] = useForm({
-        fields,
-    });
+    const [isValid, Form] = useForm({ fields });
 
     return (
         <UserProfileModifyEditionGroup title="Other Informations">

@@ -67,6 +67,7 @@ const Input = React.forwardRef(function Input(
         setValue,
         label,
         type = 'text',
+        textarea = false,
         isOk,
         closable = false,
         errors,
@@ -74,10 +75,13 @@ const Input = React.forwardRef(function Input(
     },
     ref
 ) {
+    const tag = textarea === true ? 'textarea' : 'input';
+
     return (
         <div>
             <div className="relative">
                 <BaseInput
+                    as={tag}
                     ref={ref}
                     id={id}
                     name={name}
