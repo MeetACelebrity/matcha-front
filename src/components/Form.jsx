@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
 import TextField from './TextField.jsx';
+import SegmentedControl from './SegmentedControl.jsx';
 
 const FormContainer = styled.form`
     ${tw`flex flex-col items-stretch`}
@@ -49,13 +50,26 @@ function FormComponent({ isValid, onSubmit, fields, hideButton = false }) {
 
     return (
         <FormContainer onSubmit={submitHandler}>
-            {fields.map((props, i) => (
-                <TextField
-                    key={i}
-                    {...props}
-                    triggerValidation={triggerValidation}
-                />
-            ))}
+            {fields.map((props, i) => {
+                console.log('field value =', props);
+
+                if (props.segmented === true) {
+                    return (
+                        <SegmentedControl
+                            key={`segmented-control-${i}`}
+                            {...props}
+                        />
+                    );
+                }
+
+                return (
+                    <TextField
+                        key={`text-field-${i}`}
+                        {...props}
+                        triggerValidation={triggerValidation}
+                    />
+                );
+            })}
 
             {!hideButton && <FormButton type="submit">Send</FormButton>}
         </FormContainer>
@@ -72,8 +86,8 @@ export default function useForm({ fields = [] }) {
     return [isValid, FormComponent];
 }
 
-export function useFormField() {
-    const [value, setValue] = useState('');
+export function useFormField(defaultValue) {
+    const [value, setValue] = useState(defaultValue);
     const [valid, setValid] = useState(true);
 
     return [value, setValue, valid, setValid];

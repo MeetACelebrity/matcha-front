@@ -6,14 +6,14 @@ import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 export default function UserProfileModifyOtherInformations() {
     const [age, setAge, isAgeValid, setAgeIsValid] = useFormField('');
     const [gender, setGender, isGenderValid, setGenderIsValid] = useFormField(
-        ''
+        'M'
     );
     const [
         sexualOrientation,
         setSexualOrientation,
         isSexualOrientationValid,
         setSexualOrientationIsValid,
-    ] = useFormField('');
+    ] = useFormField('BI');
 
     const fields = [
         {
@@ -30,13 +30,24 @@ export default function UserProfileModifyOtherInformations() {
             setValue: setGender,
             isValid: isGenderValid,
             setIsValid: setGenderIsValid,
+            segmented: true,
+            items: [
+                { value: 'M', text: 'Male' },
+                { value: 'F', text: 'Female' },
+            ],
         },
         {
-            label: 'Sexual orientation',
+            label: 'Sexual Orientation',
             value: sexualOrientation,
             setValue: setSexualOrientation,
             isValid: isSexualOrientationValid,
             setIsValid: setSexualOrientationIsValid,
+            segmented: true,
+            items: [
+                { value: 'HETE', text: 'Heterosexual' },
+                { value: 'HOMO', text: 'Homosexual' },
+                { value: 'BI', text: 'Bisexual' },
+            ],
         },
     ];
 
