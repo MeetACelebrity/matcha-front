@@ -41,6 +41,7 @@ export default function UserProfileModifyAddress() {
                     appId: '#',
                     apiKey: '#',
                     container: addressTextFieldRef.current,
+                    style: false,
                 }).configure({
                     language: 'fr',
                 })
