@@ -52,8 +52,6 @@ function FormComponent({ isValid, onSubmit, fields, hideButton = false }) {
     return (
         <FormContainer onSubmit={submitHandler}>
             {fields.map((props, i) => {
-                console.log('field value =', props);
-
                 if (props.segmented === true) {
                     return (
                         <SegmentedControl

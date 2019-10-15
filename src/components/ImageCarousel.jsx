@@ -98,7 +98,6 @@ function incrementDisplayedImage({
     displayedImage,
     setDisplayedImage,
 }) {
-    console.log('inc');
     if (displayedImage + 1 >= imagesCount) return;
 
     setDisplayedImage(displayedImage + 1);
