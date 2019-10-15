@@ -14,14 +14,11 @@ const BaseButton = styled.button`
     }
 
     ${({ flat }) => !flat && tw`bg-gray-300`}
-
-    ${({ outlined }) => outlined && tw`outlined`}
 `;
 
 export default function Button({
     to,
     flat = false,
-    outlined = true,
     icon,
     children,
     className,
@@ -30,12 +27,7 @@ export default function Button({
 
     if (to === undefined) {
         return (
-            <BaseButton
-                className={className}
-                flat={flat}
-                outlined={outlined}
-                icon={icon}
-            >
+            <BaseButton className={className} flat={flat} icon={icon}>
                 {child}
             </BaseButton>
         );
