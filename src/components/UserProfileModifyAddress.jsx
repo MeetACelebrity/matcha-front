@@ -5,6 +5,7 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 
 export default function UserProfileModifyAddress() {
+    const [latlng, setLatlng] = useState({ lat: -1, lng: -1 });
     const [
         address,
         setAddress,
@@ -36,22 +37,41 @@ export default function UserProfileModifyAddress() {
         );
 
         if (placesAutocomplete === null) {
-            setPlacesAutocomplete(
-                places({
-                    appId: '#',
-                    apiKey: '#',
-                    container: addressTextFieldRef.current,
-                    style: false,
-                }).configure({
-                    language: 'fr',
-                })
+            const placesAutocomplete = places({
+                appId: '#',
+                apiKey: '#',
+                container: addressTextFieldRef.current,
+                style: false,
+            }).configure({
+                language: 'fr',
+                type: 'address',
+                useDeviceLocation: true,
+            });
+
+            placesAutocomplete.on(
+                'change',
+                ({ suggestion: { value, latlng } }) => {
+                    setAddress(value);
+                    setLatlng(latlng);
+                }
             );
+
+            setPlacesAutocomplete(placesAutocomplete);
         }
-    }, [placesAutocomplete]);
+    }, [placesAutocomplete, setAddress]);
+
+    function onSubmit() {
+        console.log(`send to the API (${latlng.lat}, ${latlng.lng})`);
+    }
 
     return (
         <UserProfileModifyEditionGroup title="Address">
-            <Form fields={fields} isValid={isValid} hideButton />
+            <Form
+                fields={fields}
+                isValid={isValid}
+                hideButton
+                onSubmit={onSubmit}
+            />
         </UserProfileModifyEditionGroup>
     );
 }
