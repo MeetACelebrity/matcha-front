@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FeatherIcon from 'feather-icons-react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
@@ -58,7 +58,28 @@ function ErrorsList({ errors = [] }) {
     );
 }
 
-const Input = React.forwardRef(function Input(
+const PasswordIconContainer = styled.button`
+    ${tw`absolute right-0`}
+
+    top: 8px;
+`;
+
+function PasswordIcon({ show, setShow }) {
+    const icon = show === true ? 'eye-off' : 'eye';
+
+    return (
+        <PasswordIconContainer
+            onClick={e => {
+                e.preventDefault();
+                setShow(!show);
+            }}
+        >
+            <FeatherIcon icon={icon} />
+        </PasswordIconContainer>
+    );
+}
+
+function Input(
     {
         id,
         name,
@@ -72,10 +93,15 @@ const Input = React.forwardRef(function Input(
         closable = false,
         errors,
         onChange,
+        hidden = false,
     },
     ref
 ) {
     const tag = textarea === true ? 'textarea' : 'input';
+    const [show, setShow] = useState(type === 'password' ? false : true);
+
+    const inputType =
+        type !== 'password' ? type : show === true ? 'text' : 'password';
 
     return (
         <div>
@@ -87,10 +113,12 @@ const Input = React.forwardRef(function Input(
                     name={name}
                     autoComplete={autocomplete}
                     placeholder={label}
-                    type={type}
+                    type={inputType}
                     label={label}
                     value={value}
                     isOk={isOk}
+                    hidden={hidden}
+                    className={type === 'password' && 'pr-8'}
                     onChange={e => {
                         if (typeof onChange === 'function') {
                             onChange(e);
@@ -99,6 +127,8 @@ const Input = React.forwardRef(function Input(
                         setValue(e.target.value);
                     }}
                 />
+
+                {type === 'password' && PasswordIcon({ show, setShow })}
 
                 {closable === true && (
                     <CloseIconContainer>
@@ -114,6 +144,6 @@ const Input = React.forwardRef(function Input(
             <ErrorsList errors={errors} />
         </div>
     );
-});
+}
 
-export default Input;
+export default React.forwardRef(Input);

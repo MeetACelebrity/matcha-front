@@ -7,6 +7,7 @@ import UserProfileModifyGeneral from '../components/UserProfileModifyGeneral.jsx
 import UserProfileModifyOtherInformations from '../components/UserProfileModifyOtherInformations.jsx';
 import UserProfileModifyBiography from '../components/UserProfileModifyBiography.jsx';
 import UserProfileModifyAddress from '../components/UserProfileModifyAddress.jsx';
+import UserProfileModifyPassword from '../components/UserProfileModifyPassword.jsx';
 
 import remy from '../assets/remy.png';
 
@@ -43,6 +44,7 @@ export default function UserProfileModifyPage() {
             <UserProfileModifyOtherInformations />
             <UserProfileModifyBiography />
             <UserProfileModifyAddress />
+            <UserProfileModifyPassword />
         </Container>
     );
 }
