@@ -26,11 +26,8 @@
 .ap-nostyle-hint {
     width: 100%;
     padding-right: 35px;
-    padding-left: 16px;
     line-height: 40px;
     height: 40px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
     outline: none;
     font: inherit;
     appearance: none;
