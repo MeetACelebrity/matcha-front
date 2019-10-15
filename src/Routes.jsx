@@ -47,7 +47,7 @@ export function mapRoutes(routes = []) {
 }
 
 const Main = styled.main`
-    ${tw`overflow-y-auto relative flex items-stretch`}
+    ${tw`h-full overflow-y-auto relative`}
 
     min-height: calc(
         100vh - var(--nav-bar--height) - var(--bottom-bar--height)

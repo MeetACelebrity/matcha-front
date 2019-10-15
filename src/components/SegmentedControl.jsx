@@ -12,6 +12,8 @@ const ItemsContainer = styled.div`
 
 const Label = styled.p`
     ${tw`mb-2`}
+
+    font-family: 'Saira',sans-serif;
 `;
 
 const Item = styled.button`

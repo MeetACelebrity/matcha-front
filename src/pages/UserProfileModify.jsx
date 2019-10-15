@@ -8,11 +8,12 @@ import UserProfileModifyOtherInformations from '../components/UserProfileModifyO
 import UserProfileModifyBiography from '../components/UserProfileModifyBiography.jsx';
 import UserProfileModifyAddress from '../components/UserProfileModifyAddress.jsx';
 import UserProfileModifyPassword from '../components/UserProfileModifyPassword.jsx';
+import UserProfileModifyPictures from '../components/UserProfileModifyPictures.jsx';
 
 import remy from '../assets/remy.png';
 
 const Container = styled.section`
-    ${tw`w-full mx-auto mt-10`}
+    ${tw`w-full mx-auto py-10`}
 
     @media (min-width: 768px) {
         ${tw`w-3/5`}
@@ -45,6 +46,7 @@ export default function UserProfileModifyPage() {
             <UserProfileModifyBiography />
             <UserProfileModifyAddress />
             <UserProfileModifyPassword />
+            <UserProfileModifyPictures />
         </Container>
     );
 }

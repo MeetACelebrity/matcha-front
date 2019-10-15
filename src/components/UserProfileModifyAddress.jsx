@@ -61,7 +61,9 @@ export default function UserProfileModifyAddress() {
     }, [placesAutocomplete, setAddress]);
 
     function onSubmit() {
-        console.log(`send to the API (${latlng.lat}, ${latlng.lng})`);
+        console.log(
+            `send to the API (${latlng.lat}, ${latlng.lng}) = ${address}`
+        );
     }
 
     return (

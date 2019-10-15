@@ -62,6 +62,10 @@ const PasswordIconContainer = styled.button`
     ${tw`absolute right-0`}
 
     top: 8px;
+
+    &:focus {
+        ${tw`outline-none`}
+    }
 `;
 
 function PasswordIcon({ show, setShow }) {
