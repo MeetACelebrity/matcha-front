@@ -13,7 +13,7 @@ import UserProfileModifyPictures from '../components/UserProfileModifyPictures.j
 import remy from '../assets/remy.png';
 
 const Container = styled.section`
-    ${tw`w-full mx-auto py-10`}
+    ${tw`w-full mx-auto py-10 px-3`}
 
     @media (min-width: 768px) {
         ${tw`w-3/5`}
