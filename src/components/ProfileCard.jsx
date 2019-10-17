@@ -99,14 +99,7 @@ export default function ProfileCard({
                 </Address>
 
                 <ProfileCardTags
-                    tags={[
-                        'chiens',
-                        'chattes',
-                        'vinyles',
-                        'sexe',
-                        'cristaline',
-                        'philosophie',
-                    ]}
+                    tags={['chiens', 'cristaline', 'philosophie']}
                 />
             </Section>
 

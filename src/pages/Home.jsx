@@ -7,6 +7,7 @@ import remy from '../assets/remy.png';
 import girl from '../assets/girl.png';
 
 import ProfileCard from '../components/ProfileCard.jsx';
+import ProfilesContainer from '../components/ProfilesContainer.jsx';
 
 const ClosingContainer = styled.button`
     ${tw`absolute py-2 w-6 flex justify-center items-center bg-blue-700 text-white rounded-r opacity-25`}
@@ -62,7 +63,7 @@ const Container = styled.section`
         grid-row: 1;
 
         @media (min-width: 768px) {
-            ${tw`z-10 mx-6`}
+            ${tw`z-10 mx-8`}
 
             grid-column: 4 / 11;
             grid-row: 1;
@@ -96,12 +97,16 @@ export default function Home() {
 
         const last = homeView.getBoundingClientRect();
 
-        const invert = first.left - last.left;
+        const scalingFactor = first.width / last.width;
 
         homeView.animate(
             [
-                { transform: `translateX(${invert}px)` },
-                { transform: 'translateX(0)' },
+                {
+                    transform: `scaleX(${scalingFactor})`,
+                },
+                {
+                    transform: 'scaleX(1)',
+                },
             ],
             {
                 duration: 200,
@@ -132,7 +137,16 @@ export default function Home() {
                 </ClosingContainer>
             </ProfileCard>
 
-            <article ref={homeViewRef}>This is home</article>
+            <ProfilesContainer
+                ref={homeViewRef}
+                profiles={[
+                    { id: 'lol' },
+                    { id: 'test' },
+                    { id: 'adfgjkahfdg' },
+                    { id: 'adfgjkahfdag' },
+                    { id: 'adfgjkahfdaq' },
+                ]}
+            />
         </Container>
     );
 }
