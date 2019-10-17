@@ -69,7 +69,7 @@ const Container = styled.section`
             grid-row: 1;
 
             &.expand {
-                grid-column: 1 / span 10;
+                grid-column: 2 / span 8;
             }
         }
     }
@@ -87,32 +87,11 @@ export default function Home() {
 
         if (homeView === null) return;
 
-        const first = homeView.getBoundingClientRect();
-
         if (newValue === true) {
             homeView.classList.add('expand');
         } else {
             homeView.classList.remove('expand');
         }
-
-        const last = homeView.getBoundingClientRect();
-
-        const scalingFactor = first.width / last.width;
-
-        homeView.animate(
-            [
-                {
-                    transform: `scaleX(${scalingFactor})`,
-                },
-                {
-                    transform: 'scaleX(1)',
-                },
-            ],
-            {
-                duration: 200,
-                easing: 'ease-out',
-            }
-        );
     }
 
     return (
@@ -145,6 +124,10 @@ export default function Home() {
                     { id: 'adfgjkahfdg' },
                     { id: 'adfgjkahfdag' },
                     { id: 'adfgjkahfdaq' },
+                    { id: 'tes2t' },
+                    { id: 'adfgjk45ahfdg' },
+                    { id: 'adfgjkah5454fdag' },
+                    { id: 'adfgjkahfdaq786' },
                 ]}
             />
         </Container>
