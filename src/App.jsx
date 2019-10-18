@@ -7,7 +7,7 @@ import NavBar from './components/NavBar.jsx';
 import BottomBar from './components/BottomBar.jsx';
 import Routes from './Routes.jsx';
 import { AppContext } from './app-context.js';
-import { API_ENDPOINT } from './constants.js';
+// import { API_ENDPOINT } from './constants.js';
 
 const Container = styled.div`
     font-family: 'Roboto';
@@ -21,7 +21,7 @@ const Container = styled.div`
 `;
 
 export default function App() {
-    const [user, setUser] = useState({
+    const [context, setContext] = useState({
         user: {},
         loggedIn: true,
     });
@@ -29,7 +29,14 @@ export default function App() {
     useEffect(() => {
         // fetch the api to know if the user is logged in ! :tada:
 
-        fetch(`${API_ENDPOINT}/me`, {
+        setTimeout(() => {
+            setContext({
+                user: { uuid: 'adfgadfg' },
+                loggedIn: true,
+            });
+        }, 300);
+
+        /*fetch(`${API_ENDPOINT}/me`, {
             credentials: 'include',
         })
             .then(res => res.json())
@@ -37,17 +44,18 @@ export default function App() {
                 setUser({ user, loggedIn: user === null ? false : true })
             )
             .catch(console.error);
+        */
     }, []);
 
     return (
-        <AppContext.Provider value={{ user, setUser }}>
+        <AppContext.Provider value={{ context, setContext }}>
             <Router>
                 <Container>
                     <NavBar />
 
                     <Routes />
 
-                    {user.loggedIn && <BottomBar />}
+                    {context.loggedIn && <BottomBar />}
                 </Container>
             </Router>
         </AppContext.Provider>

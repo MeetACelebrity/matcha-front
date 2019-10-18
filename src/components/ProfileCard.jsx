@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
+import { Link } from 'react-router-dom';
 
 import { AppContext } from '../app-context.js';
 import ImageCarousel from './ImageCarousel.jsx';
@@ -55,22 +56,42 @@ const Address = styled.p`
 
 export default function ProfileCard({
     uuid,
-    username,
-    givenName,
-    familyName,
+    username = 'Non connu',
+    givenName = 'Non connu',
+    familyName = 'Non connu',
+    gender = 'Non connu',
     profilePicture,
     pictures,
     children,
     className,
+    preview = false,
 }) {
+    const [images, setImages] = useState([]);
     const {
-        user: { uuid: currentUserUuid },
+        context: {
+            user: { uuid: currentUserUuid },
+        },
     } = useContext(AppContext);
+
     const isCurrentUser = uuid === currentUserUuid;
 
-    const images = pictures;
+    console.log('current user id =', currentUserUuid, 'uuid =', uuid);
 
-    if (profilePicture !== undefined) images.unshift(profilePicture);
+    useEffect(() => {
+        if (profilePicture === undefined) {
+            setImages(pictures);
+        } else {
+            setImages([profilePicture, ...pictures]);
+        }
+    }, [pictures, profilePicture]);
+
+    const Header = (
+        <TextContainer primary>
+            <h2>{username}</h2>
+
+            <Gender>{gender}</Gender>
+        </TextContainer>
+    );
 
     return (
         <Container className={className}>
@@ -79,11 +100,11 @@ export default function ProfileCard({
             </header>
 
             <Section>
-                <TextContainer primary>
-                    <h2>{username}</h2>
-
-                    <Gender>H</Gender>
-                </TextContainer>
+                {preview === true ? (
+                    <Link to={`/profile/${uuid}`}>{Header}</Link>
+                ) : (
+                    Header
+                )}
 
                 <TextContainer secondary>
                     <h3>

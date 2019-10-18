@@ -60,7 +60,7 @@ const Main = styled.main`
 
 export default function Routes() {
     const {
-        user: { loggedIn = false },
+        context: { loggedIn = false },
     } = useContext(AppContext);
 
     return (

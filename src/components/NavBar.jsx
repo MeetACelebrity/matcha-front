@@ -20,7 +20,7 @@ export default function NavBar() {
     ]);
 
     const {
-        user: { loggedIn },
+        context: { loggedIn },
     } = useContext(AppContext);
 
     const homeLink = loggedIn ? RoutesEnum.HOME : RoutesEnum.SIGN_UP;

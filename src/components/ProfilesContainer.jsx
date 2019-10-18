@@ -1,9 +1,12 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
+import tw from 'tailwind.macro';
 
 import Profile from './Profile.jsx';
 
 const Container = styled.section`
+    ${tw`py-5`}
+
     display: grid;
 
     grid-auto-rows: min-content;
@@ -17,13 +20,13 @@ const Container = styled.section`
     will-change: transform;
 `;
 
-function ProfilesContainer({ profiles = [] }, ref) {
+function ProfilesContainer({ profiles = [], preview = false }, ref) {
     return (
         <Container ref={ref}>
             {profiles.map(profile => {
                 const { id } = profile;
 
-                return <Profile {...profile} key={id} />;
+                return <Profile {...profile} key={id} preview={preview} />;
             })}
         </Container>
     );

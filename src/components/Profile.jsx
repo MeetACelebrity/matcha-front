@@ -17,6 +17,7 @@ export default function Profile({
     familyName,
     profilePicture,
     pictures = [],
+    preview,
 }) {
     return (
         <Container>
@@ -27,6 +28,7 @@ export default function Profile({
                 familyName={familyName}
                 profilePicture={profilePicture}
                 pictures={pictures}
+                preview={preview}
             />
         </Container>
     );

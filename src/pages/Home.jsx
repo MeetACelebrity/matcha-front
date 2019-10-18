@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
@@ -8,6 +8,7 @@ import girl from '../assets/girl.png';
 
 import ProfileCard from '../components/ProfileCard.jsx';
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
+import { AppContext } from '../app-context';
 
 const ClosingContainer = styled.button`
     ${tw`absolute py-2 w-6 flex justify-center items-center bg-blue-700 text-white rounded-r opacity-25`}
@@ -76,6 +77,12 @@ const Container = styled.section`
 `;
 
 export default function Home() {
+    const {
+        context: {
+            user: { uuid },
+        },
+    } = useContext(AppContext);
+
     const [collapse, setCollapse] = useState(false);
     const homeViewRef = useRef(null);
 
@@ -97,7 +104,7 @@ export default function Home() {
     return (
         <Container>
             <ProfileCard
-                uuid="123456789"
+                uuid={uuid}
                 username="Kekette"
                 givenName="Baptiste"
                 familyName="Devessier"
@@ -116,7 +123,11 @@ export default function Home() {
                 </ClosingContainer>
             </ProfileCard>
 
-            <ProfilesContainer ref={homeViewRef} profiles={[{ id: 'lol' }]} />
+            <ProfilesContainer
+                ref={homeViewRef}
+                profiles={[{ id: 'lol' }]}
+                preview={true}
+            />
         </Container>
     );
 }
