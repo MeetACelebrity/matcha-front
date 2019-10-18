@@ -17,6 +17,8 @@ export default function Profile({
     familyName,
     profilePicture,
     pictures = [],
+    liked,
+    onLike,
     preview,
 }) {
     return (
@@ -29,6 +31,8 @@ export default function Profile({
                 profilePicture={profilePicture}
                 pictures={pictures}
                 preview={preview}
+                liked={liked}
+                onLike={() => onLike(uuid)}
             />
         </Container>
     );

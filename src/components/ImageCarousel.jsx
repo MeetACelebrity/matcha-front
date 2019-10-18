@@ -18,7 +18,7 @@ const ImagesContainer = styled.div`
     will-change: transform;
 
     > img {
-        ${tw`max-h-full w-full object-cover`}
+        ${tw`h-full w-full object-cover`}
     }
 `;
 

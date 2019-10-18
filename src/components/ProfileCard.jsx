@@ -8,8 +8,14 @@ import ImageCarousel from './ImageCarousel.jsx';
 import ProfileCardTags from './ProfileCardTags.jsx';
 import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
 
+const previewContainerStyle = tw`pb-3 shadow-md`;
+
 const Container = styled.article`
     ${tw`relative shadow-xl`}
+
+    ${({ preview }) =>
+        preview &&
+        previewContainerStyle}
 
     /**
      * This creates a new layer thanks to which the floating button (position: fixed)
@@ -62,6 +68,8 @@ export default function ProfileCard({
     gender = 'Non connu',
     profilePicture,
     pictures,
+    liked = false,
+    onLike,
     children,
     className,
     preview = false,
@@ -74,8 +82,6 @@ export default function ProfileCard({
     } = useContext(AppContext);
 
     const isCurrentUser = uuid === currentUserUuid;
-
-    console.log('current user id =', currentUserUuid, 'uuid =', uuid);
 
     useEffect(() => {
         if (profilePicture === undefined) {
@@ -94,7 +100,7 @@ export default function ProfileCard({
     );
 
     return (
-        <Container className={className}>
+        <Container className={className} preview={preview === true}>
             <header>
                 <ImageCarousel images={images} />
             </header>
@@ -121,13 +127,24 @@ export default function ProfileCard({
                 </Address>
 
                 <ProfileCardTags
-                    tags={['chiens', 'cristaline', 'philosophie']}
+                    tags={[
+                        'chiens',
+                        'cristaline',
+                        'philosophie',
+                        'more and more',
+                    ]}
+                    mini={preview === true}
                 />
             </Section>
 
             {children}
 
-            <ProfileCardFloatingButton edit={isCurrentUser} />
+            <ProfileCardFloatingButton
+                edit={isCurrentUser}
+                floating={preview === false}
+                liked={liked}
+                onLike={onLike}
+            />
         </Container>
     );
 }

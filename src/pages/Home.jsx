@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
@@ -37,7 +37,7 @@ const ClosingContainer = styled.button`
 `;
 
 const Container = styled.section`
-    ${tw`w-full`}
+    ${tw`w-full h-full`}
 
     display: grid;
     grid-template-columns: repeat(10, 1fr);
@@ -85,6 +85,24 @@ export default function Home() {
 
     const [collapse, setCollapse] = useState(false);
     const homeViewRef = useRef(null);
+    const [profiles, setProfiles] = useState([]);
+
+    useEffect(() => {
+        // fetch
+
+        setProfiles([
+            { uuid: 'lol' },
+            { uuid: 'lsol' },
+            { uuid: 'lbbol' },
+            { uuid: 'loql' },
+            { uuid: 'lqqwoql' },
+            { uuid: 'loqbadfl' },
+            { uuid: 'lagbbol' },
+            { uuid: 'lo561ql' },
+            { uuid: 'lqqagfvqwoql' },
+            { uuid: 'lo45qbadfl' },
+        ]);
+    }, []);
 
     function toggleCollapse() {
         const newValue = !collapse;
@@ -99,6 +117,20 @@ export default function Home() {
         } else {
             homeView.classList.remove('expand');
         }
+    }
+
+    function onLike(uuid) {
+        setProfiles(
+            profiles.map(profile => {
+                if (profile.uuid === uuid) {
+                    return {
+                        ...profile,
+                        liked: !profile.liked,
+                    };
+                }
+                return profile;
+            })
+        );
     }
 
     return (
@@ -125,7 +157,8 @@ export default function Home() {
 
             <ProfilesContainer
                 ref={homeViewRef}
-                profiles={[{ id: 'lol' }]}
+                profiles={profiles}
+                onLike={onLike}
                 preview={true}
             />
         </Container>
