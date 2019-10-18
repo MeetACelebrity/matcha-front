@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 
-// import { AppContext } from '../app-context.js';
+import { AppContext } from '../app-context.js';
 import ImageCarousel from './ImageCarousel.jsx';
 import ProfileCardTags from './ProfileCardTags.jsx';
 import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
@@ -54,7 +54,7 @@ const Address = styled.p`
 `;
 
 export default function ProfileCard({
-    // uuid,
+    uuid,
     username,
     givenName,
     familyName,
@@ -63,13 +63,14 @@ export default function ProfileCard({
     children,
     className,
 }) {
-    /*const {
+    const {
         user: { uuid: currentUserUuid },
-    } = useContext(AppContext);*/
-    // const isCurrentUser = uuid === currentUserUuid;
-    const isCurrentUser = true;
+    } = useContext(AppContext);
+    const isCurrentUser = uuid === currentUserUuid;
 
-    const images = [profilePicture, ...pictures];
+    const images = pictures;
+
+    if (profilePicture !== undefined) images.unshift(profilePicture);
 
     return (
         <Container className={className}>

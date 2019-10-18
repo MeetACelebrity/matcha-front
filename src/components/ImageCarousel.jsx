@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
@@ -105,15 +105,30 @@ function incrementDisplayedImage({
 
 export default function ImageCarousel({ images = [] }) {
     const [displayedImage, setDisplayedImage] = useState(0);
+    const [imagesStack, setImagesStack] = useState([]);
+    const [imagesCount, setImagesCount] = useState(0);
 
-    const imagesCount = images.length;
+    useEffect(() => {
+        if (images.length === 0) {
+            setImagesStack([
+                {
+                    src:
+                        'https://images.unsplash.com/photo-1544202748-bdc9a259c98e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=677&q=80',
+                },
+            ]);
+        } else {
+            setImagesStack(images);
+        }
+
+        setImagesCount(imagesStack.length);
+    }, [images, imagesStack.length]);
 
     return (
         <Container>
             <ImagesContainer
                 style={{ transform: `translateX(-${displayedImage * 100}%)` }}
             >
-                {images.map(({ src }, i) => (
+                {imagesStack.map(({ src }, i) => (
                     <Image key={i} src={src} />
                 ))}
             </ImagesContainer>
@@ -127,7 +142,7 @@ export default function ImageCarousel({ images = [] }) {
                             setDisplayedImage,
                         })
                     }
-                    disabled={displayedImage === 0}
+                    disabled={displayedImage === 0 && imagesCount > 0}
                 >
                     <FeatherIcon icon="chevron-left" size={18} />
                 </NavButton>
@@ -142,7 +157,9 @@ export default function ImageCarousel({ images = [] }) {
                             setDisplayedImage,
                         })
                     }
-                    disabled={displayedImage === imagesCount - 1}
+                    disabled={
+                        displayedImage === imagesCount - 1 && imagesCount > 0
+                    }
                 >
                     <FeatherIcon icon="chevron-right" size={18} />
                 </NavButton>

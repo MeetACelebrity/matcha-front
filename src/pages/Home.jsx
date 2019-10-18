@@ -116,20 +116,7 @@ export default function Home() {
                 </ClosingContainer>
             </ProfileCard>
 
-            <ProfilesContainer
-                ref={homeViewRef}
-                profiles={[
-                    { id: 'lol' },
-                    { id: 'test' },
-                    { id: 'adfgjkahfdg' },
-                    { id: 'adfgjkahfdag' },
-                    { id: 'adfgjkahfdaq' },
-                    { id: 'tes2t' },
-                    { id: 'adfgjk45ahfdg' },
-                    { id: 'adfgjkah5454fdag' },
-                    { id: 'adfgjkahfdaq786' },
-                ]}
-            />
+            <ProfilesContainer ref={homeViewRef} profiles={[{ id: 'lol' }]} />
         </Container>
     );
 }
