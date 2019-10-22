@@ -64,13 +64,13 @@ const Container = styled.section`
         grid-row: 1;
 
         @media (min-width: 768px) {
-            ${tw`z-10 mx-8`}
+            ${tw`z-10 ml-8`}
 
             grid-column: 4 / 11;
             grid-row: 1;
 
             &.expand {
-                grid-column: 2 / span 8;
+                grid-column: 1 / span 10;
             }
         }
     }
