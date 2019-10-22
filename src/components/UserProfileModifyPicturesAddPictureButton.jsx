@@ -31,7 +31,7 @@ const AddPictureButtonLabel = styled.label`
 export default function AddPictureButton({ onChange }) {
     return (
         <Container>
-            <AddPictureButtonLabel type="upload">
+            <AddPictureButtonLabel>
                 <input
                     name="new-picture"
                     type="file"
