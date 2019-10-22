@@ -89,6 +89,10 @@ export default function TextField(props) {
         triggerValidation,
     ]);
 
+    useEffect(() => {
+        console.log('value from text field =', value);
+    }, [value]);
+
     if (Array.isArray(mask)) {
         return (
             <MaskedInput
@@ -97,9 +101,11 @@ export default function TextField(props) {
                 isOk={isValid}
                 errors={errors}
                 setValue={setValue}
-                render={(ref, maskedProps) => (
-                    <Input ref={ref} {...maskedProps} />
-                )}
+                render={(ref, maskedProps) => {
+                    console.log('value from render fn', value);
+
+                    return <Input ref={ref} {...maskedProps} />;
+                }}
             />
         );
     }

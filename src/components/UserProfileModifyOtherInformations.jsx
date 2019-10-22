@@ -3,8 +3,15 @@ import React, { useEffect } from 'react';
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 
+const intl = new Intl.DateTimeFormat('en-GB');
+
 export default function UserProfileModifyOtherInformations({ user }) {
-    const [age, setAge, isAgeValid, setAgeIsValid] = useFormField('');
+    const [
+        birthday,
+        setBirthday,
+        isBirthdayValid,
+        setBirthdayIsValid,
+    ] = useFormField('');
     const [gender, setGender, isGenderValid, setGenderIsValid] = useFormField(
         'M'
     );
@@ -19,24 +26,25 @@ export default function UserProfileModifyOtherInformations({ user }) {
         if (user.gender !== null) setGender(user.gender);
         if (user.sexualOrientation !== null)
             setSexualOrientation(user.sexualOrientation);
-        if (user.age !== null)
-            setAge(new Intl.DateTimeFormat('en-GB').format(user.age));
+        if (user.birthday !== null) {
+            setBirthday(intl.format(new Date(user.birthday)));
+        }
     }, [
         setGender,
         user.gender,
         setSexualOrientation,
         user.sexualOrientation,
-        setAge,
-        user.age,
+        setBirthday,
+        user.birthday,
     ]);
 
     const fields = [
         {
             label: 'Birthday',
-            value: age,
-            setValue: setAge,
-            isValid: isAgeValid,
-            setIsValid: setAgeIsValid,
+            value: birthday,
+            setValue: setBirthday,
+            isValid: isBirthdayValid,
+            setIsValid: setBirthdayIsValid,
             mask: [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/],
         },
         {

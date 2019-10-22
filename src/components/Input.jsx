@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FeatherIcon from 'feather-icons-react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
@@ -106,6 +106,10 @@ function Input(
 
     const inputType =
         type !== 'password' ? type : show === true ? 'text' : 'password';
+
+    useEffect(() => {
+        console.log('value from input component =', value);
+    }, [value]);
 
     return (
         <div>
