@@ -3,8 +3,12 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 
+const Container = styled.div`
+    ${tw`px-6`}
+`;
+
 const AddPictureButtonLabel = styled.label`
-    ${tw`bg-gray-400 flex items-center justify-center mx-6 p-3 rounded-full shadow relative cursor-pointer`}
+    ${tw`bg-gray-400 flex items-center justify-center p-3 rounded-full shadow relative cursor-pointer`}
 
     &::after {
         content: '';
@@ -26,10 +30,17 @@ const AddPictureButtonLabel = styled.label`
 
 export default function AddPictureButton({ onChange }) {
     return (
-        <AddPictureButtonLabel type="upload">
-            <input name="new-picture" type="file" hidden onChange={onChange} />
+        <Container>
+            <AddPictureButtonLabel type="upload">
+                <input
+                    name="new-picture"
+                    type="file"
+                    hidden
+                    onChange={onChange}
+                />
 
-            <FeatherIcon icon="plus" />
-        </AddPictureButtonLabel>
+                <FeatherIcon icon="plus" />
+            </AddPictureButtonLabel>
+        </Container>
     );
 }
