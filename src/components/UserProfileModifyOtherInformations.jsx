@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 
-export default function UserProfileModifyOtherInformations() {
+export default function UserProfileModifyOtherInformations({ user }) {
     const [age, setAge, isAgeValid, setAgeIsValid] = useFormField('');
     const [gender, setGender, isGenderValid, setGenderIsValid] = useFormField(
         'M'
@@ -13,7 +13,22 @@ export default function UserProfileModifyOtherInformations() {
         setSexualOrientation,
         isSexualOrientationValid,
         setSexualOrientationIsValid,
-    ] = useFormField('BI');
+    ] = useFormField('BISEXUAL');
+
+    useEffect(() => {
+        if (user.gender !== null) setGender(user.gender);
+        if (user.sexualOrientation !== null)
+            setSexualOrientation(user.sexualOrientation);
+        if (user.age !== null)
+            setAge(new Intl.DateTimeFormat('en-GB').format(user.age));
+    }, [
+        setGender,
+        user.gender,
+        setSexualOrientation,
+        user.sexualOrientation,
+        setAge,
+        user.age,
+    ]);
 
     const fields = [
         {
@@ -44,9 +59,9 @@ export default function UserProfileModifyOtherInformations() {
             setIsValid: setSexualOrientationIsValid,
             segmented: true,
             items: [
-                { value: 'HETE', text: 'Heterosexual' },
-                { value: 'HOMO', text: 'Homosexual' },
-                { value: 'BI', text: 'Bisexual' },
+                { value: 'HETEROSEXUAL', text: 'Heterosexual' },
+                { value: 'HOMOSEXUAL', text: 'Homosexual' },
+                { value: 'BISEXUAL', text: 'Bisexual' },
             ],
         },
     ];

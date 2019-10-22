@@ -1,1 +1,1 @@
-export const API_ENDPOINT = 'http://e3r6p10.42.fr:8080';
+export const API_ENDPOINT = 'http://e1r7p10.42.fr:8080';

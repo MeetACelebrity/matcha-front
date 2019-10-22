@@ -4,10 +4,9 @@ import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 
 const PictureContainer = styled.div`
-    ${tw`flex items-stretch relative w-1/3 h-40 overflow-hidden`}
+    ${tw`flex items-stretch relative h-40 overflow-hidden`}
 
-    max-width: 250px;
-    min-width: 200px;
+    min-width: 250px;
 
     &:hover > img {
         transform: scale(1.1);

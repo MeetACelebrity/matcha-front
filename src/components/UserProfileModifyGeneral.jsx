@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 
-export default function UserProfileModifyGeneral() {
+export default function UserProfileModifyGeneral({ user }) {
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
     const [
         givenName,
@@ -17,6 +17,19 @@ export default function UserProfileModifyGeneral() {
         isFamilyNameValid,
         setFamilyNameIsValid,
     ] = useFormField('');
+
+    useEffect(() => {
+        setEmail(user.email);
+        setGivenName(user.givenName);
+        setFamilyName(user.familyName);
+    }, [
+        setEmail,
+        user.email,
+        setGivenName,
+        user.givenName,
+        setFamilyName,
+        user.familyName,
+    ]);
 
     const fields = [
         {

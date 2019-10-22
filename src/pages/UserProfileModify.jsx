@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
+
+import { AppContext } from '../app-context.js';
 
 import UserProfileModifyProfileImage from '../components/UserProfileModifyProfileImage.jsx';
 import UserProfileModifyGeneral from '../components/UserProfileModifyGeneral.jsx';
@@ -35,18 +37,28 @@ const Title = styled.h1`
 `;
 
 export default function UserProfileModifyPage() {
+    const {
+        context: { user },
+    } = useContext(AppContext);
+
+    const components = [
+        UserProfileModifyGeneral,
+        UserProfileModifyOtherInformations,
+        UserProfileModifyBiography,
+        UserProfileModifyAddress,
+        UserProfileModifyPassword,
+        UserProfileModifyPictures,
+    ];
+
     return (
         <Container>
             <Title>Edit Profile</Title>
 
             <UserProfileModifyProfileImage src={remy} />
 
-            <UserProfileModifyGeneral />
-            <UserProfileModifyOtherInformations />
-            <UserProfileModifyBiography />
-            <UserProfileModifyAddress />
-            <UserProfileModifyPassword />
-            <UserProfileModifyPictures />
+            {components.map((Component, i) => (
+                <Component key={i} user={user} />
+            ))}
         </Container>
     );
 }

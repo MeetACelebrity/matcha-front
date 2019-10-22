@@ -5,6 +5,7 @@ import PasswordResetEmailAsking from './PasswordResetEmailAsking.jsx';
 import PasswordResetPasswordAsking from './PasswordResetPasswordAsking.jsx';
 import UserProfile from './UserProfile.jsx';
 import UserProfileModify from './UserProfileModify.jsx';
+import Profile from './Profile.jsx';
 
 export {
     Home,
@@ -14,4 +15,5 @@ export {
     PasswordResetPasswordAsking,
     UserProfile,
     UserProfileModify,
+    Profile,
 };

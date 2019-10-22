@@ -5,10 +5,16 @@ import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 
 export default function UserProfileModifyPassword() {
     const [
-        password,
-        setPassword,
-        isPasswordValid,
-        setPasswordIsValid,
+        currentPassword,
+        setCurrentPassword,
+        isCurrentPasswordValid,
+        setCurrentPasswordIsValid,
+    ] = useFormField('');
+    const [
+        newPassword,
+        setNewPassword,
+        isNewPasswordValid,
+        setNewPasswordIsValid,
     ] = useFormField('');
 
     const fields = [
@@ -20,13 +26,24 @@ export default function UserProfileModifyPassword() {
             hidden: true,
         },
         {
+            label: 'Current Password',
+            name: 'current-password',
+            autocomplete: 'current-password',
+            value: currentPassword,
+            setValue: setCurrentPassword,
+            isValid: isCurrentPasswordValid,
+            setIsValid: setCurrentPasswordIsValid,
+            type: 'password',
+            min: 6,
+        },
+        {
             label: 'New Password',
             name: 'new-password',
             autocomplete: 'new-password',
-            value: password,
-            setValue: setPassword,
-            isValid: isPasswordValid,
-            setIsValid: setPasswordIsValid,
+            value: newPassword,
+            setValue: setNewPassword,
+            isValid: isNewPasswordValid,
+            setIsValid: setNewPasswordIsValid,
             type: 'password',
             min: 6,
         },

@@ -21,6 +21,8 @@ export default function SignUp() {
     const fields = [
         {
             label: 'Username',
+            name: 'username',
+            autocomplete: 'username',
             value: username,
             setValue: setUsername,
             isValid: isUsernameValid,
@@ -29,6 +31,8 @@ export default function SignUp() {
         },
         {
             label: 'Password',
+            name: 'current-password',
+            autocomplete: 'current-password',
             value: password,
             setValue: setPassword,
             isValid: isPasswordValid,

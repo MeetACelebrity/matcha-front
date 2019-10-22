@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 
-export default function UserProfileModifyBiography() {
+export default function UserProfileModifyBiography({ user }) {
     const [
         biography,
         setBiography,
         isABiographyalid,
         setBiographyIsValid,
     ] = useFormField('');
+
+    useEffect(() => {
+        if (user.biography) setBiography(user.biography);
+    }, [setBiography, user.biography]);
 
     const fields = [
         {

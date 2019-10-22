@@ -31,7 +31,6 @@ const Section = styled.section`
 const Gender = styled.aside`
     ${tw`text-blue-600`}
 `;
-
 const TextContainer = styled.div`
     ${tw`flex items-center flex-wrap text-2xl mx-1`}
 
