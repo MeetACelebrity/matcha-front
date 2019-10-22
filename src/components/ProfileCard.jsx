@@ -11,7 +11,7 @@ import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
 const previewContainerStyle = tw`pb-3 shadow-md`;
 
 const Container = styled.article`
-    ${tw`relative shadow-xl`}
+    ${tw`relative shadow-xl bg-white`}
 
     ${({ preview }) =>
         preview &&
@@ -19,7 +19,7 @@ const Container = styled.article`
 
     /**
      * This creates a new layer thanks to which the floating button (position: fixed)
-     * will be positioned according to this new layer.
+     * will be positioned according to this element.
     */
     transform: translate(0);
 `;
