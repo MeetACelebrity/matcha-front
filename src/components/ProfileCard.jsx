@@ -35,7 +35,7 @@ const Gender = styled.aside`
 const TextContainer = styled.div`
     ${tw`flex items-center flex-wrap text-2xl mx-1`}
 
-    $ > :first-child {
+    & > :first-child {
         ${({ primary }) =>
             primary &&
             css`
@@ -91,26 +91,18 @@ export default function ProfileCard({
         }
     }, [pictures, profilePicture]);
 
-    const Header = (
-        <TextContainer primary>
-            <h2>{username}</h2>
-
-            <Gender>{gender}</Gender>
-        </TextContainer>
-    );
-
-    return (
-        <Container className={className} preview={preview === true}>
+    const LinkContent = (
+        <>
             <header>
                 <ImageCarousel images={images} />
             </header>
 
             <Section>
-                {preview === true ? (
-                    <Link to={`/profile/${uuid}`}>{Header}</Link>
-                ) : (
-                    Header
-                )}
+                <TextContainer primary>
+                    <h2>{username}</h2>
+
+                    <Gender>{gender}</Gender>
+                </TextContainer>
 
                 <TextContainer secondary>
                     <h3>
@@ -125,7 +117,19 @@ export default function ProfileCard({
                         '10 Rue de Penthievre, Paris 8e Arrondissement, Île-de-France, France'
                     }
                 </Address>
+            </Section>
+        </>
+    );
 
+    return (
+        <Container className={className} preview={preview === true}>
+            {preview === true ? (
+                <Link to={`/profile/${uuid}`}>{LinkContent}</Link>
+            ) : (
+                LinkContent
+            )}
+
+            <Section>
                 <ProfileCardTags
                     tags={[
                         'chiens',
