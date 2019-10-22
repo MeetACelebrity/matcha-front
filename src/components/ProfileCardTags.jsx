@@ -13,7 +13,7 @@ const tagColors = [
 const greyBg = tw`bg-gray-400`;
 
 const TagsContainer = styled.section`
-    ${tw`flex items-center flex-wrap mt-3`}
+    ${tw`flex items-center flex-wrap`}
 `;
 
 const Tag = styled.button`
