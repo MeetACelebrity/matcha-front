@@ -46,7 +46,7 @@ export default function ProfileCardFloatingButton({
 
     return (
         <Button
-            name="edit-profile"
+            name={liked === true ? 'unlike-profile' : 'like-profile'}
             floating={floating}
             liked={liked}
             onClick={onLike}
