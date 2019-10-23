@@ -7,6 +7,7 @@ import { AppContext } from '../app-context.js';
 import ImageCarousel from './ImageCarousel.jsx';
 import ProfileCardTags from './ProfileCardTags.jsx';
 import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
+import Sex from './Sex.jsx';
 
 const previewContainerStyle = tw`pb-3 shadow-md`;
 const notFlatContainerStyle = tw`shadow-xl`;
@@ -102,7 +103,9 @@ export default function ProfileCard({
                 <TextContainer primary>
                     <h2>{username}</h2>
 
-                    <Gender>{gender}</Gender>
+                    <Gender>
+                        <Sex sex={gender} />
+                    </Gender>
                 </TextContainer>
 
                 <TextContainer secondary>

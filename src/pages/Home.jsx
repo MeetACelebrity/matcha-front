@@ -1,9 +1,9 @@
-import React, { useState, useRef, useContext, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 
-import { AppContext } from '../app-context';
+// import { AppContext } from '../app-context';
 import MyProfile from '../components/MyProfile.jsx';
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
 
@@ -74,11 +74,11 @@ const Container = styled.section`
 `;
 
 export default function Home() {
-    const {
-        context: {
-            user: { uuid },
-        },
-    } = useContext(AppContext);
+    // const {
+    //     context: {
+    //         user: { uuid },
+    //     },
+    // } = useContext(AppContext);
 
     const [collapse, setCollapse] = useState(false);
     const homeViewRef = useRef(null);

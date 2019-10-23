@@ -6,26 +6,9 @@ import ProfileCard from './ProfileCard.jsx';
 export default function MyProfile(props) {
     const {
         context: {
-            user: {
-                uuid,
-                username,
-                givenName,
-                familyName,
-                profilePicture,
-                images,
-            },
+            user: { images, ...informations },
         },
     } = useContext(AppContext);
 
-    return (
-        <ProfileCard
-            uuid={uuid}
-            username={username}
-            givenName={givenName}
-            familyName={familyName}
-            profilePicture={profilePicture}
-            pictures={images}
-            {...props}
-        />
-    );
+    return <ProfileCard pictures={images} {...informations} {...props} />;
 }

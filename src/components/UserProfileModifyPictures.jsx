@@ -14,12 +14,19 @@ const PicturesContainer = styled.div`
 `;
 
 export default function UserProfileModifyPictures({ user: { images } }) {
-    const reader = useMemo(() => new FileReader(), []);
     const [pictures, setPictures] = useState(images);
+    const reader = useMemo(() => new FileReader(), []);
+    const filteredPictures = useMemo(
+        () =>
+            pictures
+                .filter(({ imageNumber }) => imageNumber !== 0)
+                .sort(({ imageNumber: a }, { imageNumber: b }) => a < b),
+        [pictures]
+    );
 
     useEffect(() => {
         reader.onload = ({ target: { result } }) => {
-            setPictures([...pictures, { src: result }]);
+            setPictures([...pictures, { src: result, uuid: pictures.length }]);
         };
     }, [reader, setPictures, pictures]);
 
@@ -62,7 +69,7 @@ export default function UserProfileModifyPictures({ user: { images } }) {
     return (
         <UserProfileModifyEditionGroup title="Profile Pictures" noButton>
             <PicturesContainer>
-                {pictures.map(({ uuid, src }) => (
+                {filteredPictures.map(({ uuid, src }) => (
                     <Picture
                         src={src}
                         alt="One of my profile picture"
@@ -71,7 +78,7 @@ export default function UserProfileModifyPictures({ user: { images } }) {
                     />
                 ))}
 
-                {pictures.length < 4 && (
+                {filteredPictures.length < 4 && (
                     <AddPictureButton onChange={onFileChange} />
                 )}
             </PicturesContainer>
