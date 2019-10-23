@@ -46,6 +46,19 @@ export default function UserProfileModifyPictures({ user: { images } }) {
             .then(console.log);
     }
 
+    function onDelete(uuid) {
+        return () => {
+            fetch(`${API_ENDPOINT}/profile/pics`, {
+                credentials: 'include',
+                method: 'DELETE',
+                headers: { 'Content-type': 'application/json' },
+                body: JSON.stringify({ pics: uuid }),
+            })
+                .then(res => res.json())
+                .then(console.log);
+        };
+    }
+
     return (
         <UserProfileModifyEditionGroup title="Profile Pictures" noButton>
             <PicturesContainer>
@@ -54,6 +67,7 @@ export default function UserProfileModifyPictures({ user: { images } }) {
                         src={src}
                         alt="One of my profile picture"
                         key={uuid}
+                        onDelete={onDelete(uuid)}
                     />
                 ))}
 

@@ -3,12 +3,9 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 
-import remy from '../assets/remy.png';
-import girl from '../assets/girl.png';
-
-import ProfileCard from '../components/ProfileCard.jsx';
-import ProfilesContainer from '../components/ProfilesContainer.jsx';
 import { AppContext } from '../app-context';
+import MyProfile from '../components/MyProfile.jsx';
+import ProfilesContainer from '../components/ProfilesContainer.jsx';
 
 const ClosingContainer = styled.button`
     ${tw`absolute py-2 w-6 flex justify-center items-center bg-blue-700 text-white rounded-r opacity-25`}
@@ -135,15 +132,7 @@ export default function Home() {
 
     return (
         <Container>
-            <ProfileCard
-                uuid={uuid}
-                username="Kekette"
-                givenName="Baptiste"
-                familyName="Devessier"
-                profilePicture={{ src: remy }}
-                pictures={[{ src: girl }]}
-                className={collapse ? 'collapse' : ''}
-            >
+            <MyProfile className={collapse ? 'collapse' : ''}>
                 <ClosingContainer
                     name="expand-collapse"
                     onClick={toggleCollapse}
@@ -153,7 +142,7 @@ export default function Home() {
                         className={collapse ? 'reverse' : ''}
                     />
                 </ClosingContainer>
-            </ProfileCard>
+            </MyProfile>
 
             <ProfilesContainer
                 ref={homeViewRef}

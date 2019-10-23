@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
+import { API_ENDPOINT } from '../constants';
 
 const Preferences = styled.section`
     ${tw`mt-8`}
@@ -64,7 +65,20 @@ function ProfileImage({ src }) {
     }) {
         reader.readAsDataURL(file);
 
-        // fetch()
+        const formData = new FormData();
+        formData.append('profile', file);
+
+        // send the file to the API
+        fetch(`${API_ENDPOINT}/profile/profile-pics`, {
+            credentials: 'include',
+            method: 'PUT',
+            header: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData,
+        })
+            .then(res => res.json())
+            .then(console.log);
     }
 
     return (
@@ -81,17 +95,18 @@ function ProfileImage({ src }) {
     );
 }
 
-export default function UserProfileModifyProfileImage({
-    images: [
-        { src } = {
-            src:
-                'https://images.unsplash.com/photo-1491921125492-f0b9c835b699?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80',
-        },
-    ] = [],
-}) {
+export default function UserProfileModifyProfileImage({ user: { images } }) {
+    const profilePicture = useMemo(
+        () => images.find(elem => elem.imageNumber === 0),
+        [images]
+    );
+
+    const defaultImg =
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuxmY1pVMGW7ufTP52hu3JGzOQSZjO5ummeKvMG3wuQi4v5RqE&s';
+
     return (
         <Preferences>
-            <ProfileImage src={src} />
+            <ProfileImage src={profilePicture.src || defaultImg} />
         </Preferences>
     );
 }

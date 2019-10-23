@@ -9,13 +9,14 @@ import ProfileCardTags from './ProfileCardTags.jsx';
 import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
 
 const previewContainerStyle = tw`pb-3 shadow-md`;
+const notFlatContainerStyle = tw`shadow-xl`;
 
 const Container = styled.article`
-    ${tw`relative shadow-xl bg-white`}
+    ${tw`relative bg-white`}
 
-    ${({ preview }) =>
-        preview &&
-        previewContainerStyle}
+    ${({ preview }) => preview && previewContainerStyle}
+
+    ${({ flat }) => !flat && notFlatContainerStyle}
 
     /**
      * This creates a new layer thanks to which the floating button (position: fixed)
@@ -72,6 +73,7 @@ export default function ProfileCard({
     children,
     className,
     preview = false,
+    flat = false,
 }) {
     const [images, setImages] = useState([]);
     const {
@@ -121,7 +123,7 @@ export default function ProfileCard({
     );
 
     return (
-        <Container className={className} preview={preview === true}>
+        <Container className={className} preview={preview === true} flat={flat}>
             {preview === true ? (
                 <Link to={`/profile/${uuid}`}>{LinkContent}</Link>
             ) : (

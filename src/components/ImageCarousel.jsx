@@ -103,13 +103,13 @@ function incrementDisplayedImage({
     setDisplayedImage(displayedImage + 1);
 }
 
-export default function ImageCarousel({ images = [] }) {
+export default function ImageCarousel({ images }) {
     const [displayedImage, setDisplayedImage] = useState(0);
     const [imagesStack, setImagesStack] = useState([]);
     const [imagesCount, setImagesCount] = useState(0);
 
     useEffect(() => {
-        if (images.length === 0) {
+        if (!Array.isArray(images) || images.length === 0) {
             setImagesStack([
                 {
                     src:
@@ -165,15 +165,17 @@ export default function ImageCarousel({ images = [] }) {
                 </NavButton>
             </NavButtonContainer>
 
-            <Footer>
-                {images.map((_, i) => (
-                    <Dot
-                        key={i}
-                        onClick={() => setDisplayedImage(i)}
-                        active={displayedImage === i}
-                    />
-                ))}
-            </Footer>
+            {Array.isArray(images) && (
+                <Footer>
+                    {imagesStack.map((_, i) => (
+                        <Dot
+                            key={i}
+                            onClick={() => setDisplayedImage(i)}
+                            active={displayedImage === i}
+                        />
+                    ))}
+                </Footer>
+            )}
         </Container>
     );
 }

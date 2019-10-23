@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
@@ -42,10 +42,10 @@ export default function SegmentedControl({
     items = [],
     setValue,
 }) {
-    const index = items.findIndex(
-        ({ value: itemValue }) => itemValue === value
+    const index = useMemo(
+        () => items.findIndex(({ value: itemValue }) => itemValue === value),
+        [items, value]
     );
-
     const [selected, setSelected] = useState(index > -1 ? index : 0);
 
     useEffect(() => {
