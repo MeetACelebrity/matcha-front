@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
@@ -37,22 +37,15 @@ const Item = styled.button`
 `;
 
 export default function SegmentedControl({
-    label = 'test',
+    label,
     value,
     items = [],
     setValue,
 }) {
-    const index = useMemo(
+    const selected = useMemo(
         () => items.findIndex(({ value: itemValue }) => itemValue === value),
         [items, value]
     );
-    const [selected, setSelected] = useState(index > -1 ? index : 0);
-
-    useEffect(() => {
-        const value = items[selected].value;
-
-        setValue(value);
-    }, [selected, items, setValue]);
 
     return (
         <SegmentedContainer>
@@ -67,7 +60,7 @@ export default function SegmentedControl({
                         onClick={e => {
                             e.preventDefault();
 
-                            setSelected(i);
+                            setValue(value);
                         }}
                     >
                         {text}
