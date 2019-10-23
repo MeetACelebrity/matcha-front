@@ -24,14 +24,21 @@ const EditorGroupSubmitButton = styled.button`
     }
 `;
 
-export default function EditionGroup({ title, noButton = false, children }) {
+export default function EditionGroup({
+    title,
+    noButton = false,
+    children,
+    formId,
+}) {
     return (
         <EditionGroupContainer>
             <EditorGroupHeader>
                 <h2>{title}</h2>
 
                 {noButton === false && (
-                    <EditorGroupSubmitButton>Envoyer</EditorGroupSubmitButton>
+                    <EditorGroupSubmitButton type="submit" form={formId}>
+                        Send
+                    </EditorGroupSubmitButton>
                 )}
             </EditorGroupHeader>
 

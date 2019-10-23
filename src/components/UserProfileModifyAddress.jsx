@@ -5,6 +5,8 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 
 export default function UserProfileModifyAddress() {
+    const formId = 'modify-address';
+
     const [latlng, setLatlng] = useState({ lat: -1, lng: -1 });
     const [
         address,
@@ -67,8 +69,9 @@ export default function UserProfileModifyAddress() {
     }
 
     return (
-        <UserProfileModifyEditionGroup title="Address">
+        <UserProfileModifyEditionGroup title="Address" formId={formId}>
             <Form
+                id={formId}
                 fields={fields}
                 isValid={isValid}
                 hideButton

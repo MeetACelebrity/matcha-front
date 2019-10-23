@@ -2,10 +2,13 @@ import React, { useEffect } from 'react';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
+import { API_ENDPOINT } from '../constants';
 
-const intl = new Intl.DateTimeFormat('en-GB');
+const intl = new Intl.DateTimeFormat('en-US');
 
 export default function UserProfileModifyOtherInformations({ user }) {
+    const formId = 'other-informations';
+
     const [
         birthday,
         setBirthday,
@@ -55,8 +58,8 @@ export default function UserProfileModifyOtherInformations({ user }) {
             setIsValid: setGenderIsValid,
             segmented: true,
             items: [
-                { value: 'M', text: 'Male' },
-                { value: 'F', text: 'Female' },
+                { value: 'MALE', text: 'Male' },
+                { value: 'FEMALE', text: 'Female' },
             ],
         },
         {
@@ -76,9 +79,40 @@ export default function UserProfileModifyOtherInformations({ user }) {
 
     const [isValid, Form] = useForm({ fields });
 
+    function onSubmit() {
+        const date = new Date(birthday);
+        fetch(`${API_ENDPOINT}/profile/extended`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                birthday: +new Date(
+                    Date.UTC(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        date.getDate()
+                    )
+                ),
+                gender,
+                sexualOrientation,
+            }),
+        })
+            .then(res => res.json())
+            .then(console.log);
+    }
+
     return (
-        <UserProfileModifyEditionGroup title="Other Informations">
-            <Form fields={fields} isValid={isValid} hideButton />
+        <UserProfileModifyEditionGroup
+            title="Other Informations"
+            formId={formId}
+        >
+            <Form
+                id={formId}
+                fields={fields}
+                isValid={isValid}
+                hideButton
+                onSubmit={onSubmit}
+            />
         </UserProfileModifyEditionGroup>
     );
 }

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { toast } from 'react-toastify';
 
-import { API_ENDPOINT } from '../constants';
+import { AppContext } from '../app-context.js';
+import { API_ENDPOINT, SIGN_IN_MESSAGES } from '../constants';
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
 
@@ -17,6 +19,7 @@ export default function SignUp() {
         isPasswordValid,
         setPasswordIsValid,
     ] = useFormField('');
+    const { setContext } = useContext(AppContext);
 
     const fields = [
         {
@@ -55,7 +58,22 @@ export default function SignUp() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(response => console.log(response));
+            .then(({ statusCode, user }) => {
+                const isError = statusCode !== 'DONE';
+                const message = SIGN_IN_MESSAGES.get(statusCode);
+
+                toast(message, {
+                    type: isError === true ? 'error' : 'success',
+                });
+
+                if (isError === false) {
+                    setContext({
+                        user,
+                        loggedIn: true,
+                    });
+                }
+            })
+            .catch(console.error);
     }
 
     return (

@@ -2,8 +2,11 @@ import React, { useEffect } from 'react';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
+import { API_ENDPOINT } from '../constants';
 
 export default function UserProfileModifyGeneral({ user }) {
+    const formId = 'modify-general';
+
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
     const [
         givenName,
@@ -62,9 +65,27 @@ export default function UserProfileModifyGeneral({ user }) {
         fields,
     });
 
+    function onSubmit() {
+        fetch(`${API_ENDPOINT}/profile/general`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, givenName, familyName }),
+        });
+    }
+
     return (
-        <UserProfileModifyEditionGroup title="General Preferences">
-            <Form fields={fields} isValid={isValid} hideButton />
+        <UserProfileModifyEditionGroup
+            title="General Preferences"
+            formId={formId}
+        >
+            <Form
+                id={formId}
+                fields={fields}
+                isValid={isValid}
+                onSubmit={onSubmit}
+                hideButton
+            />
         </UserProfileModifyEditionGroup>
     );
 }

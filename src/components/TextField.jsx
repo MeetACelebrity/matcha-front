@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import MaskedInput from 'react-text-mask';
 
 import Input from './Input.jsx';
@@ -29,6 +29,7 @@ function isMinRespected(minimum) {
 export default function TextField(props) {
     const [errors, setErrors] = useState([]);
     const [hasBeenUsed, setHasBeenUsed] = useState(false);
+    const inputRef = useRef(null);
 
     const {
         value,
@@ -39,6 +40,7 @@ export default function TextField(props) {
         isValid,
         setIsValid,
         setValue: setParentValue,
+        disableValidation,
         triggerValidation,
         mask,
         label,
@@ -51,6 +53,8 @@ export default function TextField(props) {
     }
 
     useEffect(() => {
+        if (disableValidation === true) return;
+
         const checkers = [];
 
         if (email === true) checkers.push(isCorrectEmail);
@@ -87,11 +91,8 @@ export default function TextField(props) {
         setIsValid,
         hasBeenUsed,
         triggerValidation,
+        disableValidation,
     ]);
-
-    useEffect(() => {
-        console.log('value from text field =', value);
-    }, [value]);
 
     if (Array.isArray(mask)) {
         return (
@@ -100,9 +101,10 @@ export default function TextField(props) {
                 label={label}
                 isOk={isValid}
                 errors={errors}
+                defaultValue={value}
                 setValue={setValue}
                 render={(ref, maskedProps) => {
-                    console.log('value from render fn', value);
+                    inputRef.current = ref;
 
                     return <Input ref={ref} {...maskedProps} />;
                 }}

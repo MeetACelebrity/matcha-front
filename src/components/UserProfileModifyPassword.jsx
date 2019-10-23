@@ -2,8 +2,11 @@ import React from 'react';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
+import { API_ENDPOINT } from '../constants';
 
 export default function UserProfileModifyPassword() {
+    const formId = 'modify-password';
+
     const [
         currentPassword,
         setCurrentPassword,
@@ -24,6 +27,7 @@ export default function UserProfileModifyPassword() {
             name: 'username',
             autocomplete: 'username',
             hidden: true,
+            disableValidation: true,
         },
         {
             label: 'Current Password',
@@ -51,9 +55,26 @@ export default function UserProfileModifyPassword() {
 
     const [isValid, Form] = useForm({ fields });
 
+    function onSubmit() {
+        fetch(`${API_ENDPOINT}/profile/password`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newPassword }),
+        })
+            .then(res => res.json())
+            .then(console.log);
+    }
+
     return (
-        <UserProfileModifyEditionGroup title="Password">
-            <Form fields={fields} isValid={isValid} hideButton />
+        <UserProfileModifyEditionGroup title="Password" formId={formId}>
+            <Form
+                id={formId}
+                fields={fields}
+                isValid={isValid}
+                onSubmit={onSubmit}
+                hideButton
+            />
         </UserProfileModifyEditionGroup>
     );
 }

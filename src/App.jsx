@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import NavBar from './components/NavBar.jsx';
 import BottomBar from './components/BottomBar.jsx';
@@ -51,6 +53,8 @@ export default function App() {
                     <Routes loaded={loaded} />
 
                     {context.loggedIn && <BottomBar />}
+
+                    <ToastContainer />
                 </Container>
             </Router>
         </AppContext.Provider>

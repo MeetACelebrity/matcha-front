@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import FeatherIcon from 'feather-icons-react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
@@ -89,6 +89,7 @@ function Input(
         name,
         autocomplete,
         value,
+        defaultValue,
         setValue,
         label,
         type = 'text',
@@ -107,10 +108,6 @@ function Input(
     const inputType =
         type !== 'password' ? type : show === true ? 'text' : 'password';
 
-    useEffect(() => {
-        console.log('value from input component =', value);
-    }, [value]);
-
     return (
         <div>
             <div className="relative">
@@ -123,7 +120,7 @@ function Input(
                     placeholder={label}
                     type={inputType}
                     label={label}
-                    value={value}
+                    {...{ defaultValue, ...(!defaultValue && { value }) }}
                     isOk={isOk}
                     hidden={hidden}
                     className={type === 'password' && 'pr-8'}

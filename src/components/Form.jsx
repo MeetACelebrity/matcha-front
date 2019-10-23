@@ -33,7 +33,7 @@ const FormButton = styled.button`
     }
 `;
 
-function FormComponent({ isValid, onSubmit, fields, hideButton = false }) {
+function FormComponent({ id, isValid, onSubmit, fields, hideButton = false }) {
     const [triggerValidation, setTriggerValidation] = useState(false);
 
     function submitHandler(e) {
@@ -50,7 +50,7 @@ function FormComponent({ isValid, onSubmit, fields, hideButton = false }) {
     }
 
     return (
-        <FormContainer onSubmit={submitHandler}>
+        <FormContainer id={id} onSubmit={submitHandler}>
             {fields.map((props, i) => {
                 if (props.segmented === true) {
                     return (
@@ -62,7 +62,13 @@ function FormComponent({ isValid, onSubmit, fields, hideButton = false }) {
                 }
 
                 if (props.textarea === true) {
-                    return <Textarea key={`textarea-${i}`} {...props} />;
+                    return (
+                        <Textarea
+                            key={`textarea-${i}`}
+                            {...props}
+                            triggerValidation={triggerValidation}
+                        />
+                    );
                 }
 
                 return (
@@ -83,7 +89,10 @@ export default function useForm({ fields = [] }) {
     let isValid = useRef(false);
 
     useEffect(() => {
-        isValid.current = !fields.some(field => field.isValid === false);
+        isValid.current = !fields.some(field => {
+            if (field.disableValidation === true) return true;
+            return field.isValid === false;
+        });
     }, [fields]);
 
     return [isValid, FormComponent];
