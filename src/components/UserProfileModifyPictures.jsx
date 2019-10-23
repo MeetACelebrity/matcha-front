@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import AddPictureButton from './UserProfileModifyPicturesAddPictureButton.jsx';
 import Picture from './UserProfileModifyPicturesPicture.jsx';
+import { API_ENDPOINT } from '../constants.js';
 
 const PicturesContainer = styled.div`
     ${tw`flex items-center justify-start overflow-x-scroll w-full`}
+
+    min-height: 10rem;
 `;
 
-export default function UserProfileModifyPictures() {
-    const [reader] = useState(new FileReader());
-    const [pictures, setPictures] = useState([
-        { src: 'https://picsum.photos/536/354' },
-        { src: 'https://picsum.photos/536/355' },
-        { src: 'https://picsum.photos/536/356' },
-    ]);
+export default function UserProfileModifyPictures({ user: { images } }) {
+    const reader = useMemo(() => new FileReader(), []);
+    const [pictures, setPictures] = useState(images);
 
     useEffect(() => {
         reader.onload = ({ target: { result } }) => {
@@ -31,17 +30,30 @@ export default function UserProfileModifyPictures() {
     }) {
         reader.readAsDataURL(file);
 
+        const formData = new FormData();
+        formData.append('profile', file);
+
         // send the file to the API
+        fetch(`${API_ENDPOINT}/profile/pics`, {
+            credentials: 'include',
+            method: 'POST',
+            header: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData,
+        })
+            .then(res => res.json())
+            .then(console.log);
     }
 
     return (
         <UserProfileModifyEditionGroup title="Profile Pictures" noButton>
             <PicturesContainer>
-                {pictures.map(({ src }, i) => (
+                {pictures.map(({ uuid, src }) => (
                     <Picture
                         src={src}
                         alt="One of my profile picture"
-                        key={i}
+                        key={uuid}
                     />
                 ))}
 

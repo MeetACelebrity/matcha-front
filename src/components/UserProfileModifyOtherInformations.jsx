@@ -4,10 +4,14 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import { API_ENDPOINT } from '../constants';
 
-const intl = new Intl.DateTimeFormat('en-US');
+const intl = new Intl.DateTimeFormat('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric',
+});
 
 export default function UserProfileModifyOtherInformations({ user }) {
-    const formId = 'other-informations';
+    const formId = 'modify-other-informations';
 
     const [
         birthday,

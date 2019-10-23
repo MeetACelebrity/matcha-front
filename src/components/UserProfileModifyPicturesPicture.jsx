@@ -7,6 +7,7 @@ const PictureContainer = styled.div`
     ${tw`flex items-stretch relative h-40 overflow-hidden`}
 
     min-width: 250px;
+    max-width: 250px;
 
     &:hover > img {
         transform: scale(1.1);

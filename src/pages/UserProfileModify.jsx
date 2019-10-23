@@ -12,20 +12,22 @@ import UserProfileModifyAddress from '../components/UserProfileModifyAddress.jsx
 import UserProfileModifyPassword from '../components/UserProfileModifyPassword.jsx';
 import UserProfileModifyPictures from '../components/UserProfileModifyPictures.jsx';
 
-import remy from '../assets/remy.png';
-
 const Container = styled.section`
     ${tw`w-full mx-auto py-10 px-3`}
 
     @media (min-width: 768px) {
-        ${tw`w-3/5`}
+        ${tw`w-4/5`}
     }
 
     @media (min-width: 1024px) {
-        ${tw`w-2/5`}
+        ${tw`w-3/5`}
     }
 
     @media (min-width: 1280px) {
+        ${tw`w-2/5`}
+    }
+
+    @media (min-width: 1904px) {
         ${tw`w-1/3`}
     }
 `;
@@ -42,6 +44,7 @@ export default function UserProfileModifyPage() {
     } = useContext(AppContext);
 
     const components = [
+        UserProfileModifyProfileImage,
         UserProfileModifyGeneral,
         UserProfileModifyOtherInformations,
         UserProfileModifyBiography,
@@ -53,8 +56,6 @@ export default function UserProfileModifyPage() {
     return (
         <Container>
             <Title>Edit Profile</Title>
-
-            <UserProfileModifyProfileImage src={remy} />
 
             {components.map((Component, i) => (
                 <Component key={i} user={user} />
