@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
+import { toast } from 'react-toastify';
 
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import AddPictureButton from './UserProfileModifyPicturesAddPictureButton.jsx';
@@ -19,26 +20,70 @@ export default function UserProfileModifyPictures({
     context,
     setContext,
 }) {
-    const reader = useMemo(() => new FileReader(), []);
+    const [uploadStack, setUploadStack] = useState([]);
+    const [readingStack, setReadingStack] = useState([]);
     const filteredPictures = useMemo(
         () =>
             images
                 .filter(({ imageNumber }) => imageNumber !== 0)
-                .sort(({ imageNumber: a }, { imageNumber: b }) => a < b),
+                .sort(({ imageNumber: a }, { imageNumber: b }) => a - b),
         [images]
     );
 
+    console.log(filteredPictures);
+
     useEffect(() => {
-        reader.onload = ({ target: { result } }) => {
+        for (const { temporaryUuid, uuid, imageNumber } of uploadStack) {
             setContext({
                 ...context,
                 user: {
                     ...user,
-                    images: [...images, { src: result, uuid: images.length }],
+                    images: images.map(({ uuid: imageUuid, ...image }) => {
+                        if (imageUuid === temporaryUuid) {
+                            return {
+                                ...image,
+                                uuid,
+                                imageNumber,
+                            };
+                        }
+                        return {
+                            ...image,
+                            uuid: imageUuid,
+                        };
+                    }),
                 },
             });
-        };
-    }, [reader, context, setContext, user, images]);
+
+            setUploadStack(
+                uploadStack.filter(({ uuid: taskUuid }) => taskUuid !== uuid)
+            );
+        }
+    }, [uploadStack, setContext, context, images, user, setUploadStack]);
+
+    useEffect(() => {
+        for (const { temporaryUuid, result, imageNumber } of readingStack) {
+            setContext({
+                ...context,
+                user: {
+                    ...user,
+                    images: [
+                        ...images,
+                        {
+                            src: result,
+                            uuid: temporaryUuid,
+                            imageNumber,
+                        },
+                    ],
+                },
+            });
+
+            setReadingStack(
+                readingStack.filter(
+                    ({ temporaryUuid: taskUuid }) => taskUuid !== temporaryUuid
+                )
+            );
+        }
+    }, [context, setContext, user, images, readingStack, setReadingStack]);
 
     function onFileChange({
         target: {
@@ -46,28 +91,69 @@ export default function UserProfileModifyPictures({
         },
         target,
     }) {
+        if (
+            !['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(
+                file.type
+            )
+        ) {
+            toast('Bad file type, try with another one !', {
+                type: 'error',
+            });
+            return;
+        }
+
+        const temporaryUuid = images.length;
+
+        const reader = new FileReader();
+
+        reader.onload = ({ target: { result } }) => {
+            setReadingStack([
+                ...readingStack,
+                { temporaryUuid, result, imageNumber: images.length },
+            ]);
+        };
+
         reader.readAsDataURL(file);
 
         const formData = new FormData();
         formData.append('profile', file);
 
+        // Reset the input value in order to permit
+        // the same file to be chose consecutively several times.
         target.value = null;
 
         // send the file to the API
         fetch(`${API_ENDPOINT}/profile/pics`, {
             credentials: 'include',
             method: 'POST',
-            header: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
             body: formData,
         })
             .then(res => res.json())
-            .then(console.log);
+            .then(({ statusCode, image: { uuid, src, imageNumber } = {} }) => {
+                if (statusCode === 'DONE') {
+                    // this was a successful uploading
+                    setUploadStack([
+                        ...uploadStack,
+                        { temporaryUuid, uuid, src, imageNumber },
+                    ]);
+                } else {
+                    // an error occured
+                }
+            });
     }
 
     function onDelete(uuid) {
         return () => {
+            setContext({
+                ...context,
+                user: {
+                    ...user,
+                    images: images.filter(
+                        ({ uuid: imageUuid }) => imageUuid !== uuid
+                    ),
+                },
+            });
+
             fetch(`${API_ENDPOINT}/profile/pics`, {
                 credentials: 'include',
                 method: 'DELETE',
