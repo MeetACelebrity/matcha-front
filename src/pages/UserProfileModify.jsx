@@ -41,6 +41,8 @@ const Title = styled.h1`
 export default function UserProfileModifyPage() {
     const {
         context: { user },
+        context,
+        setContext,
     } = useContext(AppContext);
 
     const components = [
@@ -58,7 +60,12 @@ export default function UserProfileModifyPage() {
             <Title>Edit Profile</Title>
 
             {components.map((Component, i) => (
-                <Component key={i} user={user} />
+                <Component
+                    key={i}
+                    user={user}
+                    context={context}
+                    setContext={setContext}
+                />
             ))}
         </Container>
     );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
@@ -13,32 +13,45 @@ const PicturesContainer = styled.div`
     min-height: 10rem;
 `;
 
-export default function UserProfileModifyPictures({ user: { images } }) {
-    const [pictures, setPictures] = useState(images);
+export default function UserProfileModifyPictures({
+    user,
+    user: { images },
+    context,
+    setContext,
+}) {
     const reader = useMemo(() => new FileReader(), []);
     const filteredPictures = useMemo(
         () =>
-            pictures
+            images
                 .filter(({ imageNumber }) => imageNumber !== 0)
                 .sort(({ imageNumber: a }, { imageNumber: b }) => a < b),
-        [pictures]
+        [images]
     );
 
     useEffect(() => {
         reader.onload = ({ target: { result } }) => {
-            setPictures([...pictures, { src: result, uuid: pictures.length }]);
+            setContext({
+                ...context,
+                user: {
+                    ...user,
+                    images: [...images, { src: result, uuid: images.length }],
+                },
+            });
         };
-    }, [reader, setPictures, pictures]);
+    }, [reader, context, setContext, user, images]);
 
     function onFileChange({
         target: {
             files: [file],
         },
+        target,
     }) {
         reader.readAsDataURL(file);
 
         const formData = new FormData();
         formData.append('profile', file);
+
+        target.value = null;
 
         // send the file to the API
         fetch(`${API_ENDPOINT}/profile/pics`, {
