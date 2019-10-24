@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
@@ -105,23 +105,21 @@ function incrementDisplayedImage({
 
 export default function ImageCarousel({ images }) {
     const [displayedImage, setDisplayedImage] = useState(0);
-    const [imagesStack, setImagesStack] = useState([]);
-    const [imagesCount, setImagesCount] = useState(0);
 
-    useEffect(() => {
-        if (!Array.isArray(images) || images.length === 0) {
-            setImagesStack([
-                {
-                    src:
-                        'https://images.unsplash.com/photo-1544202748-bdc9a259c98e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=677&q=80',
-                },
-            ]);
-        } else {
-            setImagesStack(images);
-        }
+    const imagesStack = useMemo(() => {
+        const stack =
+            !Array.isArray(images) || images.length === 0
+                ? [
+                      {
+                          src:
+                              'https://images.unsplash.com/photo-1544202748-bdc9a259c98e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=677&q=80',
+                      },
+                  ]
+                : [...images];
 
-        setImagesCount(imagesStack.length);
-    }, [images, imagesStack.length]);
+        return stack.sort(({ imageNumber: a }, { imageNumber: b }) => a - b);
+    }, [images]);
+    const imagesCount = useMemo(() => imagesStack.length, [imagesStack.length]);
 
     return (
         <Container>

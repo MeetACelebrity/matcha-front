@@ -30,8 +30,6 @@ export default function UserProfileModifyPictures({
         [images]
     );
 
-    console.log(filteredPictures);
-
     useEffect(() => {
         for (const { temporaryUuid, uuid, imageNumber } of uploadStack) {
             setContext({

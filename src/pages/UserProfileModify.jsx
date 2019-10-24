@@ -10,6 +10,7 @@ import UserProfileModifyOtherInformations from '../components/UserProfileModifyO
 import UserProfileModifyBiography from '../components/UserProfileModifyBiography.jsx';
 import UserProfileModifyAddress from '../components/UserProfileModifyAddress.jsx';
 import UserProfileModifyPassword from '../components/UserProfileModifyPassword.jsx';
+import UserProfileModifyTags from '../components/UserProfileModifyTags.jsx';
 import UserProfileModifyPictures from '../components/UserProfileModifyPictures.jsx';
 
 const Container = styled.section`
@@ -52,6 +53,7 @@ export default function UserProfileModifyPage() {
         UserProfileModifyBiography,
         UserProfileModifyAddress,
         UserProfileModifyPassword,
+        UserProfileModifyTags,
         UserProfileModifyPictures,
     ];
 

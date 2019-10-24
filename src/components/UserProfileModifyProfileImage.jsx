@@ -106,7 +106,9 @@ export default function UserProfileModifyProfileImage({ user: { images } }) {
 
     return (
         <Preferences>
-            <ProfileImage src={profilePicture.src || defaultImg} />
+            <ProfileImage
+                src={(profilePicture && profilePicture.src) || defaultImg}
+            />
         </Preferences>
     );
 }
