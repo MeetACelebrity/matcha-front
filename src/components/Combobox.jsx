@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 
 import OverflowList from './OverflowList.jsx';
 import InfiniteScrollContainer from './InfiniteScrollContainer.jsx';
 
+const FocusedContainerStyle = tw`border-blue-700`;
+
 const Container = styled.div`
-    ${tw`relative`}
+    ${tw`relative border-b-2 border-transparent py-1 mt-4`}
+
+    ${({ focus }) => focus && FocusedContainerStyle}
 `;
 
 const Label = styled.label`
@@ -23,22 +27,31 @@ const Label = styled.label`
 `;
 
 const Selections = styled.div`
-    ${tw`flex items-center`}
+    ${tw`flex items-center flex-wrap`}
 
     transition: transform 200ms;
     transform-origin: top left;
+`;
+
+const SelectionItem = styled.div`
+    ${tw`px-2 py-1 rounded-full bg-gray-400 mr-1 mt-1`}
 `;
 
 const Input = styled.input`
     ${tw`flex-1 h-8 bg-transparent`}
+
+    &:focus,
+    &:hover {
+        ${tw`outline-none`}
+    }
 `;
 
 const Propositions = styled.div`
-    ${tw`absolute bottom-0 inset-x-0 z-50 bg-white`}
+    ${tw`absolute bottom-0 inset-x-0 z-50 bg-white shadow-lg`}
 
     transition: transform 200ms;
     transform-origin: top left;
-    transform: translateY(100%);
+    transform: translateY(calc(100% + 2px));
 
     ${({ show }) =>
         !show &&
@@ -49,24 +62,61 @@ const Propositions = styled.div`
 
 const PropositionsItemSelectedStyles = tw`bg-gray-400`;
 
-const PropositionsItem = styled.div`
-    ${tw`flex items-center px-4 h-10`}
+const PropositionsItem = styled.button`
+    ${tw`flex items-center px-4 h-10 w-full`}
 
     transition: background-color 200ms;
 
     ${({ selected }) => selected && PropositionsItemSelectedStyles}
+
+    &:hover {
+        ${PropositionsItemSelectedStyles}
+    }
+
+    &:focus,
+    &:hover {
+        ${tw`outline-none`}
+    }
 `;
+
+const NoData = styled.p`
+    ${tw`w-full text-center px-2 py-1`}
+`;
+
+const uglyId = (Math.random() * 1000) | 0;
 
 export default function Combobox({
     label = 'Combobox',
     items = [],
+    setItems = () => {},
+    onAddItem = () => {},
+    onDeleteItem = () => {},
     propositions = [],
-    itemValue = 'value',
-    itemText = 'text',
 }) {
+    const inputId = `combobox-${uglyId}`;
+
     const [focus, setFocus] = useState(false);
     const [propositionSelected, setPropositionSelected] = useState(-1);
-    const inputId = `combobox-${Math.random() * 1000}`;
+    const [newItem, setNewItem] = useState('');
+    const inputRef = useRef(null);
+
+    const open = useMemo(() => {
+        return focus || items.length > 0 || newItem.length > 0;
+    }, [focus, items.length, newItem.length]);
+    const queryMatchingPropositions = useMemo(
+        () =>
+            propositions
+                .filter(
+                    ({ uuid }) =>
+                        !items.some(({ uuid: itemUuid }) => itemUuid === uuid)
+                )
+                .filter(
+                    ({ text }) =>
+                        newItem === '' ||
+                        text.toLowerCase().startsWith(newItem.toLowerCase())
+                ),
+        [propositions, items, newItem]
+    );
 
     useEffect(() => {
         if (focus === false) {
@@ -74,51 +124,141 @@ export default function Combobox({
         }
     }, [focus, setPropositionSelected]);
 
+    useEffect(() => {
+        const propositionsCount = queryMatchingPropositions.length;
+
+        if (propositionSelected > propositionsCount - 1) {
+            setPropositionSelected(propositionsCount - 1);
+        }
+    }, [
+        queryMatchingPropositions,
+        propositionSelected,
+        setPropositionSelected,
+    ]);
+
     function onKeyDown({ key }) {
         switch (key) {
-            case 'ArrowUp':
+            case 'ArrowUp': {
                 if (propositionSelected < 0) return;
 
                 setPropositionSelected(propositionSelected - 1);
                 break;
-            case 'ArrowDown':
-                if (propositionSelected >= propositions.length - 1) return;
+            }
+            case 'ArrowDown': {
+                if (propositionSelected >= queryMatchingPropositions.length - 1)
+                    return;
 
                 setPropositionSelected(propositionSelected + 1);
+                break;
+            }
+            case 'Backspace':
+            case 'Delete': {
+                if (newItem === '') {
+                    const lastItem = items[items.length - 1];
+
+                    setItems(
+                        items.filter(
+                            ({ uuid: itemUuid }) => itemUuid !== lastItem.uuid
+                        )
+                    );
+
+                    onDeleteItem(lastItem.text);
+                }
+
+                break;
+            }
+            case 'Enter': {
+                if (newItem === '') {
+                    onPropositionSelect(propositionSelected);
+                } else {
+                    const item =
+                        queryMatchingPropositions.length > 0
+                            ? queryMatchingPropositions[propositionSelected]
+                            : {
+                                  uuid: (Math.random() * 1000) | 0,
+                                  text: newItem,
+                              };
+
+                    setItems([...items, item]);
+
+                    setNewItem('');
+
+                    onAddItem(item.text);
+                }
+
+                break;
+            }
+            case 'Escape': {
+                setFocus(false);
+
+                if (inputRef && inputRef.current !== null) {
+                    inputRef.current.blur();
+                }
+
+                break;
+            }
+            default:
                 break;
         }
     }
 
+    function onPropositionSelect(id) {
+        console.log('click click click');
+
+        const element = queryMatchingPropositions[id];
+
+        if (element !== undefined) {
+            setItems([...items, element]);
+
+            onAddItem(element.text);
+        }
+    }
+
     return (
-        <Container>
-            <Label htmlFor={inputId} focus={focus || items.length > 0}>
+        <Container focus={open}>
+            <Label htmlFor={inputId} focus={open}>
                 {label}
             </Label>
 
             <Selections>
-                {items.map(({ [itemValue]: value, [itemText]: text }) => (
-                    <div key={value}>{text}</div>
+                {items.map(({ uuid, text }) => (
+                    <SelectionItem key={uuid}>{text}</SelectionItem>
                 ))}
 
                 <Input
                     id={inputId}
+                    ref={inputRef}
                     onFocus={() => setFocus(true)}
-                    onBlur={() => setFocus(false)}
+                    onBlur={() =>
+                        setTimeout(() => {
+                            setFocus(false);
+                        }, 50)
+                    }
                     onKeyDown={onKeyDown}
+                    value={newItem}
+                    onChange={({ target: { value } }) => setNewItem(value)}
                 />
             </Selections>
 
             <Propositions show={focus}>
-                <OverflowList maxHeight={300}>
+                <OverflowList maxHeight={150}>
                     <InfiniteScrollContainer>
-                        {propositions.map(({ uuid, /*value,*/ text }, i) => (
+                        {queryMatchingPropositions.map(({ uuid, text }, i) => (
                             <PropositionsItem
                                 key={uuid}
                                 selected={propositionSelected === i}
+                                onClick={() => onPropositionSelect(i)}
                             >
                                 {text}
                             </PropositionsItem>
                         ))}
+
+                        {queryMatchingPropositions.length === 0 && (
+                            <NoData>
+                                No results matching. Press enter to create a new
+                                one.
+                            </NoData>
+                        )}
                     </InfiniteScrollContainer>
                 </OverflowList>
             </Propositions>

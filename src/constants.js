@@ -1,5 +1,5 @@
-export const API_ENDPOINT = 'http://e2r2p19.42.fr:8080'; 
-export const CLOUD_ENDPOINT = 'http://e2r2p19.42.fr:8081';
+export const API_ENDPOINT = 'http://e3r10p16.42.fr:8080'; 
+export const CLOUD_ENDPOINT = 'http://e3r10p16.42.fr:8081';
 
 export const SIGN_IN_MESSAGES = new Map([
     ['DONE', 'You have been successfully authenticated 🎉'],

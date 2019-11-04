@@ -6,7 +6,7 @@ const container = styled.section`
 
     ${({ maxHeight }) =>
         css`
-            max-height: ${maxHeight};
+            max-height: ${maxHeight}px;
         `}
 `;
 
