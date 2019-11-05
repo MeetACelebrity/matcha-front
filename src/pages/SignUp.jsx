@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { API_ENDPOINT } from '../constants';
 import useForm, { useFormField } from '../components/Form.jsx';
@@ -31,6 +31,7 @@ export default function SignUp() {
         setPasswordIsValid,
     ] = useFormField('');
     const [acceptGeolocation, setAcceptGeolocation] = useState(false);
+    const [coordsPromise, setCoordsPromise] = useState(Promise.resolve());
 
     const fields = [
         {
@@ -96,6 +97,42 @@ export default function SignUp() {
 
     const [isValidRef, FormComponent] = useForm({ fields, onSubmit });
 
+    useEffect(() => {
+        if (acceptGeolocation === true && 'geolocation' in navigator) {
+            // Get the current location of the user through JS API
+            const p = new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    ({ coords: { latitude, longitude } }) => {
+                        resolve({ latitude, longitude });
+                    },
+                    error => {
+                        console.error('an error occured', error);
+                        if (error.code !== error.PERMISSION_DENIED) {
+                            reject(error);
+                            return;
+                        }
+
+                        fetchPositionByIPAddress()
+                            .then(coords => resolve(coords))
+                            .catch(err => reject(err));
+                    }
+                );
+            });
+
+            setCoordsPromise(p);
+        } else {
+            setCoordsPromise(fetchPositionByIPAddress());
+        }
+    }, [acceptGeolocation]);
+
+    function fetchPositionByIPAddress() {
+        return fetch(
+            `http://api.ipstack.com/check?access_key=${process.env.REACT_APP_IP_TO_ADDRESS_API_KEY}&format=1&fields=main`
+        )
+            .then(res => res.json())
+            .then(({ latitude, longitude }) => ({ latitude, longitude }));
+    }
+
     function onSubmit() {
         fetch(`${API_ENDPOINT}/auth/sign-up`, {
             method: 'POST',
@@ -105,12 +142,40 @@ export default function SignUp() {
                 givenName,
                 familyName,
                 password,
+                acceptGeolocation,
             }),
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(response => console.log(response));
+            .then(async ({ statusCode, userUuid: uuid }) => {
+                if (statusCode !== 'DONE')
+                    throw new Error('Incorrect response');
+
+                try {
+                    // send the current location to the API if the response is successful
+                    const { latitude, longitude } = await coordsPromise;
+
+                    console.log('latitude, longitude', latitude, longitude);
+
+                    fetch(`${API_ENDPOINT}/profile/address/position`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            lat: latitude,
+                            long: longitude,
+                            isPrimary: true,
+                            uuid,
+                        }),
+                        headers: { 'Content-Type': 'application/json' },
+                    })
+                        .then(res => res.json())
+                        .then(console.log)
+                        .catch(console.error);
+                } catch (e) {
+                    console.error(e);
+                }
+            })
+            .catch(console.error);
     }
 
     return (
