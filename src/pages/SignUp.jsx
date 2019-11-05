@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { API_ENDPOINT } from '../constants';
 import useForm, { useFormField } from '../components/Form.jsx';
@@ -30,6 +30,7 @@ export default function SignUp() {
         isPasswordValid,
         setPasswordIsValid,
     ] = useFormField('');
+    const [acceptGeolocation, setAcceptGeolocation] = useState(false);
 
     const fields = [
         {
@@ -83,6 +84,13 @@ export default function SignUp() {
             setIsValid: setPasswordIsValid,
             type: 'password',
             min: 6,
+        },
+        {
+            id: 'accept-geolocation-checkbox',
+            checkbox: true,
+            value: acceptGeolocation,
+            setValue: setAcceptGeolocation,
+            label: 'Do you agree with geolocation ?',
         },
     ];
 

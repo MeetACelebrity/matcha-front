@@ -5,6 +5,7 @@ import tw from 'tailwind.macro';
 import TextField from './TextField.jsx';
 import Textarea from './Textarea.jsx';
 import SegmentedControl from './SegmentedControl.jsx';
+import Checkbox from './Checkbox.jsx';
 
 const FormContainer = styled.form`
     ${tw`flex flex-col items-stretch`}
@@ -69,6 +70,10 @@ function FormComponent({ id, isValid, onSubmit, fields, hideButton = false }) {
                             triggerValidation={triggerValidation}
                         />
                     );
+                }
+
+                if (props.checkbox === true) {
+                    return <Checkbox key={`checkbox-${i}`} {...props} />;
                 }
 
                 return (
