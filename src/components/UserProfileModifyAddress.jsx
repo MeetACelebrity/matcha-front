@@ -1,17 +1,25 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import places from 'places.js';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
+import { API_ENDPOINT, fetcher } from '../constants.js';
 
-export default function UserProfileModifyAddress() {
+export default function UserProfileModifyAddress({
+    user: { addresses, roaming },
+    context,
+    setContext,
+}) {
     const formId = 'modify-address';
 
     const [latlng, setLatlng] = useState({ lat: -1, lng: -1 });
+    const [roamingPref, setRoamingPref] = useState(
+        roaming === 'ACCEPTED' ? true : false
+    );
     const [
         address,
         setAddress,
-        isAAddressalid,
+        isAddressValid,
         setAddressIsValid,
     ] = useFormField('');
 
@@ -20,14 +28,29 @@ export default function UserProfileModifyAddress() {
 
     const addressTextFieldId = 'address-text-field';
 
+    const primaryAddress = useMemo(
+        () => addresses.find(({ type }) => type === 'PRIMARY') || {},
+        [addresses]
+    );
+
+    const { name, city, administrative, country } = primaryAddress;
+
     const fields = [
         {
             id: addressTextFieldId,
             label: 'Address',
+            defaultValue: `${name}, ${city}, ${administrative}, ${country}`,
             value: address,
             setValue: setAddress,
-            isValid: isAAddressalid,
+            isValid: isAddressValid,
             setIsValid: setAddressIsValid,
+        },
+        {
+            id: 'itinerance-mode-checkbox',
+            checkbox: true,
+            value: roamingPref,
+            setValue: setRoamingPref,
+            label: 'Go Right now in Rooooamiinng Mode !',
         },
     ];
 
@@ -40,21 +63,36 @@ export default function UserProfileModifyAddress() {
 
         if (placesAutocomplete === null) {
             const placesAutocomplete = places({
-                appId: '#',
-                apiKey: '#',
+                appId: process.env.REACT_APP_ALGOLIA_PLACES_APP_ID,
+                apiKey: process.env.REACT_APP_ALGOLIA_PLACES_API_KEY,
                 container: addressTextFieldRef.current,
                 style: false,
             }).configure({
-                language: 'fr',
+                language: 'en',
                 type: 'address',
-                useDeviceLocation: true,
+                useDeviceLocation: false,
             });
 
             placesAutocomplete.on(
                 'change',
-                ({ suggestion: { value, latlng } }) => {
-                    setAddress(value);
-                    setLatlng(latlng);
+                ({
+                    suggestion: {
+                        name,
+                        administrative,
+                        county,
+                        country,
+                        city,
+                        latlng: { lat, lng },
+                    },
+                }) => {
+                    setAddress({
+                        name,
+                        administrative,
+                        county,
+                        country,
+                        city,
+                    });
+                    setLatlng({ lat, long: lng });
                 }
             );
 
@@ -63,9 +101,50 @@ export default function UserProfileModifyAddress() {
     }, [placesAutocomplete, setAddress]);
 
     function onSubmit() {
-        console.log(
-            `send to the API (${latlng.lat}, ${latlng.lng}) = ${address}`
-        );
+        if (address !== null && latlng.lat !== -1 && latlng.lng !== -1) {
+            fetcher(`${API_ENDPOINT}/profile/address`, {
+                json: true,
+                method: 'PUT',
+                credentials: 'include',
+                body: { isPrimary: true, auto: false, ...address, ...latlng },
+            })
+                .then(res => res.json())
+                .then(console.log);
+        }
+
+        if (
+            roaming === 'NOT_SET' ||
+            (roaming === 'ACCEPTED' && !roamingPref) ||
+            (roaming === 'REFUSED' && roamingPref)
+        ) {
+            fetcher(`${API_ENDPOINT}/profile/roaming`, {
+                json: true,
+                method: 'PUT',
+                credentials: 'include',
+                body: { value: roamingPref ? 'ACCEPTED' : 'REFUSED' },
+            })
+                .then(res => res.json())
+                .then(console.log);
+
+            if (roamingPref === true) {
+                fetcher(`${API_ENDPOINT}/profile/location`, {
+                    json: true,
+                    method: 'PUT',
+                    credentials: 'include',
+                    body: { acceptGeolocation: true },
+                })
+                    .then(res => res.json())
+                    .then(console.log);
+            }
+
+            setContext({
+                ...context,
+                user: {
+                    ...context.user,
+                    roaming: roamingPref ? 'ACCEPTED' : 'REFUSED',
+                },
+            });
+        }
     }
 
     return (

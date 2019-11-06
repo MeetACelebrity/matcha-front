@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import NavBar from './components/NavBar.jsx';
 import BottomBar from './components/BottomBar.jsx';
+import RoamingModePopUp from './components/RoamingModePopUp.jsx';
 import Routes from './Routes.jsx';
 import { AppContext } from './app-context.js';
-import { API_ENDPOINT } from './constants.js';
+import { API_ENDPOINT, locateAndCompare, fetcher } from './constants.js';
 
 const Container = styled.div`
     font-family: 'Roboto';
@@ -35,14 +36,127 @@ export default function App() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(user =>
-                setContext({ user, loggedIn: user === null ? false : true })
-            )
             .catch(console.error)
+            .then(user => {
+                setContext({ user, loggedIn: user === null ? false : true });
+
+                return user;
+            })
             .finally(() => {
                 setLoaded(true);
+            })
+            .then(async user => {
+                if (
+                    user === null ||
+                    !user.addresses ||
+                    user.location === false ||
+                    user.roaming === 'REFUSED'
+                )
+                    return;
+
+                const officialAddress = user.addresses.find(
+                    ({ type }) => type === 'PRIMARY'
+                );
+                if (officialAddress === null) return;
+
+                const {
+                    point: { x: lat, y: lng },
+                } = officialAddress;
+
+                try {
+                    const {
+                        canAskForRoamingMode,
+                        coords,
+                    } = await locateAndCompare({
+                        lat,
+                        lng,
+                    });
+
+                    console.log('can ask =', canAskForRoamingMode);
+
+                    if (
+                        canAskForRoamingMode === true &&
+                        user.roaming !== 'ACCEPTED'
+                    ) {
+                        toast(
+                            <RoamingModePopUp
+                                title="Activate the roaming mode ?"
+                                text="Thanks to the roaming mode you will always get results according to your current position."
+                                onConfirm={activateRoamingMode(coords)}
+                            />,
+                            {
+                                autoClose: false,
+                                closeOnClick: false,
+                            }
+                        );
+                    } else if (user.roaming === 'ACCEPTED') {
+                        activateRoamingMode({
+                            ...coords,
+                            mustSetRoamingMode: false,
+                        })(true);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
             });
     }, [setLoaded]);
+
+    function activateRoamingMode({
+        latitude: lat,
+        longitude: long,
+        mustSetRoamingMode = true,
+    }) {
+        return async state => {
+            try {
+                let requests = [];
+
+                if (mustSetRoamingMode === true) {
+                    requests.push([
+                        'profile/roaming',
+                        {
+                            credentials: 'include',
+                            method: 'PUT',
+                            body: {
+                                value: state === true ? 'ACCEPTED' : 'REFUSED',
+                            },
+                            json: true,
+                        },
+                    ]);
+                } else if (state === true) {
+                    // delete the *current* address
+                    requests.push([
+                        'profile/address/delete',
+                        {
+                            crendentials: 'include',
+                            method: 'DELETE',
+                            body: {},
+                            json: true,
+                        },
+                    ]);
+                }
+
+                if (state === true) {
+                    requests.push([
+                        'profile/address',
+                        {
+                            credentials: 'include',
+                            method: 'PUT',
+                            body: { lat, long, isPrimary: false, auto: true },
+                            json: true,
+                        },
+                    ]);
+                }
+
+                await Promise.all(
+                    requests.map(([url, body]) =>
+                        fetcher(`${API_ENDPOINT}/${url}`, body)
+                    )
+                );
+            } catch (e) {
+                console.error(e);
+            }
+        };
+    }
 
     return (
         <AppContext.Provider value={{ context, setContext }}>

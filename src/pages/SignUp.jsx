@@ -156,8 +156,6 @@ export default function SignUp() {
                     // send the current location to the API if the response is successful
                     const { latitude, longitude } = await coordsPromise;
 
-                    console.log('latitude, longitude', latitude, longitude);
-
                     fetch(`${API_ENDPOINT}/profile/address/position`, {
                         method: 'POST',
                         body: JSON.stringify({

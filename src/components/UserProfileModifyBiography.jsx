@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
-import { API_ENDPOINT } from '../constants';
+import { API_ENDPOINT, fetcher } from '../constants';
 
 export default function UserProfileModifyBiography({ user }) {
     const formId = 'modify-biography';
@@ -10,7 +10,7 @@ export default function UserProfileModifyBiography({ user }) {
     const [
         biography,
         setBiography,
-        isABiographyalid,
+        isABiographyValid,
         setBiographyIsValid,
     ] = useFormField('');
 
@@ -23,7 +23,7 @@ export default function UserProfileModifyBiography({ user }) {
             label: 'Type your biography...',
             value: biography,
             setValue: setBiography,
-            isValid: isABiographyalid,
+            isValid: isABiographyValid,
             setIsValid: setBiographyIsValid,
             textarea: true,
         },
@@ -32,11 +32,11 @@ export default function UserProfileModifyBiography({ user }) {
     const [isValid, Form] = useForm({ fields });
 
     function onSubmit() {
-        fetch(`${API_ENDPOINT}/profile/biography`, {
+        fetcher(`${API_ENDPOINT}/profile/biography`, {
             method: 'PUT',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ biography }),
+            body: { biography },
+            json: true,
         })
             .then(res => res.json())
             .then(console.log);

@@ -1,4 +1,4 @@
-export const API_ENDPOINT = 'http://e3r2p11.42.fr:8080'; 
+export const API_ENDPOINT = 'http://e3r2p11.42.fr:8080';
 export const CLOUD_ENDPOINT = 'http://e3r2p11.42.fr:8081';
 
 export const SIGN_IN_MESSAGES = new Map([
@@ -9,3 +9,81 @@ export const SIGN_IN_MESSAGES = new Map([
     ['UNKNOWN_ERROR', 'An error occured, please try again later'],
 ]);
 
+function distance(lat1, lon1, lat2, lon2, unit = 'K') {
+    if (lat1 === lat2 && lon1 === lon2) {
+        return 0;
+    } else {
+        const radlat1 = (Math.PI * lat1) / 180;
+        const radlat2 = (Math.PI * lat2) / 180;
+        const theta = lon1 - lon2;
+        const radtheta = (Math.PI * theta) / 180;
+        let dist =
+            Math.sin(radlat1) * Math.sin(radlat2) +
+            Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+            dist = 1;
+        }
+        dist = Math.acos(dist);
+        dist = (dist * 180) / Math.PI;
+        dist = dist * 60 * 1.1515;
+        if (unit === 'K') {
+            dist = dist * 1.609344;
+        }
+        if (unit === 'N') {
+            dist = dist * 0.8684;
+        }
+        return dist;
+    }
+}
+
+/**
+ * fetcher(URL, { json: true, body: {  } })
+ */
+export function fetcher(url, init) {
+    if (init.json === true) {
+        init.body = JSON.stringify(init.body);
+        init.headers = {
+            ...init.headers,
+            'Content-Type': 'application/json',
+        };
+    }
+
+    return fetch(url, init);
+}
+
+export function locateAndCompare({ lat: savedLatitude, lng: savedLongitude }) {
+    /**
+     * The minimal distance to be considered outside of its original location.
+     * It is in kilometers and will trigger a `switch to roaming mode` asking.
+     */
+    const DELTA = 42 | 0;
+
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            ({
+                coords: {
+                    latitude: currentLatitude,
+                    longitude: currentLongitude,
+                },
+            }) => {
+                const distanceBetweenPoints = distance(
+                    savedLatitude,
+                    savedLongitude,
+                    currentLatitude,
+                    currentLongitude
+                );
+
+                resolve({
+                    canAskForRoamingMode: distanceBetweenPoints > DELTA,
+                    coords: {
+                        latitude: currentLatitude,
+                        longitude: currentLongitude,
+                    },
+                });
+            },
+            error => {
+                reject(error);
+            }
+        );
+    });
+}
