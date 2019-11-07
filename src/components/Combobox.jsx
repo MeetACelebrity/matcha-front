@@ -33,8 +33,32 @@ const Selections = styled.div`
     transform-origin: top left;
 `;
 
-const SelectionItem = styled.div`
-    ${tw`px-2 py-1 rounded-full bg-gray-400 mr-1 mt-1`}
+const SelectionItem = styled.button`
+    ${tw`bg-gray-400 px-3 py-1 my-1 mx-1 rounded-full relative shadow`}
+
+    &::before {
+        ${tw`mr-2`}
+
+        content: '#';
+    }
+
+    &::after {
+        content: '';
+
+        ${tw`absolute inset-0 shadow-md opacity-0 rounded-full`}
+
+        transition: opacity 200ms ease-out;
+    }
+
+    &:hover,
+    &:focus {
+        ${tw`outline-none`}
+    }
+
+    &:hover::after,
+    &:focus::after {
+        ${tw`opacity-100`}
+    }
 `;
 
 const Input = styled.input`
@@ -136,6 +160,12 @@ export default function Combobox({
         setPropositionSelected,
     ]);
 
+    function deleteItemByUuid(uuid, value) {
+        setItems(items.filter(({ uuid: itemUuid }) => itemUuid !== uuid));
+
+        onDeleteItem(value);
+    }
+
     function onKeyDown({ key }) {
         switch (key) {
             case 'ArrowUp': {
@@ -156,13 +186,7 @@ export default function Combobox({
                 if (newItem === '') {
                     const lastItem = items[items.length - 1];
 
-                    setItems(
-                        items.filter(
-                            ({ uuid: itemUuid }) => itemUuid !== lastItem.uuid
-                        )
-                    );
-
-                    onDeleteItem(lastItem.text);
+                    deleteItemByUuid(lastItem.uuid, lastItem.text);
                 }
 
                 break;
@@ -214,6 +238,16 @@ export default function Combobox({
         }
     }
 
+    function onTagKeyPress(uuid, text) {
+        return ({ key }) => {
+            switch (key) {
+                case 'Backspace':
+                case 'Delete':
+                    deleteItemByUuid(uuid, text);
+            }
+        };
+    }
+
     return (
         <Container focus={open}>
             <Label htmlFor={inputId} focus={open}>
@@ -222,7 +256,12 @@ export default function Combobox({
 
             <Selections>
                 {items.map(({ uuid, text }) => (
-                    <SelectionItem key={uuid}>{text}</SelectionItem>
+                    <SelectionItem
+                        key={uuid}
+                        onKeyDown={onTagKeyPress(uuid, text)}
+                    >
+                        {text}
+                    </SelectionItem>
                 ))}
 
                 <Input

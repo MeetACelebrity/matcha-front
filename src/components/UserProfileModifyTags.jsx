@@ -65,6 +65,7 @@ export default function UserProfileModifyTags({
     return (
         <UserProfileModifyEditionGroup title="Centers of interest" noButton>
             <Combobox
+                label="Your centers of interest"
                 items={tags}
                 setItems={setTags}
                 propositions={propositions}
