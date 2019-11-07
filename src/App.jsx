@@ -38,7 +38,11 @@ export default function App() {
             .then(res => res.json())
             .catch(console.error)
             .then(user => {
-                setContext({ user, loggedIn: user === null ? false : true });
+                setContext({
+                    user,
+                    loggedIn:
+                        user === null || user === undefined ? false : true,
+                });
 
                 return user;
             })
@@ -48,6 +52,7 @@ export default function App() {
             .then(async user => {
                 if (
                     user === null ||
+                    user === undefined ||
                     !user.addresses ||
                     user.location === false ||
                     user.roaming === 'REFUSED'
@@ -74,10 +79,9 @@ export default function App() {
 
                     console.log('can ask =', canAskForRoamingMode);
 
-                    if (
-                        canAskForRoamingMode === true &&
-                        user.roaming !== 'ACCEPTED'
-                    ) {
+                    if (canAskForRoamingMode === false) return;
+
+                    if (user.roaming !== 'ACCEPTED') {
                         toast(
                             <RoamingModePopUp
                                 title="Activate the roaming mode ?"
@@ -89,7 +93,7 @@ export default function App() {
                                 closeOnClick: false,
                             }
                         );
-                    } else if (user.roaming === 'ACCEPTED') {
+                    } else {
                         activateRoamingMode({
                             ...coords,
                             mustSetRoamingMode: false,
@@ -98,7 +102,8 @@ export default function App() {
                 } catch (e) {
                     console.error(e);
                 }
-            });
+            })
+            .catch(console.error);
     }, [setLoaded]);
 
     function activateRoamingMode({
