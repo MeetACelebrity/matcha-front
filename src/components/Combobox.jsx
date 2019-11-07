@@ -242,8 +242,12 @@ export default function Combobox({
         return ({ key }) => {
             switch (key) {
                 case 'Backspace':
-                case 'Delete':
+                case 'Delete': {
                     deleteItemByUuid(uuid, text);
+                    break;
+                }
+                default:
+                    break;
             }
         };
     }
