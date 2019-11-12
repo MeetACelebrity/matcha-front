@@ -175,7 +175,7 @@ export default function ProfileCard({
             )}
 
             <Section>
-                {preview === false && (
+                {preview === false && !isCurrentUser && (
                     <>
                         <ActionsButtonsContainer>
                             <Button text>Like</Button>
