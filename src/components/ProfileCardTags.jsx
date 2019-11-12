@@ -61,20 +61,28 @@ export default function ProfileCardTags({ tags, mini = false }) {
 
     return (
         <TagsContainer>
-            {shownTags.map((tag, i) => (
-                <Tag key={tag} index={i}>
-                    <span>{tag}</span>
-                </Tag>
-            ))}
+            {shownTags.length === 0 ? (
+                <p className="mx-auto">No tags have been selected</p>
+            ) : (
+                <>
+                    {shownTags.map(({ uuid, text }, i) => (
+                        <Tag key={uuid} index={i}>
+                            <span>{text}</span>
+                        </Tag>
+                    ))}
 
-            {mini === true && expanded === false && (
-                <Tag
-                    key="more"
-                    more
-                    onClick={() => expanded === false && setExpanded(true)}
-                >
-                    <FeatherIcon icon="more-horizontal" />
-                </Tag>
+                    {mini === true && expanded === false && (
+                        <Tag
+                            key="more"
+                            more
+                            onClick={() =>
+                                expanded === false && setExpanded(true)
+                            }
+                        >
+                            <FeatherIcon icon="more-horizontal" />
+                        </Tag>
+                    )}
+                </>
             )}
         </TagsContainer>
     );

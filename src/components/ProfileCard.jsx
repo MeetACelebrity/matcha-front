@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,7 @@ import ImageCarousel from './ImageCarousel.jsx';
 import ProfileCardTags from './ProfileCardTags.jsx';
 import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
 import Sex from './Sex.jsx';
+import Button from './Button.jsx';
 
 const previewContainerStyle = tw`pb-3 shadow-md`;
 const notFlatContainerStyle = tw`shadow-xl`;
@@ -61,14 +62,47 @@ const Address = styled.p`
     ${tw`text-gray-600 mx-1`}
 `;
 
+const BiographyContainer = styled.article`
+    ${tw`mb-3 mx-1`}
+`;
+
+const BiographyTitle = styled.p`
+    ${tw`mb-2`}
+`;
+
+const BiographyParagraph = styled.p`
+    ${tw`pl-3 border-l-4 border-gray-800 text-gray-700`}
+`;
+
+const ActionsButtonsContainer = styled.div`
+    ${tw`flex items-center pt-2 pb-6`}
+
+    & > :not(:last-child) {
+        ${tw`mr-2`}
+    }
+`;
+
+function Biography({ biography }) {
+    return (
+        <BiographyContainer>
+            <BiographyTitle>Biography :</BiographyTitle>
+
+            <BiographyParagraph>{biography}</BiographyParagraph>
+        </BiographyContainer>
+    );
+}
+
 export default function ProfileCard({
     uuid,
     username = 'Non connu',
     givenName = 'Non connu',
     familyName = 'Non connu',
-    gender = 'Non connu',
+    gender = 'LOL',
+    biography = '',
     profilePicture,
     pictures,
+    tags = [],
+    addresses = [],
     liked = false,
     onLike,
     children,
@@ -82,6 +116,17 @@ export default function ProfileCard({
             user: { uuid: currentUserUuid },
         },
     } = useContext(AppContext);
+
+    const address = useMemo(() => {
+        const currentAddress = addresses.find(({ type }) => type === 'CURRENT');
+        const primaryAddress = addresses.find(({ type }) => type === 'PRIMARY');
+
+        if (!(currentAddress || primaryAddress)) return 'Error'
+
+        const { name, county, country } = currentAddress || primaryAddress;
+
+        return `${name}, ${county} ${country}`;
+    }, [addresses]);
 
     const isCurrentUser = uuid === currentUserUuid;
 
@@ -116,11 +161,7 @@ export default function ProfileCard({
                     <h4>{'30 years old'}</h4>
                 </TextContainer>
 
-                <Address>
-                    {
-                        '10 Rue de Penthievre, Paris 8e Arrondissement, Île-de-France, France'
-                    }
-                </Address>
+                <Address>{address}</Address>
             </Section>
         </>
     );
@@ -134,25 +175,34 @@ export default function ProfileCard({
             )}
 
             <Section>
-                <ProfileCardTags
-                    tags={[
-                        'chiens',
-                        'cristaline',
-                        'philosophie',
-                        'more and more',
-                    ]}
-                    mini={preview === true}
-                />
+                {preview === false && (
+                    <>
+                        <ActionsButtonsContainer>
+                            <Button text>Like</Button>
+                            <Button text red>
+                                Block
+                            </Button>
+                            <Button text red>
+                                Report
+                            </Button>
+                        </ActionsButtonsContainer>
+                        <Biography biography={biography} />
+                    </>
+                )}
+
+                <ProfileCardTags tags={tags} mini={preview === true} />
             </Section>
 
             {children}
 
-            <ProfileCardFloatingButton
-                edit={isCurrentUser}
-                floating={preview === false}
-                liked={liked}
-                onLike={onLike}
-            />
+            {flat === false && (
+                <ProfileCardFloatingButton
+                    edit={isCurrentUser}
+                    floating={preview === false}
+                    liked={liked}
+                    onLike={onLike}
+                />
+            )}
         </Container>
     );
 }

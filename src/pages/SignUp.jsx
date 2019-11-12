@@ -98,6 +98,8 @@ export default function SignUp() {
     const [isValidRef, FormComponent] = useForm({ fields, onSubmit });
 
     useEffect(() => {
+        console.log('call use effect');
+
         if (acceptGeolocation === true && 'geolocation' in navigator) {
             // Get the current location of the user through JS API
             const p = new Promise((resolve, reject) => {

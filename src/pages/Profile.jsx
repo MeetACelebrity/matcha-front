@@ -1,7 +1,9 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Redirect, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
+
+import { API_ENDPOINT, fetcher } from '../constants.js';
 
 import ProfileCard from '../components/ProfileCard.jsx';
 
@@ -11,12 +13,35 @@ const Container = styled.article`
 
 export default function Profile() {
     const { uuid } = useParams();
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState(null);
 
-    console.log('profile uuid =', uuid);
+    useEffect(() => {
+        setIsLoading(true);
+
+        fetcher(`${API_ENDPOINT}/user/${uuid}`, {
+            json: true,
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(user => setUser(user))
+            .catch(console.error)
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [uuid]);
+
+    if (isLoading === false && user === null) {
+        return <Redirect to="/404" />;
+    }
 
     return (
         <Container>
-            <ProfileCard flat />
+            {isLoading || user === null ? (
+                <div>Loading …</div>
+            ) : (
+                <ProfileCard {...user} flat />
+            )}
         </Container>
     );
 }

@@ -14,6 +14,7 @@ import {
     UserProfile,
     UserProfileModify,
     Profile,
+    NotFound,
 } from './pages';
 import { AppContext } from './app-context';
 
@@ -134,6 +135,7 @@ export default function Routes({ loaded = false }) {
                             component={UserProfileModify}
                         />
                         <Route path={RoutesEnum.PROFILE} component={Profile} />
+                        <Route path="/404" component={NotFound} />
 
                         <Media query={{ maxWidth: 768 }}>
                             {screenIsSmall =>
@@ -164,7 +166,7 @@ export default function Routes({ loaded = false }) {
                             }
                         </Media>
 
-                        <Redirect from="/" to={RoutesEnum.HOME} />
+                        <Redirect from="/" to="/404" />
                     </Switch>
                 ) : (
                     <Switch>
@@ -178,7 +180,9 @@ export default function Routes({ loaded = false }) {
                             path={RoutesEnum.RESET_PASSWORD_PASSWORD}
                             component={PasswordResetPasswordAsking}
                         />
-                        <Redirect from="/" to={RoutesEnum.SIGN_UP} />
+
+                        <Route path="/404" component={NotFound} />
+                        <Redirect from="/" to="/404" />
                     </Switch>
                 ))}
         </Main>
