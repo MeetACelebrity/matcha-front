@@ -87,3 +87,21 @@ export function locateAndCompare({ lat: savedLatitude, lng: savedLongitude }) {
         );
     });
 }
+
+export function formatAddress({ name, county, country, city }) {
+    let str = '';
+
+    if (name) {
+        str += `${name}, `;
+    }
+
+    if (city || county) {
+        str += `${city || county} `;
+    }
+
+    if (country) {
+        str += `${country} `;
+    }
+
+    return str.trim();
+}

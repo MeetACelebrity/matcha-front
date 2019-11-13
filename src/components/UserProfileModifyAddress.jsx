@@ -3,7 +3,7 @@ import places from 'places.js';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
-import { API_ENDPOINT, fetcher } from '../constants.js';
+import { API_ENDPOINT, fetcher, formatAddress } from '../constants.js';
 
 export default function UserProfileModifyAddress({
     user: { addresses, roaming },
@@ -39,8 +39,13 @@ export default function UserProfileModifyAddress({
         {
             id: addressTextFieldId,
             label: 'Address',
-            defaultValue: `${name}, ${city}, ${administrative}, ${country}`,
-            value: address,
+            defaultValue: formatAddress({
+                name,
+                city,
+                administrative,
+                country,
+            }),
+            // value: address,
             setValue: setAddress,
             isValid: isAddressValid,
             setIsValid: setAddressIsValid,

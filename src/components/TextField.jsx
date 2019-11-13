@@ -69,7 +69,7 @@ export default function TextField(props) {
             // If the lazy mode has not been activated
             lazy !== true ||
             // If the string length is greater than 0
-            value.length > 0 ||
+            (value && value.length > 0) ||
             // ... or if the text-field has already been used
             hasBeenUsed === true
             // => validate the field

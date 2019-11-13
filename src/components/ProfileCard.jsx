@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import { Link } from 'react-router-dom';
 
+import { formatAddress } from '../constants.js'
 import { AppContext } from '../app-context.js';
 import ImageCarousel from './ImageCarousel.jsx';
 import ProfileCardTags from './ProfileCardTags.jsx';
@@ -123,9 +124,9 @@ export default function ProfileCard({
 
         if (!(currentAddress || primaryAddress)) return 'Error'
 
-        const { name, county, country } = currentAddress || primaryAddress;
+        const { name, county, country, city } = currentAddress || primaryAddress;
 
-        return `${name}, ${county} ${country}`;
+        return formatAddress({ name, county, country, city })
     }, [addresses]);
 
     const isCurrentUser = uuid === currentUserUuid;
