@@ -205,10 +205,10 @@ export default function ProfileCard({
 
                 {isCurrentUser && preview === false && (
                     <LinksContainer>
-                        <Button text to="/lol">
+                        <Button text to="/my-visitors">
                             My visitors
                         </Button>
-                        <Button text to="/lol">
+                        <Button text to="/my-lovers">
                             My lovers
                         </Button>
                     </LinksContainer>

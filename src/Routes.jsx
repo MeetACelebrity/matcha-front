@@ -15,6 +15,8 @@ import {
     UserProfileModify,
     Profile,
     NotFound,
+    MyLovers,
+    MyVisitors,
 } from './pages';
 import { AppContext } from './app-context';
 
@@ -27,6 +29,8 @@ export const RoutesEnum = {
     NOTIFICATIONS: '/notifications',
     ME_EDIT: '/me/edit',
     PROFILE: '/profile/:uuid',
+    MY_VISITORS: '/my-visitors',
+    MY_LOVERS: '/my-lovers',
 
     SIGN_IN: '/sign-in',
     SIGN_UP: '/sign-up',
@@ -135,6 +139,14 @@ export default function Routes({ loaded = false }) {
                             component={UserProfileModify}
                         />
                         <Route path={RoutesEnum.PROFILE} component={Profile} />
+                        <Route
+                            path={RoutesEnum.MY_LOVERS}
+                            component={MyLovers}
+                        />
+                        <Route
+                            path={RoutesEnum.MY_VISITORS}
+                            component={MyVisitors}
+                        />
                         <Route path="/404" component={NotFound} />
 
                         <Media query={{ maxWidth: 768 }}>

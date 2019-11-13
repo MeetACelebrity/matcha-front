@@ -7,6 +7,8 @@ import UserProfile from './UserProfile.jsx';
 import UserProfileModify from './UserProfileModify.jsx';
 import Profile from './Profile.jsx';
 import NotFound from './NotFound.jsx';
+import MyLovers from './MyLovers.jsx';
+import MyVisitors from './MyVisitors.jsx';
 
 export {
     Home,
@@ -18,4 +20,6 @@ export {
     UserProfileModify,
     Profile,
     NotFound,
+    MyLovers,
+    MyVisitors,
 };
