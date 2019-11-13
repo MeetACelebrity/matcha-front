@@ -83,12 +83,18 @@ const ActionsButtonsContainer = styled.div`
     }
 `;
 
+const LinksContainer = styled.div`
+    ${tw`flex items-center justify-around flex-wrap py-4`}
+`;
+
 function Biography({ biography }) {
     return (
         <BiographyContainer>
             <BiographyTitle>Biography :</BiographyTitle>
 
-            <BiographyParagraph>{biography}</BiographyParagraph>
+            <BiographyParagraph>
+                {biography || 'Non remplie'}
+            </BiographyParagraph>
         </BiographyContainer>
     );
 }
@@ -120,6 +126,8 @@ export default function ProfileCard({
         },
     } = useContext(AppContext);
 
+    const isCurrentUser = uuid === currentUserUuid;
+
     const address = useMemo(() => {
         const currentAddress = addresses.find(({ type }) => type === 'CURRENT');
         const primaryAddress = addresses.find(({ type }) => type === 'PRIMARY');
@@ -131,8 +139,6 @@ export default function ProfileCard({
 
         return formatAddress({ name, county, country, city });
     }, [addresses]);
-
-    const isCurrentUser = uuid === currentUserUuid;
 
     useEffect(() => {
         if (profilePicture === undefined) {
@@ -180,29 +186,33 @@ export default function ProfileCard({
 
             <Section>
                 {preview === false && !isCurrentUser && (
-                    <>
-                        <ActionsButtonsContainer>
-                            <Button
-                                text
-                                onClick={() => {
-                                    console.log('clicked');
-                                    onLike();
-                                }}
-                            >
-                                Like
-                            </Button>
-                            <Button text red onClick={onBlock}>
-                                Block
-                            </Button>
-                            <Button text red onClick={onReport}>
-                                Report
-                            </Button>
-                        </ActionsButtonsContainer>
-                        <Biography biography={biography} />
-                    </>
+                    <ActionsButtonsContainer>
+                        <Button text onClick={onLike}>
+                            Like
+                        </Button>
+                        <Button text red onClick={onBlock}>
+                            Block
+                        </Button>
+                        <Button text red onClick={onReport}>
+                            Report
+                        </Button>
+                    </ActionsButtonsContainer>
                 )}
 
+                {preview === false && <Biography biography={biography} />}
+
                 <ProfileCardTags tags={tags} mini={preview === true} />
+
+                {isCurrentUser && preview === false && (
+                    <LinksContainer>
+                        <Button text to="/lol">
+                            My visitors
+                        </Button>
+                        <Button text to="/lol">
+                            My lovers
+                        </Button>
+                    </LinksContainer>
+                )}
             </Section>
 
             {children}
