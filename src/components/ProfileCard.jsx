@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import { Link } from 'react-router-dom';
 
-import { formatAddress } from '../constants.js'
+import { formatAddress } from '../constants.js';
 import { AppContext } from '../app-context.js';
 import ImageCarousel from './ImageCarousel.jsx';
 import ProfileCardTags from './ProfileCardTags.jsx';
@@ -124,11 +124,12 @@ export default function ProfileCard({
         const currentAddress = addresses.find(({ type }) => type === 'CURRENT');
         const primaryAddress = addresses.find(({ type }) => type === 'PRIMARY');
 
-        if (!(currentAddress || primaryAddress)) return 'Error'
+        if (!(currentAddress || primaryAddress)) return 'Error';
 
-        const { name, county, country, city } = currentAddress || primaryAddress;
+        const { name, county, country, city } =
+            currentAddress || primaryAddress;
 
-        return formatAddress({ name, county, country, city })
+        return formatAddress({ name, county, country, city });
     }, [addresses]);
 
     const isCurrentUser = uuid === currentUserUuid;
@@ -181,7 +182,15 @@ export default function ProfileCard({
                 {preview === false && !isCurrentUser && (
                     <>
                         <ActionsButtonsContainer>
-                            <Button text onClick={onLike}>Like</Button>
+                            <Button
+                                text
+                                onClick={() => {
+                                    console.log('clicked');
+                                    onLike();
+                                }}
+                            >
+                                Like
+                            </Button>
                             <Button text red onClick={onBlock}>
                                 Block
                             </Button>

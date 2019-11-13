@@ -49,21 +49,16 @@ export default function Button({
     children,
     className,
 
-    red,
-    blue,
+    // eslint-disable-next-line no-unused-vars
+    outlined,
+    ...props
 }) {
     const Root = text === true ? TextButton : BaseButton;
     const child = icon ? <Icon icon={icon} /> : children;
 
     if (to === undefined) {
         return (
-            <Root
-                className={className}
-                flat={flat}
-                icon={icon}
-                red={red}
-                blue={blue}
-            >
+            <Root className={className} flat={flat} icon={icon} {...props}>
                 {child}
             </Root>
         );
@@ -76,8 +71,7 @@ export default function Button({
             className={className}
             to={to}
             icon={icon}
-            red={red}
-            blue={blue}
+            {...props}
         >
             {child}
         </Root>

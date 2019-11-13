@@ -31,9 +31,38 @@ export default function Profile() {
             });
     }, [uuid]);
 
-    function onLike() {}
-    function onBlock() {}
-    function onReport() {}
+    function onLike() {
+        // TODO: must change that boolean assignment
+        const liked = false;
+
+        const action = liked ? 'unlike' : 'like';
+
+        fetch(`${API_ENDPOINT}/user/${action}/${uuid}`, {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(console.log)
+            .catch(console.error);
+    }
+    function onBlock() {
+        fetch(`${API_ENDPOINT}/user/block/${uuid}`, {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(console.log)
+            .catch(console.error);
+    }
+    function onReport() {
+        fetch(`${API_ENDPOINT}/user/report/${uuid}`, {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(console.log)
+            .catch(console.error);
+    }
 
     if (isLoading === false && user === null) {
         return <Redirect to="/404" />;
