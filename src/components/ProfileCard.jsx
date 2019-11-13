@@ -106,6 +106,8 @@ export default function ProfileCard({
     addresses = [],
     liked = false,
     onLike,
+    onBlock,
+    onReport,
     children,
     className,
     preview = false,
@@ -179,11 +181,11 @@ export default function ProfileCard({
                 {preview === false && !isCurrentUser && (
                     <>
                         <ActionsButtonsContainer>
-                            <Button text>Like</Button>
-                            <Button text red>
+                            <Button text onClick={onLike}>Like</Button>
+                            <Button text red onClick={onBlock}>
                                 Block
                             </Button>
-                            <Button text red>
+                            <Button text red onClick={onReport}>
                                 Report
                             </Button>
                         </ActionsButtonsContainer>

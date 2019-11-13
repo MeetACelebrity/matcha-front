@@ -31,6 +31,10 @@ export default function Profile() {
             });
     }, [uuid]);
 
+    function onLike() {}
+    function onBlock() {}
+    function onReport() {}
+
     if (isLoading === false && user === null) {
         return <Redirect to="/404" />;
     }
@@ -40,7 +44,13 @@ export default function Profile() {
             {isLoading || user === null ? (
                 <div>Loading …</div>
             ) : (
-                <ProfileCard {...user} flat />
+                <ProfileCard
+                    {...user}
+                    flat
+                    onLike={onLike}
+                    onBlock={onBlock}
+                    onReport={onReport}
+                />
             )}
         </Container>
     );
