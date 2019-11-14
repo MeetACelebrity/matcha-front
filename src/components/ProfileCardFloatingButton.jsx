@@ -23,6 +23,10 @@ const Button = styled.button`
     &:focus {
         ${tw`outline-none`}
     }
+
+    &:disabled {
+        ${tw`bg-gray-300 text-gray-700`}
+    }
 `;
 
 const ButtonNav = styled(Button)``;
@@ -31,6 +35,7 @@ export default function ProfileCardFloatingButton({
     edit = false,
     floating = true,
     liked = false,
+    disabled= false,
     onLike,
 }) {
     const to = edit ? '/me/edit' : null;
@@ -48,6 +53,7 @@ export default function ProfileCardFloatingButton({
         <Button
             name={liked === true ? 'unlike-profile' : 'like-profile'}
             floating={floating}
+            disabled={disabled}
             liked={liked}
             onClick={onLike}
         >

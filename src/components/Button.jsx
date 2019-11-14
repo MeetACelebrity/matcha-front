@@ -26,6 +26,10 @@ const TextButton = styled.button`
 
     ${({ red }) => red && TextButtonRedStyles}
 
+    &:disabled {
+        ${tw`bg-gray-300 text-gray-700`}
+    }
+
     &:focus {
         ${tw`outline-none`}
     }

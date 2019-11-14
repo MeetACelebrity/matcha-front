@@ -122,7 +122,10 @@ export default function ProfileCard({
     const [images, setImages] = useState([]);
     const {
         context: {
-            user: { uuid: currentUserUuid },
+            user: {
+                uuid: currentUserUuid,
+                images: { length: profilePicturesCount },
+            },
         },
     } = useContext(AppContext);
 
@@ -187,7 +190,7 @@ export default function ProfileCard({
             <Section>
                 {preview === false && !isCurrentUser && (
                     <ActionsButtonsContainer>
-                        <Button text onClick={onLike}>
+                        <Button text onClick={onLike} disabled={profilePicturesCount === 0}>
                             Like
                         </Button>
                         <Button text red onClick={onBlock}>
@@ -221,6 +224,7 @@ export default function ProfileCard({
                 <ProfileCardFloatingButton
                     edit={isCurrentUser}
                     floating={preview === false}
+                    disabled={profilePicturesCount === 0}
                     liked={liked}
                     onLike={onLike}
                 />
