@@ -4,7 +4,8 @@ import InfiniteScroll from 'react-infinite-scroller';
 export default function InfiniteScrollContainer({
     fetchMore = () => {},
     hasMore = false,
-    loader = <div>loading ...</div>,
+    useWindow = false,
+    loader = <div key={-1}>loading ...</div>,
     children,
 }) {
     return (
@@ -13,7 +14,7 @@ export default function InfiniteScrollContainer({
             loadMore={fetchMore}
             hasMore={hasMore}
             loader={loader}
-            useWindow={false}
+            useWindow={useWindow}
         >
             {children}
         </InfiniteScroll>

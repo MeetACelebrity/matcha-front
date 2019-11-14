@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import { NavLink } from 'react-router-dom';
 
 import { API_ENDPOINT } from '../constants.js';
+import InfiniteScrollContainer from '../components/InfiniteScrollContainer.jsx';
 
 const Container = styled.article`
     ${tw`mx-auto px-5 w-3/5 mt-6`}
@@ -46,7 +47,7 @@ const Username = styled.h3`
 `;
 
 export default function MyLovers() {
-    const [lovers] = useState([
+    const [lovers, setLovers] = useState([
         {
             uuid: 'lolol',
             username: 'Coucou',
@@ -60,34 +61,40 @@ export default function MyLovers() {
                 'https://scontent-cdt1-1.xx.fbcdn.net/v/t1.15752-9/57226391_573895936440034_2465969397282373632_n.jpg?_nc_cat=108&_nc_oc=AQktBDi3yXSNZqUTIBrEZIScRr0eVRfwWp_cnFDUxSK43pbLolhOxpiO9obW0S2RZlPEkKkhOvmSPOYcrhpJfPvM&_nc_ht=scontent-cdt1-1.xx&oh=7100563be889ddc11d3fed8c97df0b07&oe=5E556EC9',
         },
     ]);
-    const [isLoading] = useState(false);
+    const [offset, setOffset] = useState(0);
+    const limit = 5;
 
-    useEffect(() => {
-        fetch(`${API_ENDPOINT}/user/likes/history`, {
+    function fetchLovers() {
+        return fetch(`${API_ENDPOINT}/user/likes/history/${limit}/${offset}`, {
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(console.log)
+            .then(({ liker: newLovers, liker: { length: newLoversCount } }) => {
+                setLovers([...lovers, ...newLovers]);
+                setOffset(offset + newLoversCount);
+            })
             .catch(console.error);
-    }, []);
+    }
 
     return (
         <Container>
             <Title>My Lovers !</Title>
 
-            {isLoading ? (
-                <div>Loading …</div>
+            {lovers.length === 0 ? (
+                <div>Nobody has liked your profile yet</div>
             ) : (
-                lovers.map(({ uuid, username, picture }) => (
-                    <Item as={NavLink} to={`/profile/${uuid}`} key={uuid}>
-                        <Picture
-                            src={picture}
-                            alt={`${username}'s profile picture`}
-                        />
+                <InfiniteScrollContainer fetchMore={fetchLovers} useWindow>
+                    {lovers.map(({ uuid, username, picture }) => (
+                        <Item as={NavLink} to={`/profile/${uuid}`} key={uuid}>
+                            <Picture
+                                src={picture}
+                                alt={`${username}'s profile picture`}
+                            />
 
-                        <Username>{username}</Username>
-                    </Item>
-                ))
+                            <Username>{username}</Username>
+                        </Item>
+                    ))}
+                </InfiniteScrollContainer>
             )}
         </Container>
     );
