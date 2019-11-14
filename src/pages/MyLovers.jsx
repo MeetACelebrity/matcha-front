@@ -8,6 +8,7 @@ export default function MyLovers() {
             title="My Lovers"
             type="likes"
             noData="Nobody has liked your profile yet"
+            dataProperty="liker"
         />
     );
 }

@@ -8,6 +8,7 @@ export default function MyVisitors() {
             title="My Visitors"
             type="visits"
             noData="Nobody has visited your profile yet"
+            dataProperty="visitors"
         />
     );
 }

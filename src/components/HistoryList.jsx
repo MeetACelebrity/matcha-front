@@ -46,7 +46,7 @@ const Username = styled.h3`
     ${tw`text-lg`}
 `;
 
-export default function HistoryList({ title, type, noData }) {
+export default function HistoryList({ title, type, noData, dataProperty }) {
     const [lovers, setLovers] = useState([]);
     const [offset, setOffset] = useState(0);
     const [hasMore] = useState(true);
@@ -69,17 +69,22 @@ export default function HistoryList({ title, type, noData }) {
                 console.log(json);
                 return json;
             })
-            .then(({ liker: newLovers, liker: { length: newLoversCount } }) => {
-                if (newLoversCount > 0) {
-                    setLovers([...lovers, ...newLovers]);
-                    setOffset(offset + newLoversCount);
-                }
+            .then(
+                ({
+                    [dataProperty]: newLovers,
+                    [dataProperty]: { length: newLoversCount },
+                }) => {
+                    if (newLoversCount > 0) {
+                        setLovers([...lovers, ...newLovers]);
+                        setOffset(offset + newLoversCount);
+                    }
 
-                // DEBUG
-                // setHasMore(false);
-            })
+                    // DEBUG
+                    // setHasMore(false);
+                }
+            )
             .catch(console.error);
-    }, [lovers, offset, offsetsFetched, type]);
+    }, [dataProperty, lovers, offset, offsetsFetched, type]);
 
     useEffect(() => {
         fetchLovers();
@@ -97,8 +102,8 @@ export default function HistoryList({ title, type, noData }) {
                     hasMore={hasMore}
                     useWindow
                 >
-                    {lovers.map(({ uuid, username, src }) => (
-                        <Item as={NavLink} to={`/profile/${uuid}`} key={uuid}>
+                    {lovers.map(({ uuid, username, src }, i) => (
+                        <Item as={NavLink} to={`/profile/${uuid}`} key={i}>
                             <Picture
                                 src={src}
                                 alt={`${username}'s profile picture`}
