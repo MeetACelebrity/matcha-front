@@ -47,11 +47,12 @@ const Username = styled.h3`
 `;
 
 export default function HistoryList({ title, type, noData, dataProperty }) {
+    const LIMIT = 10;
+
     const [lovers, setLovers] = useState([]);
     const [offset, setOffset] = useState(0);
-    const [hasMore] = useState(true);
+    const [hasMore, setHasMore] = useState(true);
     const [offsetsFetched, setOffsetsFetched] = useState([]);
-    const limit = 5;
 
     const fetchLovers = useCallback(() => {
         if (offsetsFetched.includes(offset)) return;
@@ -59,28 +60,26 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
         setOffsetsFetched([...offsetsFetched, offset]);
 
         return fetch(
-            `${API_ENDPOINT}/user/${type}/history/${limit}/${offset}`,
+            `${API_ENDPOINT}/user/${type}/history/${LIMIT}/${offset}`,
             {
                 credentials: 'include',
             }
         )
             .then(res => res.json())
-            .then(json => {
-                console.log(json);
-                return json;
-            })
             .then(
                 ({
-                    [dataProperty]: newLovers,
-                    [dataProperty]: { length: newLoversCount },
+                    [dataProperty]: {
+                        data: newLovers,
+                        data: { length: newLoversCount },
+                        hasMore,
+                    },
                 }) => {
                     if (newLoversCount > 0) {
                         setLovers([...lovers, ...newLovers]);
                         setOffset(offset + newLoversCount);
                     }
 
-                    // DEBUG
-                    // setHasMore(false);
+                    setHasMore(hasMore);
                 }
             )
             .catch(console.error);
