@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, forwardRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import Media from 'react-media';
+
+import useForm from './Form.jsx';
 
 const DialogContainerShowStyles = tw`block`;
 
@@ -61,6 +63,78 @@ function OverlayForwarded({ children, ...props }, ref) {
 
 const Overlay = forwardRef(OverlayForwarded);
 
+export function useInterval(defaultValueMin, defaultValueMax) {
+    const [min, setMin] = useState(defaultValueMin);
+    const [max, setMax] = useState(defaultValueMax);
+
+    return [min, max, setMin, setMax];
+}
+
+function Filters() {
+    const [filterBy, setFilterBy] = useState('');
+    const [minAge, maxAge, setMinAge, setMaxAge] = useInterval(0, 100);
+    const [
+        minDistance,
+        maxDistance,
+        setMinDistance,
+        setMaxDistance,
+    ] = useInterval(0, 120);
+    const [
+        minPopularity,
+        maxPopularity,
+        setMinPopularity,
+        setMaxPopularity,
+    ] = useInterval(0, 1000);
+
+    const fields = [
+        {
+            label: 'Filter by',
+            value: filterBy,
+            setValue: setFilterBy,
+            isValid: true,
+            setIsValid: () => {},
+            segmented: true,
+            items: [
+                { value: 'AGE', text: 'Age' },
+                { value: 'HOMOSEXUAL', text: 'Homosexual' },
+                { value: 'BISEXUAL', text: 'Bisexual' },
+                { value: 'BISEXUAL', text: 'Bisexual' },
+            ],
+        },
+        {
+            label: 'Age',
+            minValue: minAge,
+            setMinValue: setMinAge,
+            maxValue: maxAge,
+            setMaxValue: setMaxAge,
+            isValid: true,
+            setIsValid: () => {},
+        },
+        {
+            label: 'Distance',
+            minValue: minDistance,
+            setMinValue: setMinDistance,
+            maxValue: maxDistance,
+            setMaxValue: setMaxDistance,
+            isValid: true,
+            setIsValid: () => {},
+        },
+        {
+            label: 'Popularity',
+            minValue: minPopularity,
+            setMinValue: setMinPopularity,
+            maxValue: maxPopularity,
+            setMaxValue: setMaxPopularity,
+            isValid: true,
+            setIsValid: () => {},
+        },
+    ];
+
+    const [, Form] = useForm({ fields });
+
+    return <Form fields={fields} hideButton />;
+}
+
 export default function ResultsFilters({ show, onHide }) {
     const overlayRef = useRef(null);
 
@@ -85,12 +159,16 @@ export default function ResultsFilters({ show, onHide }) {
                         <MobileDialogContainer
                             show={show}
                             onClick={e => e.stopPropagation()}
-                        />
+                        >
+                            <Filters />
+                        </MobileDialogContainer>
                     ) : (
                         <DesktopDialogContainer
                             show={show}
                             onClick={e => e.stopPropagation()}
-                        />
+                        >
+                            <Filters />
+                        </DesktopDialogContainer>
                     );
                 }}
             </Media>
