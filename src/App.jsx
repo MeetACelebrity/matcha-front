@@ -174,6 +174,8 @@ export default function App() {
                     {context.loggedIn && <BottomBar />}
 
                     <ToastContainer />
+
+                    <div id="modals-container" />
                 </Container>
             </Router>
         </AppContext.Provider>
