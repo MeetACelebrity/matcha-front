@@ -71,7 +71,7 @@ export function useInterval(defaultValueMin, defaultValueMax) {
 }
 
 function Filters() {
-    const [filterBy, setFilterBy] = useState('');
+    const [sortBy, setSortBy] = useState('AGE');
     const [minAge, maxAge, setMinAge, setMaxAge] = useInterval(0, 100);
     const [
         minDistance,
@@ -88,17 +88,17 @@ function Filters() {
 
     const fields = [
         {
-            label: 'Filter by',
-            value: filterBy,
-            setValue: setFilterBy,
+            label: 'Sort by',
+            value: sortBy,
+            setValue: setSortBy,
             isValid: true,
             setIsValid: () => {},
             segmented: true,
             items: [
                 { value: 'AGE', text: 'Age' },
-                { value: 'HOMOSEXUAL', text: 'Homosexual' },
-                { value: 'BISEXUAL', text: 'Bisexual' },
-                { value: 'BISEXUAL', text: 'Bisexual' },
+                { value: 'DISTANCE', text: 'Distance' },
+                { value: 'POPULARITY', text: 'Popularity' },
+                { value: 'TAGS', text: 'Common tags' },
             ],
         },
         {
