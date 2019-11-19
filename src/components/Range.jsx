@@ -70,7 +70,7 @@ export default function Range({
     const rect = useMemo(() => {
         if (containerRef.current === null) return null;
         return containerRef.current.getBoundingClientRect();
-    }, [containerRef.current]);
+    }, [containerRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         const width = rect === null ? max : rect.width;
