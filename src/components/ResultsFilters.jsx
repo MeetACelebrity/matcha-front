@@ -64,27 +64,16 @@ function OverlayForwarded({ children, ...props }, ref) {
 const Overlay = forwardRef(OverlayForwarded);
 
 export function useInterval(defaultValueMin, defaultValueMax) {
-    const [min, setMin] = useState(defaultValueMin);
-    const [max, setMax] = useState(defaultValueMax);
+    const [range, setRange] = useState([defaultValueMin, defaultValueMax]);
 
-    return [min, max, setMin, setMax];
+    return [range, setRange];
 }
 
 function Filters() {
     const [sortBy, setSortBy] = useState('AGE');
-    const [minAge, maxAge, setMinAge, setMaxAge] = useInterval(0, 100);
-    const [
-        minDistance,
-        maxDistance,
-        setMinDistance,
-        setMaxDistance,
-    ] = useInterval(0, 120);
-    const [
-        minPopularity,
-        maxPopularity,
-        setMinPopularity,
-        setMaxPopularity,
-    ] = useInterval(0, 1000);
+    const [ageRange, setAgeRange] = useInterval(0, 100);
+    const [distanceRange, setDistanceRange] = useInterval(0, 120);
+    const [popularityRange, setPopularityRange] = useInterval(0, 1000);
 
     const fields = [
         {
@@ -103,30 +92,23 @@ function Filters() {
         },
         {
             label: 'Age',
-            minValue: minAge,
-            setMinValue: setMinAge,
-            maxValue: maxAge,
-            setMaxValue: setMaxAge,
-            isValid: true,
-            setIsValid: () => {},
+            range: ageRange,
+            setRange: setAgeRange,
+            max: 100,
+            formatValue: value => `${value} yo`,
         },
         {
             label: 'Distance',
-            minValue: minDistance,
-            setMinValue: setMinDistance,
-            maxValue: maxDistance,
-            setMaxValue: setMaxDistance,
-            isValid: true,
-            setIsValid: () => {},
+            range: distanceRange,
+            setRange: setDistanceRange,
+            max: 120,
+            formatValue: value => `${value} km`,
         },
         {
             label: 'Popularity',
-            minValue: minPopularity,
-            setMinValue: setMinPopularity,
-            maxValue: maxPopularity,
-            setMaxValue: setMaxPopularity,
-            isValid: true,
-            setIsValid: () => {},
+            range: popularityRange,
+            setRange: setPopularityRange,
+            max: 1000,
         },
     ];
 

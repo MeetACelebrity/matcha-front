@@ -6,6 +6,7 @@ import TextField from './TextField.jsx';
 import Textarea from './Textarea.jsx';
 import SegmentedControl from './SegmentedControl.jsx';
 import Checkbox from './Checkbox.jsx';
+import Range from './Range.jsx';
 
 const FormContainer = styled.form`
     ${tw`flex flex-col items-stretch`}
@@ -74,6 +75,10 @@ function FormComponent({ id, isValid, onSubmit, fields, hideButton = false }) {
 
                 if (props.checkbox === true) {
                     return <Checkbox key={`checkbox-${i}`} {...props} />;
+                }
+
+                if (Array.isArray(props.range) === true) {
+                    return <Range key={`range-${i}`} {...props} />;
                 }
 
                 return (
