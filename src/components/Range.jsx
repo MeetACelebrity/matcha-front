@@ -96,10 +96,20 @@ export default function Range({
 
             switch (type) {
                 case 'left':
-                    setRange(([, upperBound]) => [newValue, upperBound]);
+                    setRange(([lowerBound, upperBound]) => {
+                        if (newValue >= upperBound)
+                            return [lowerBound, upperBound];
+
+                        return [newValue, upperBound];
+                    });
                     break;
                 case 'right':
-                    setRange(([lowerBound]) => [lowerBound, newValue]);
+                    setRange(([lowerBound, upperBound]) => {
+                        if (newValue <= lowerBound)
+                            return [lowerBound, upperBound];
+
+                        return [lowerBound, newValue];
+                    });
                     break;
                 default:
                     break;
@@ -145,11 +155,13 @@ export default function Range({
                         style={{ '--left': `${lowerBound}px` }}
                         onTouchStart={onDown('left')}
                         onMouseDown={onDown('left')}
+                        draggable={false}
                     />
                     <SliderThumb
                         style={{ '--left': `${upperBound}px` }}
                         onTouchStart={onDown('right')}
                         onMouseDown={onDown('right')}
+                        draggable={false}
                     />
                 </RangeContainer>
                 <AsideData>{formatValue(range[1])}</AsideData>
