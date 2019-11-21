@@ -6,6 +6,45 @@ import Media from 'react-media';
 
 import useForm from './Form.jsx';
 
+const FiltersTitle = styled.h2`
+    ${tw`text-xl`}
+
+    font-family: 'Saira', sans-serif;
+`;
+
+const Subheader = styled.p`
+    ${tw`mb-1`}
+
+    font-family: 'Saira', sans-serif;
+`;
+
+const ButtonsContainer = styled.div`
+    ${tw`flex items-center justify-end mt-2`}
+
+    & > :not(:last-child) {
+        ${tw`mr-2`}
+    }
+`;
+
+const Button = styled.button`
+    ${tw`px-3 py-1 bg-blue-700 text-white rounded shadow relative`}
+
+    &::after {
+        content: '';
+        transition: opacity 200ms;
+
+        ${tw`absolute inset-0 shadow-lg rounded opacity-0`}
+    }
+
+    &::hover::after {
+        ${tw`opacity-75`}
+    }
+
+    &::focus::after {
+        ${tw`outline-none opacity-100`}
+    }
+`;
+
 const DialogContainerShowStyles = tw`block`;
 
 const MobileDialogContainer = styled.div`
@@ -24,11 +63,11 @@ const MobileDialogContainer = styled.div`
 
 const DesktopDialogContainer = styled.div`
     --dialog-max-width: 800px;
-    --dialog-height: 400px;
+    --dialog-max-height: 400px;
 
-    ${tw`m-auto bg-white`}
+    ${tw`m-auto bg-white p-2`}
 
-    height: var(--dialog-height);
+    max-height: var(--dialog-max-height);
     width: var(--dialog-max-width);
 
     transition: transform 300ms;
@@ -69,7 +108,7 @@ export function useInterval(defaultValueMin, defaultValueMax) {
     return [range, setRange];
 }
 
-function Filters() {
+function Filters({ onHide, onConfirm }) {
     const [sortBy, setSortBy] = useState('AGE');
     const [ageRange, setAgeRange] = useInterval(0, 100);
     const [distanceRange, setDistanceRange] = useInterval(0, 120);
@@ -77,7 +116,7 @@ function Filters() {
 
     const fields = [
         {
-            label: 'Sort by',
+            label: 'Sort by :',
             value: sortBy,
             setValue: setSortBy,
             isValid: true,
@@ -112,12 +151,34 @@ function Filters() {
         },
     ];
 
-    const [, Form] = useForm({ fields });
+    const [, FormSort] = useForm({ fields: fields.slice(0, 1) });
+    const [, FormFilter] = useForm({ fields: fields.slice(1) });
 
-    return <Form fields={fields} hideButton />;
+    function confirmFilters() {
+        onConfirm(...fields.map(({ value, range }) => value || range));
+
+        onHide();
+    }
+
+    return (
+        <div>
+            <FiltersTitle>Precise the results</FiltersTitle>
+
+            <FormSort fields={fields.slice(0, 1)} hideButton />
+
+            <Subheader>Criteria :</Subheader>
+
+            <FormFilter fields={fields.slice(1)} hideButton />
+
+            <ButtonsContainer>
+                <Button onClick={onHide}>Cancel</Button>
+                <Button onClick={confirmFilters}>Apply</Button>
+            </ButtonsContainer>
+        </div>
+    );
 }
 
-export default function ResultsFilters({ show, onHide }) {
+export default function ResultsFilters({ show, onHide, onConfirm }) {
     const overlayRef = useRef(null);
 
     useEffect(() => {
@@ -135,24 +196,23 @@ export default function ResultsFilters({ show, onHide }) {
     return ReactDOM.createPortal(
         <Overlay show={show} ref={overlayRef}>
             <Media query="(max-width: 640px)">
-                {smallDevice => {
-                    console.log('render', show);
-                    return smallDevice ? (
+                {smallDevice =>
+                    smallDevice ? (
                         <MobileDialogContainer
                             show={show}
                             onClick={e => e.stopPropagation()}
                         >
-                            <Filters />
+                            <Filters onHide={onHide} onConfirm={onConfirm} />
                         </MobileDialogContainer>
                     ) : (
                         <DesktopDialogContainer
                             show={show}
                             onClick={e => e.stopPropagation()}
                         >
-                            <Filters />
+                            <Filters onHide={onHide} onConfirm={onConfirm} />
                         </DesktopDialogContainer>
-                    );
-                }}
+                    )
+                }
             </Media>
         </Overlay>,
         document.getElementById('modals-container')

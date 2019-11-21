@@ -40,6 +40,10 @@ function ProfilesContainer(
 
     const onHide = useCallback(() => setShowFiltersDialog(false), []);
 
+    function onConfirm(...data) {
+        console.log('confirm', ...data);
+    }
+
     return (
         <Container ref={ref}>
             {profiles.map(profile => {
@@ -59,7 +63,11 @@ function ProfilesContainer(
                 <FeatherIcon icon="sliders" />
             </FloatingButton>
 
-            <ResultsFilters show={showFiltersDialog} onHide={onHide} />
+            <ResultsFilters
+                show={showFiltersDialog}
+                onHide={onHide}
+                onConfirm={onConfirm}
+            />
         </Container>
     );
 }
