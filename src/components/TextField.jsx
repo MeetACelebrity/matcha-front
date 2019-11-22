@@ -49,7 +49,9 @@ export default function TextField(props) {
     function setValue(value) {
         if (hasBeenUsed === false) setHasBeenUsed(true);
 
-        setParentValue(value);
+        if (typeof setParentValue === 'function') {
+            setParentValue(value);
+        }
     }
 
     useEffect(() => {
