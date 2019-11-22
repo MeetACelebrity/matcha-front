@@ -5,6 +5,7 @@ import tw from 'tailwind.macro';
 import Media from 'react-media';
 
 import useForm from './Form.jsx';
+import Combobox from './Combobox.jsx';
 
 const FiltersTitle = styled.h2`
     ${tw`text-xl`}
@@ -63,11 +64,11 @@ const MobileDialogContainer = styled.div`
 
 const DesktopDialogContainer = styled.div`
     --dialog-max-width: 800px;
-    --dialog-max-height: 400px;
+    --dialog-min-height: 400px;
 
     ${tw`m-auto bg-white p-2`}
 
-    max-height: var(--dialog-max-height);
+    min-height: var(--dialog-max-height);
     width: var(--dialog-max-width);
 
     transition: transform 300ms;
@@ -113,6 +114,14 @@ function Filters({ onHide, onConfirm }) {
     const [ageRange, setAgeRange] = useInterval(0, 100);
     const [distanceRange, setDistanceRange] = useInterval(0, 120);
     const [popularityRange, setPopularityRange] = useInterval(0, 1000);
+    const [commonTags, setCommonTags] = useState([]);
+
+    const propositions = [
+        { uuid: 'lol', text: 'Test' },
+        { uuid: 'lol1', text: 'Yolo' },
+        { uuid: 'lol2', text: 'Lel' },
+        { uuid: 'lol3', text: 'Ahah' },
+    ];
 
     const fields = [
         {
@@ -155,7 +164,10 @@ function Filters({ onHide, onConfirm }) {
     const [, FormFilter] = useForm({ fields: fields.slice(1) });
 
     function confirmFilters() {
-        onConfirm(...fields.map(({ value, range }) => value || range));
+        onConfirm(
+            ...fields.map(({ value, range }) => value || range),
+            commonTags.map(({ uuid }) => uuid)
+        );
 
         onHide();
     }
@@ -169,6 +181,14 @@ function Filters({ onHide, onConfirm }) {
             <Subheader>Criteria :</Subheader>
 
             <FormFilter fields={fields.slice(1)} hideButton />
+
+            <Combobox
+                label="Common tags"
+                items={commonTags}
+                setItems={setCommonTags}
+                propositions={propositions}
+                onAddItem={null}
+            />
 
             <ButtonsContainer>
                 <Button onClick={onHide}>Cancel</Button>
