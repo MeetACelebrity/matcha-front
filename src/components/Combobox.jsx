@@ -186,7 +186,9 @@ export default function Combobox({
                 if (newItem === '') {
                     const lastItem = items[items.length - 1];
 
-                    deleteItemByUuid(lastItem.uuid, lastItem.text);
+                    if (lastItem !== undefined) {
+                        deleteItemByUuid(lastItem.uuid, lastItem.text);
+                    }
                 }
 
                 break;
@@ -195,19 +197,22 @@ export default function Combobox({
                 if (newItem === '') {
                     onPropositionSelect(propositionSelected);
                 } else {
-                    const item =
-                        queryMatchingPropositions.length > 0
-                            ? queryMatchingPropositions[propositionSelected]
-                            : {
-                                  uuid: (Math.random() * 1000) | 0,
-                                  text: newItem,
-                              };
+                    let item = queryMatchingPropositions[propositionSelected];
 
-                    setItems([...items, item]);
+                    if (item === undefined && typeof onAddItem === 'function') {
+                        item = {
+                            uuid: (Math.random() * 1000) | 0,
+                            text: newItem,
+                        };
+
+                        onAddItem(item.text);
+                    }
+
+                    if (item !== undefined) {
+                        setItems([...items, item]);
+                    }
 
                     setNewItem('');
-
-                    onAddItem(item.text);
                 }
 
                 break;
@@ -234,12 +239,17 @@ export default function Combobox({
         if (element !== undefined) {
             setItems([...items, element]);
 
-            onAddItem(element.text);
+            if (typeof onAddItem === 'function') {
+                onAddItem(element.text);
+            }
         }
     }
 
     function onTagKeyPress(uuid, text) {
-        return ({ key }) => {
+        return e => {
+            e.preventDefault();
+            const { key } = e;
+
             switch (key) {
                 case 'Backspace':
                 case 'Delete': {
