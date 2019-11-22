@@ -164,10 +164,10 @@ function Filters({ onHide, onConfirm }) {
     const [, FormFilter] = useForm({ fields: fields.slice(1) });
 
     function confirmFilters() {
-        onConfirm(
+        onConfirm([
             ...fields.map(({ value, range }) => value || range),
-            commonTags.map(({ uuid }) => uuid)
-        );
+            commonTags.map(({ uuid }) => uuid),
+        ]);
 
         onHide();
     }

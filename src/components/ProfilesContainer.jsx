@@ -35,7 +35,12 @@ function ShowFiltersButton({ onClick }) {
 }
 
 function ProfilesContainer(
-    { profiles = [], preview = false, onLike = () => {} },
+    {
+        profiles = [],
+        preview = false,
+        onLike = () => {},
+        onFiltersUpdate = () => {},
+    },
     ref
 ) {
     const [showFiltersDialog, setShowFiltersDialog] = useState(false);
@@ -48,8 +53,20 @@ function ProfilesContainer(
 
     const onHide = useCallback(() => setShowFiltersDialog(false), []);
 
-    function onConfirm(...data) {
-        console.log('confirm', ...data);
+    function onConfirm([
+        sortBy,
+        ageRange,
+        distanceRange,
+        popularityRange,
+        commonTags,
+    ]) {
+        onFiltersUpdate({
+            sortBy,
+            ageRange,
+            distanceRange,
+            popularityRange,
+            commonTags,
+        });
     }
 
     return (
