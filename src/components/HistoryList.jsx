@@ -7,7 +7,11 @@ import { API_ENDPOINT } from '../constants.js';
 import InfiniteScrollContainer from './InfiniteScrollContainer.jsx';
 
 const Container = styled.article`
-    ${tw`mx-auto px-5 w-3/5 mt-6`}
+    ${tw`mx-auto px-5 w-full mt-6`}
+
+    @media (min-width: 768px) {
+        ${tw`w-3/5`}
+    }
 `;
 
 const Title = styled.h2`
