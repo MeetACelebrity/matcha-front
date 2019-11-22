@@ -26,11 +26,19 @@ const Container = styled.section`
     grid-row-gap: 10px;
 `;
 
+function ShowFiltersButton({ onClick }) {
+    return (
+        <FloatingButton onClick={onClick} marginBottomMobile>
+            <FeatherIcon icon="sliders" />
+        </FloatingButton>
+    );
+}
+
 function ProfilesContainer(
     { profiles = [], preview = false, onLike = () => {} },
     ref
 ) {
-    const [showFiltersDialog, setShowFiltersDialog] = useState(true);
+    const [showFiltersDialog, setShowFiltersDialog] = useState(false);
 
     function triggerModal(e) {
         e.stopPropagation();
@@ -59,9 +67,7 @@ function ProfilesContainer(
                 );
             })}
 
-            <FloatingButton onClick={triggerModal}>
-                <FeatherIcon icon="sliders" />
-            </FloatingButton>
+            <ShowFiltersButton onClick={triggerModal} />
 
             <ResultsFilters
                 show={showFiltersDialog}
