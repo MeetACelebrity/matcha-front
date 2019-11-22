@@ -9,6 +9,7 @@ import Profile from './Profile.jsx';
 import NotFound from './NotFound.jsx';
 import MyLovers from './MyLovers.jsx';
 import MyVisitors from './MyVisitors.jsx';
+import Search from './Search.jsx';
 
 export {
     Home,
@@ -22,4 +23,5 @@ export {
     NotFound,
     MyLovers,
     MyVisitors,
+    Search,
 };

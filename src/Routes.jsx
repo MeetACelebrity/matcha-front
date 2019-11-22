@@ -17,6 +17,7 @@ import {
     NotFound,
     MyLovers,
     MyVisitors,
+    Search
 } from './pages';
 import { AppContext } from './app-context';
 
@@ -139,6 +140,7 @@ export default function Routes({ loaded = false }) {
                             component={UserProfileModify}
                         />
                         <Route path={RoutesEnum.PROFILE} component={Profile} />
+                        <Route path={RoutesEnum.SEARCH} component={Search} />
                         <Route
                             path={RoutesEnum.MY_LOVERS}
                             component={MyLovers}
