@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h2`
-    ${tw`text-xl px-2 pb-1 pt-4`}
+    ${tw`text-xl px-2 pb-2 pt-4`}
 
     font-family: 'Saira', sans-serif;
 `;
