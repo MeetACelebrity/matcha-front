@@ -4,7 +4,7 @@ export default function RelativeTime({ datetime }) {
     const [date, setDate] = useState(null);
 
     const formatter = useMemo(() => {
-        if (!('Intl' in navigator))
+        if (!('Intl' in window))
             return datetime => new Date(datetime).toString();
 
         if ('RelativeTimeFormat' in Intl) {
@@ -25,22 +25,22 @@ export default function RelativeTime({ datetime }) {
                     // more than 1 day
                     const days = diff / DAY_TO_MS;
 
-                    return intl.format(days, 'day');
+                    return intl.format(-days | 0, 'day');
                 }
 
                 if (diff >= HOUR_TO_MS) {
                     const hours = diff / HOUR_TO_MS;
 
-                    return intl.format(hours, 'hour');
+                    return intl.format(-hours | 0, 'hour');
                 }
 
                 if (diff >= MIN_TO_MS) {
                     const minutes = diff / MIN_TO_MS;
 
-                    return intl.format(minutes, 'minute');
+                    return intl.format(-minutes | 0, 'minute');
                 }
 
-                return intl.format(diff / SEC_TO_MS, 'second');
+                return intl.format((-diff / SEC_TO_MS) | 0, 'second');
             };
         }
 
@@ -52,9 +52,13 @@ export default function RelativeTime({ datetime }) {
     useEffect(() => {
         const SECOND = 1e3;
 
-        const timer = setInterval(() => {
+        function format() {
             setDate(formatter(datetime));
-        }, SECOND * 20);
+        }
+
+        const timer = setInterval(format, SECOND * 20);
+
+        format();
 
         return () => {
             clearInterval(timer);
