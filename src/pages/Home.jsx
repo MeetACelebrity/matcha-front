@@ -2,10 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
+import { toast } from 'react-toastify';
 
-// import { AppContext } from '../app-context';
 import MyProfile from '../components/MyProfile.jsx';
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
+import { API_ENDPOINT } from '../constants.js';
 
 const ClosingContainer = styled.button`
     ${tw`absolute py-2 w-6 flex justify-center items-center bg-blue-700 text-white rounded-r opacity-25`}
@@ -74,32 +75,51 @@ const Container = styled.section`
 `;
 
 export default function Home() {
-    // const {
-    //     context: {
-    //         user: { uuid },
-    //     },
-    // } = useContext(AppContext);
+    const LIMIT = 10;
 
     const [collapse, setCollapse] = useState(false);
     const homeViewRef = useRef(null);
     const [profiles, setProfiles] = useState([]);
+    const offsetsFetchedRef = useRef([]);
+    const [offset, setOffset] = useState(0);
+    const [, setHasMore] = useState(false);
+    const [mustFetch, setMustFetch] = useState(true);
 
     useEffect(() => {
-        // fetch
+        if (mustFetch === false || offsetsFetchedRef.current.includes(offset))
+            return;
 
-        setProfiles([
-            { uuid: 'lol' },
-            { uuid: 'lsol' },
-            { uuid: 'lbbol' },
-            { uuid: 'loql' },
-            { uuid: 'lqqwoql' },
-            { uuid: 'loqbadfl' },
-            { uuid: 'lagbbol' },
-            { uuid: 'lo561ql' },
-            { uuid: 'lqqagfvqwoql' },
-            { uuid: 'lo45qbadfl' },
-        ]);
-    }, []);
+        setMustFetch(false);
+
+        offsetsFetchedRef.current.push(offset);
+
+        fetch(`${API_ENDPOINT}/match/proposals/${LIMIT}/${offset}`, {
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(({ result: { data, hasMore } = {}, statusCode }) => {
+                if (typeof statusCode === 'string') {
+                    if (statusCode === 'INCOMPLETE_PROFILE') {
+                        toast('Complete your profile guy! 😛', {
+                            type: 'info',
+                        });
+
+                        return;
+                    }
+
+                    toast('An error occured during suggestions fetching', {
+                        type: 'error',
+                    });
+
+                    return;
+                }
+
+                setProfiles(profiles => [...profiles, ...data]);
+                setOffset(offset => offset + data.length);
+                setHasMore(hasMore);
+            })
+            .catch(console.error);
+    }, [mustFetch, offset]);
 
     function toggleCollapse() {
         const newValue = !collapse;
@@ -144,12 +164,16 @@ export default function Home() {
                 </ClosingContainer>
             </MyProfile>
 
-            <ProfilesContainer
-                ref={homeViewRef}
-                profiles={profiles}
-                onLike={onLike}
-                preview={true}
-            />
+            {profiles.length === 0 ? (
+                <div>AHAH NO DATA</div>
+            ) : (
+                <ProfilesContainer
+                    ref={homeViewRef}
+                    profiles={profiles}
+                    onLike={onLike}
+                    preview={true}
+                />
+            )}
         </Container>
     );
 }

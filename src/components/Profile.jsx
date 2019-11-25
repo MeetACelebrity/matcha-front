@@ -16,8 +16,12 @@ export default function Profile({
     givenName,
     familyName,
     profilePicture,
-    pictures = [],
+    pictures,
+    images,
+    age,
+    distance,
     liked,
+    hasLikedMe,
     onLike,
     preview,
 }) {
@@ -28,10 +32,13 @@ export default function Profile({
                 username={username}
                 givenName={givenName}
                 familyName={familyName}
+                age={age}
+                distance={distance}
                 profilePicture={profilePicture}
-                pictures={pictures}
+                pictures={pictures || images}
                 preview={preview}
                 liked={liked}
+                hasLikedMe={hasLikedMe}
                 onLike={() => onLike(uuid)}
             />
         </Container>

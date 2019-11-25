@@ -10,6 +10,7 @@ import NotFound from './NotFound.jsx';
 import MyLovers from './MyLovers.jsx';
 import MyVisitors from './MyVisitors.jsx';
 import Search from './Search.jsx';
+import Notifications from './Notifications.jsx';
 
 export {
     Home,
@@ -24,4 +25,5 @@ export {
     MyLovers,
     MyVisitors,
     Search,
+    Notifications,
 };

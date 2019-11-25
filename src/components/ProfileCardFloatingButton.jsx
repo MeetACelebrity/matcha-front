@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
@@ -23,9 +23,24 @@ export default function ProfileCardFloatingButton({
     edit = false,
     floating = true,
     liked = false,
+    hasLikedMe = false,
     disabled = false,
     onLike,
 }) {
+    const title = useMemo(() => {
+        if (disabled === true) return 'Add a profile picture to like';
+
+        if (liked === true) {
+            if (hasLikedMe === true) return 'Match !';
+
+            return 'Dislike';
+        }
+
+        if (liked === false) return 'Like';
+
+        return '';
+    }, [disabled, hasLikedMe, liked]);
+
     const to = edit ? '/me/edit' : null;
     const Icon = <FeatherIcon icon={edit === true ? 'edit-2' : 'heart'} />;
 
@@ -44,6 +59,7 @@ export default function ProfileCardFloatingButton({
             disabled={disabled}
             liked={liked}
             onClick={onLike}
+            title={title}
         >
             {Icon}
         </Button>

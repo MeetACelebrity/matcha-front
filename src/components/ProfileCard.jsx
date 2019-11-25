@@ -105,12 +105,15 @@ export default function ProfileCard({
     givenName = 'Non connu',
     familyName = 'Non connu',
     gender = 'LOL',
+    age = 30,
     biography = '',
     profilePicture,
     pictures,
     tags = [],
     addresses = [],
+    distance,
     liked = false,
+    hasLikedMe = false,
     onLike,
     onBlock,
     onReport,
@@ -132,6 +135,15 @@ export default function ProfileCard({
     const isCurrentUser = uuid === currentUserUuid;
 
     const address = useMemo(() => {
+        if (distance !== undefined) {
+            const intDistance = distance | 0;
+            if (intDistance < 0.05) return 'Near to you';
+
+            if (intDistance < 1) return `At ${intDistance * 10e3}m`;
+
+            return `At ${intDistance}km`;
+        }
+
         const currentAddress = addresses.find(({ type }) => type === 'CURRENT');
         const primaryAddress = addresses.find(({ type }) => type === 'PRIMARY');
 
@@ -141,7 +153,7 @@ export default function ProfileCard({
             currentAddress || primaryAddress;
 
         return formatAddress({ name, county, country, city });
-    }, [addresses]);
+    }, [addresses, distance]);
 
     useEffect(() => {
         if (profilePicture === undefined) {
@@ -171,7 +183,7 @@ export default function ProfileCard({
                         {givenName} {familyName}
                     </h3>
 
-                    <h4>{'30 years old'}</h4>
+                    <h4>{age} years old</h4>
                 </TextContainer>
 
                 <Address>{address}</Address>
@@ -190,7 +202,11 @@ export default function ProfileCard({
             <Section>
                 {preview === false && !isCurrentUser && (
                     <ActionsButtonsContainer>
-                        <Button text onClick={onLike} disabled={profilePicturesCount === 0}>
+                        <Button
+                            text
+                            onClick={onLike}
+                            disabled={profilePicturesCount === 0}
+                        >
                             Like
                         </Button>
                         <Button text red onClick={onBlock}>
@@ -226,6 +242,7 @@ export default function ProfileCard({
                     floating={preview === false}
                     disabled={profilePicturesCount === 0}
                     liked={liked}
+                    hasLikedMe={hasLikedMe}
                     onLike={onLike}
                 />
             )}
