@@ -45,6 +45,7 @@ export default function Profile() {
             .then(console.log)
             .catch(console.error);
     }
+
     function onBlock() {
         fetch(`${API_ENDPOINT}/user/block/${uuid}`, {
             method: 'POST',
@@ -54,6 +55,7 @@ export default function Profile() {
             .then(console.log)
             .catch(console.error);
     }
+
     function onReport() {
         fetch(`${API_ENDPOINT}/user/report/${uuid}`, {
             method: 'POST',

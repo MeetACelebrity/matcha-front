@@ -137,17 +137,17 @@ export default function Home() {
     }
 
     function onLike(uuid) {
-        setProfiles(
-            profiles.map(profile => {
-                if (profile.uuid === uuid) {
-                    return {
-                        ...profile,
-                        liked: !profile.liked,
-                    };
-                }
-                return profile;
-            })
+        setProfiles(profiles =>
+            profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
         );
+
+        fetch(`${API_ENDPOINT}/user/like/${uuid}`, {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(console.log)
+            .catch(console.error);
     }
 
     return (
