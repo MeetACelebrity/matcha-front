@@ -19,7 +19,7 @@ const Title = styled.h2`
 `;
 
 const Notification = styled.div`
-    ${tw`flex items-center bg-white px-3 py-2 cursor-pointer`}
+    ${tw`flex flex-col items-start bg-white px-3 py-2 cursor-pointer`}
 
     transition: background-color 200ms;
 
@@ -40,22 +40,33 @@ const Notification = styled.div`
     }
 `;
 
-const NotificationTitle = styled.h3``;
-
-const NotificationDescription = styled.p``;
-
-const NotificationDate = styled(RelativeTime)`
-    ${tw`text-red`}
+const NotificationTitle = styled.h3`
+    ${tw`text-lg`}
 `;
 
-const d = +new Date();
+const NotificationDescription = styled.p`
+    ${tw`text-base`}
+`;
+
+const NotificationDate = styled(RelativeTime)`
+    ${tw`text-red text-sm text-gray-600 font-medium`}
+`;
+
+const d = +new Date() - 1000;
 
 export default function Notifications() {
     const [notifications] = useState([
         {
-            uuid: 'qrdgjqdfhgjdqfg',
-            title: 'LOOOL',
-            description: 'Description de la notification',
+            uuid: 'qdfgqdfg89789qfdg',
+            title: 'New message',
+            description:
+                'JohnDick sent a new message : "I want to suppress your pussy"',
+            createdAt: d,
+        },
+        {
+            uuid: 'qrdgjqdfhgxjdqfg',
+            title: 'Someone visited your profile',
+            description: 'JohnDick has visited your profile',
             createdAt: d,
         },
     ]);

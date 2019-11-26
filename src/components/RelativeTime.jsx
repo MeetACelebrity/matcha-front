@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-export default function RelativeTime({ datetime }) {
+export default function RelativeTime({ datetime, ...props }) {
     const [date, setDate] = useState(null);
 
     const formatter = useMemo(() => {
@@ -65,5 +65,5 @@ export default function RelativeTime({ datetime }) {
         };
     }, [datetime, formatter]);
 
-    return <span>{date}</span>;
+    return <span {...props}>{date}</span>;
 }
