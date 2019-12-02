@@ -19,6 +19,9 @@ import {
     MyVisitors,
     Search,
     Notifications,
+    ChatList,
+    ChatConversation,
+    ChatMasterView,
 } from './pages';
 import { AppContext } from './app-context';
 
@@ -168,12 +171,26 @@ export default function Routes({ loaded = false }) {
                                             path={RoutesEnum.ME}
                                             component={UserProfile}
                                         />
+                                        <Route
+                                            path="/chat"
+                                            exact
+                                            component={ChatList}
+                                        />
+                                        <Route
+                                            path="/chat/:uuid"
+                                            exact
+                                            component={ChatConversation}
+                                        />
                                     </>
                                 ) : (
                                     <>
                                         <Route
                                             path={RoutesEnum.HOME}
                                             component={Home}
+                                        />
+                                        <Route
+                                            path="/chat/:uuid?"
+                                            component={ChatMasterView}
                                         />
                                         <Redirect
                                             exact

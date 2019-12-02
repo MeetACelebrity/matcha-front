@@ -11,6 +11,9 @@ import MyLovers from './MyLovers.jsx';
 import MyVisitors from './MyVisitors.jsx';
 import Search from './Search.jsx';
 import Notifications from './Notifications.jsx';
+import ChatList from './ChatList.jsx';
+import ChatConversation from './ChatConversation.jsx';
+import ChatMasterView from './ChatMasterView.jsx';
 
 export {
     Home,
@@ -26,4 +29,7 @@ export {
     MyVisitors,
     Search,
     Notifications,
+    ChatList,
+    ChatConversation,
+    ChatMasterView,
 };
