@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import FeathersIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
@@ -18,10 +18,12 @@ const List = styled.div`
     height: calc(100% - 3rem);
 `;
 
+const ItemHoverStyle = tw`opacity-50`;
+const ItemFocusStyle = tw`opacity-100`;
 const Item = styled.div`
     ${tw`flex items-center h-20 px-2 py-1 relative z-10`}
 
-    &::after {
+    &::before {
         ${tw`absolute inset-0 opacity-0 z-0`}
 
         content: '';
@@ -29,9 +31,17 @@ const Item = styled.div`
         transition: opacity 200ms;
     }
 
-    &:hover::after {
-        ${tw`opacity-100`}
+    &:hover::before {
+        ${ItemHoverStyle}
     }
+
+    ${({ selected }) =>
+        selected &&
+        css`
+            &&::before {
+                ${ItemFocusStyle}
+            }
+        `}
 `;
 
 const Avatar = styled.img`
@@ -52,6 +62,7 @@ const Extract = styled.p`
 
 export default function ConversationsList({
     conversations = [{}, {}, {}],
+    id,
     className,
 }) {
     return (
@@ -61,12 +72,17 @@ export default function ConversationsList({
 
                 <h3>Conversations</h3>
 
-                <FeathersIcon icon="plus-square" />
+                <FeathersIcon icon="plus-circle" />
             </Head>
 
             <List>
                 {conversations.map((v, i) => (
-                    <Item as={Link} to={`/chat/${i}`} key={i}>
+                    <Item
+                        as={Link}
+                        selected={Number(id) === i}
+                        to={`/chat/${i}`}
+                        key={i}
+                    >
                         <Avatar />
 
                         <ItemContent>

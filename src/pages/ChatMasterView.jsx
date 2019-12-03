@@ -11,10 +11,12 @@ const Container = styled.div`
 
     & > :nth-child(1) {
         ${tw`w-1/3`}
+
+        max-width: 350px;
     }
 
     & > :nth-child(2) {
-        ${tw`w-2/3 border-l border-gray-300`}
+        ${tw`flex-1 border-l border-gray-300`}
     }
 `;
 
@@ -23,7 +25,7 @@ export default function ChatMasterView() {
 
     return (
         <Container>
-            <ConversationsList />
+            <ConversationsList id={uuid} />
 
             <ConversationId id={uuid} />
         </Container>
