@@ -30,7 +30,7 @@ export default function App() {
         user: {},
         loggedIn: false,
     });
-    const [, launchWS] = useWS();
+    const [, launchWS, pubsub] = useWS();
 
     useEffect(() => {
         // fetch the api to know if the user is logged in ! :tada:
@@ -46,6 +46,7 @@ export default function App() {
                 setContext({
                     user,
                     loggedIn,
+                    pubsub,
                 });
 
                 if (loggedIn === true) {
@@ -112,7 +113,7 @@ export default function App() {
                 }
             })
             .catch(console.error);
-    }, [launchWS, setLoaded]);
+    }, [launchWS, pubsub, setLoaded]);
 
     function activateRoamingMode({
         latitude: lat,

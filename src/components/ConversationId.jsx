@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeathersIcon from 'feather-icons-react';
+
+import { AppContext } from '../app-context.js';
 
 const Container = styled.div`
     ${tw`w-full min-h-full relative flex flex-col justify-between items-stretch bg-white`}
@@ -69,7 +71,46 @@ const SendButton = styled.button`
 `;
 
 export default function ConversationId({ id }) {
-    const title = Boolean(id) === true ? `Conversation ${id}` : 'Hololo';
+    const {
+        context: { pubsub },
+    } = useContext(AppContext);
+    const [conversation, setConversation] = useState(undefined);
+    const messages = useMemo(() => {
+        if (
+            !(
+                conversation !== undefined &&
+                Array.isArray(conversation.messages)
+            )
+        )
+            return [];
+
+        return conversation.messages;
+    }, [conversation]);
+    const title = useMemo(() => {
+        if (
+            !(
+                conversation !== undefined &&
+                typeof conversation.title === 'string'
+            )
+        )
+            return id;
+
+        return conversation.title;
+    }, [conversation, id]);
+
+    useEffect(() => {
+        if (!pubsub) return;
+
+        function onData(data) {
+            setConversation(data);
+        }
+
+        pubsub.subscribe(id, onData);
+
+        return () => {
+            pubsub.unsubscribe(id, onData);
+        };
+    }, [id, pubsub]);
 
     function onSend(e) {
         e.stopPropagation();
@@ -83,7 +124,7 @@ export default function ConversationId({ id }) {
 
             <MessagesContainer>
                 <Messages>
-                    {new Array(100).fill(null).map((v, i) => {
+                    {messages.map((v, i) => {
                         const left = i % 3 === 0;
                         const nextLeft = (i + 1) % 3 === 0;
 

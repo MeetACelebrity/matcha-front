@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import FeathersIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
+
+import { AppContext } from '../app-context.js';
 
 const Container = styled.div`
     ${tw`w-full min-h-full relative flex flex-col bg-white`}
@@ -60,11 +62,27 @@ const Extract = styled.p`
     ${tw`text-gray-700 font-thin text-sm`}
 `;
 
-export default function ConversationsList({
-    conversations = [{}, {}, {}],
-    id,
-    className,
-}) {
+export default function ConversationsList({ id, className }) {
+    const {
+        context: { pubsub },
+    } = useContext(AppContext);
+    const [conversations, setConversations] = useState([]);
+
+    useEffect(() => {
+        if (!pubsub) return;
+
+        function onData(conversations) {
+            console.log('on data', conversations);
+            setConversations(conversations);
+        }
+
+        pubsub.listen(onData);
+
+        return () => {
+            pubsub.unlisten(onData);
+        };
+    }, [pubsub]);
+
     return (
         <Container className={className}>
             <Head>
@@ -76,19 +94,19 @@ export default function ConversationsList({
             </Head>
 
             <List>
-                {conversations.map((v, i) => (
+                {conversations.map(({ uuid, picture, title, description }) => (
                     <Item
                         as={Link}
-                        selected={Number(id) === i}
-                        to={`/chat/${i}`}
-                        key={i}
+                        selected={uuid === id}
+                        to={`/chat/${uuid}`}
+                        key={uuid}
                     >
-                        <Avatar />
+                        <Avatar src={picture} />
 
                         <ItemContent>
-                            <Correspondant>Baptiste Devessier</Correspondant>
+                            <Correspondant>{title}</Correspondant>
 
-                            <Extract>You want to suck my dick ?</Extract>
+                            <Extract>{description}</Extract>
                         </ItemContent>
                     </Item>
                 ))}
