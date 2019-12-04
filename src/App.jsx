@@ -11,6 +11,7 @@ import RoamingModePopUp from './components/RoamingModePopUp.jsx';
 import Routes from './Routes.jsx';
 import { AppContext } from './app-context.js';
 import { API_ENDPOINT, locateAndCompare, fetcher } from './constants.js';
+import { useWS } from './ws.js';
 
 const Container = styled.div`
     font-family: 'Roboto';
@@ -29,6 +30,7 @@ export default function App() {
         user: {},
         loggedIn: false,
     });
+    const [, launchWS] = useWS();
 
     useEffect(() => {
         // fetch the api to know if the user is logged in ! :tada:
@@ -38,11 +40,17 @@ export default function App() {
             .then(res => res.json())
             .catch(console.error)
             .then(user => {
+                const loggedIn =
+                    user === null || user === undefined ? false : true;
+
                 setContext({
                     user,
-                    loggedIn:
-                        user === null || user === undefined ? false : true,
+                    loggedIn,
                 });
+
+                if (loggedIn === true) {
+                    launchWS();
+                }
 
                 return user;
             })
@@ -104,7 +112,7 @@ export default function App() {
                 }
             })
             .catch(console.error);
-    }, [setLoaded]);
+    }, [launchWS, setLoaded]);
 
     function activateRoamingMode({
         latitude: lat,
