@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
+// import { API_ENDPOINT, fetcher } from '../constants.js';
 
 const Container = styled.div`
     ${tw`w-full h-full flex flex-col`}
@@ -23,10 +24,41 @@ function NoData() {
 }
 
 export default function Search() {
+    // const LIMIT = 10;
+
+    // const [offset, setOffset] = useState(0);
     const [results] = useState([{ uuid: 'lol' }, { uuid: 'lo2l' }]);
 
-    function onFiltersUpdate(args) {
-        console.log(args);
+    function onFiltersUpdate({
+        searchText,
+        location,
+        coordinates,
+        sortBy,
+        sortOrder,
+        ageRange,
+        distanceRange,
+        popularityRange,
+        countCommonTags,
+        commonTags,
+    }) {
+        console.log(
+            'fetch',
+            searchText,
+            location,
+            coordinates,
+            sortBy,
+            sortOrder,
+            ageRange,
+            distanceRange,
+            popularityRange,
+            countCommonTags,
+            commonTags
+        );
+        // fetcher(`${API_ENDPOINT}/match/search/${searchText}/${LIMIT}/${offset}`, {
+        //     credentials: 'include',
+        //     method: 'POST'
+        // })
+        //     .then()
     }
 
     return (
@@ -35,6 +67,7 @@ export default function Search() {
 
             {results.length > 0 ? (
                 <ProfilesContainer
+                    search
                     profiles={results}
                     preview={true}
                     onFiltersUpdate={onFiltersUpdate}

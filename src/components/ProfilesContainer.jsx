@@ -36,6 +36,7 @@ function ShowFiltersButton({ onClick }) {
 
 function ProfilesContainer(
     {
+        search = false,
         profiles = [],
         preview = false,
         onLike = () => {},
@@ -52,22 +53,6 @@ function ProfilesContainer(
     }
 
     const onHide = useCallback(() => setShowFiltersDialog(false), []);
-
-    function onConfirm([
-        sortBy,
-        ageRange,
-        distanceRange,
-        popularityRange,
-        commonTags,
-    ]) {
-        onFiltersUpdate({
-            sortBy,
-            ageRange,
-            distanceRange,
-            popularityRange,
-            commonTags,
-        });
-    }
 
     return (
         <Container ref={ref}>
@@ -87,9 +72,10 @@ function ProfilesContainer(
             <ShowFiltersButton onClick={triggerModal} />
 
             <ResultsFilters
+                search={search}
                 show={showFiltersDialog}
                 onHide={onHide}
-                onConfirm={onConfirm}
+                onConfirm={onFiltersUpdate}
             />
         </Container>
     );

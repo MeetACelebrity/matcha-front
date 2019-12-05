@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import Media from 'react-media';
+import places from 'places.js';
 
-import useForm from './Form.jsx';
+import useForm, { useFormField } from './Form.jsx';
 import Combobox from './Combobox.jsx';
 
 const FiltersTitle = styled.h2`
@@ -109,12 +110,176 @@ export function useInterval(defaultValueMin, defaultValueMax) {
     return [range, setRange];
 }
 
-function Filters({ onHide, onConfirm }) {
+function Filters({ search, onHide, onConfirm }) {
+    const LOCATION_TEXT_FIELD_ID = 'LOCATION_TEXT_FIELD_ID';
+
+    const [
+        searchText,
+        setSearchText,
+        searchTextIsValid,
+        setSearchTextIsValid,
+    ] = useFormField('');
+    const [
+        location,
+        setLocation,
+        locationIsValid,
+        setLocationIsValid,
+    ] = useFormField('');
+    const [coordinates, setCoordinates] = useState(null);
+    const [placesAutocomplete, setPlacesAutocomplete] = useState(null);
     const [sortBy, setSortBy] = useState('AGE');
+    const [sortOrder, setSortOrder] = useState('ASC');
     const [ageRange, setAgeRange] = useInterval(0, 100);
     const [distanceRange, setDistanceRange] = useInterval(0, 120);
     const [popularityRange, setPopularityRange] = useInterval(0, 1000);
+    const [countCommonTags, setCountCommonTags] = useInterval(0, 10);
     const [commonTags, setCommonTags] = useState([]);
+
+    const addressTextFieldRef = useRef(null);
+
+    const fields =
+        search === true
+            ? [
+                  {
+                      label: 'Kev Adams, …',
+                      value: searchText,
+                      setValue: setSearchText,
+                      isValid: searchTextIsValid,
+                      setIsValid: setSearchTextIsValid,
+                      min: 1,
+                  },
+                  {
+                      label: 'Sort by :',
+                      value: sortBy,
+                      setValue: setSortBy,
+                      isValid: true,
+                      setIsValid: () => {},
+                      segmented: true,
+                      items: [
+                          { value: 'AGE', text: 'Age' },
+                          { value: 'DISTANCE', text: 'Distance' },
+                          { value: 'POPULARITY', text: 'Popularity' },
+                          { value: 'TAGS', text: 'Common tags' },
+                      ],
+                  },
+                  {
+                      label: '',
+                      value: sortOrder,
+                      setValue: setSortOrder,
+                      isValid: true,
+                      setIsValid: () => {},
+                      segmented: true,
+                      items: [
+                          { value: 'ASC', text: 'Ascendant' },
+                          { value: 'DESC', text: 'Descendant' },
+                      ],
+                  },
+                  {
+                      label: 'Age',
+                      range: ageRange,
+                      setRange: setAgeRange,
+                      max: 100,
+                      formatValue: value => `${value} yo`,
+                  },
+                  {
+                      label: 'Distance',
+                      range: distanceRange,
+                      setRange: setDistanceRange,
+                      max: 120,
+                      formatValue: value => `${value} km`,
+                  },
+                  {
+                      label: 'Popularity',
+                      range: popularityRange,
+                      setRange: setPopularityRange,
+                      max: 1000,
+                  },
+                  {
+                      label: 'Common tags',
+                      range: countCommonTags,
+                      setRange: setCountCommonTags,
+                      max: 10,
+                  },
+                  {
+                      id: LOCATION_TEXT_FIELD_ID,
+                      label: 'Location',
+                      value: location,
+                      setValue: setLocation,
+                      isValid: locationIsValid,
+                      setIsValid: setLocationIsValid,
+                      min: 1,
+                  },
+              ]
+            : [
+                  {
+                      label: 'Sort by :',
+                      value: sortBy,
+                      setValue: setSortBy,
+                      isValid: true,
+                      setIsValid: () => {},
+                      segmented: true,
+                      items: [
+                          { value: 'AGE', text: 'Age' },
+                          { value: 'DISTANCE', text: 'Distance' },
+                          { value: 'POPULARITY', text: 'Popularity' },
+                          { value: 'TAGS', text: 'Common tags' },
+                      ],
+                  },
+                  {
+                      label: 'Age',
+                      range: ageRange,
+                      setRange: setAgeRange,
+                      max: 100,
+                      formatValue: value => `${value} yo`,
+                  },
+                  {
+                      label: 'Distance',
+                      range: distanceRange,
+                      setRange: setDistanceRange,
+                      max: 120,
+                      formatValue: value => `${value} km`,
+                  },
+                  {
+                      label: 'Popularity',
+                      range: popularityRange,
+                      setRange: setPopularityRange,
+                      max: 1000,
+                  },
+              ];
+
+    useEffect(() => {
+        const el = document.getElementById(LOCATION_TEXT_FIELD_ID);
+        if (el === null) return;
+
+        addressTextFieldRef.current = el;
+
+        if (placesAutocomplete === null) {
+            const placesAutocomplete = places({
+                appId: process.env.REACT_APP_ALGOLIA_PLACES_APP_ID,
+                apiKey: process.env.REACT_APP_ALGOLIA_PLACES_API_KEY,
+                container: addressTextFieldRef.current,
+                style: false,
+            }).configure({
+                language: 'en',
+                type: 'address',
+                useDeviceLocation: false,
+            });
+
+            placesAutocomplete.on(
+                'change',
+                ({
+                    suggestion: {
+                        latlng: { lat, lng },
+                    },
+                }) => {
+                    setCoordinates({ lat, long: lng });
+                    console.log({ lat, long: lng });
+                }
+            );
+
+            setPlacesAutocomplete(placesAutocomplete);
+        }
+    }, [placesAutocomplete]);
 
     const propositions = [
         { uuid: 'lol', text: 'Test' },
@@ -123,64 +288,40 @@ function Filters({ onHide, onConfirm }) {
         { uuid: 'lol3', text: 'Ahah' },
     ];
 
-    const fields = [
-        {
-            label: 'Sort by :',
-            value: sortBy,
-            setValue: setSortBy,
-            isValid: true,
-            setIsValid: () => {},
-            segmented: true,
-            items: [
-                { value: 'AGE', text: 'Age' },
-                { value: 'DISTANCE', text: 'Distance' },
-                { value: 'POPULARITY', text: 'Popularity' },
-                { value: 'TAGS', text: 'Common tags' },
-            ],
-        },
-        {
-            label: 'Age',
-            range: ageRange,
-            setRange: setAgeRange,
-            max: 100,
-            formatValue: value => `${value} yo`,
-        },
-        {
-            label: 'Distance',
-            range: distanceRange,
-            setRange: setDistanceRange,
-            max: 120,
-            formatValue: value => `${value} km`,
-        },
-        {
-            label: 'Popularity',
-            range: popularityRange,
-            setRange: setPopularityRange,
-            max: 1000,
-        },
-    ];
-
     const [, FormSort] = useForm({ fields: fields.slice(0, 1) });
     const [, FormFilter] = useForm({ fields: fields.slice(1) });
 
     function confirmFilters() {
-        onConfirm([
-            ...fields.map(({ value, range }) => value || range),
-            commonTags.map(({ uuid }) => uuid),
-        ]);
+        onConfirm({
+            search,
+            searchText,
+            location,
+            coordinates,
+            sortBy,
+            sortOrder,
+            ageRange,
+            distanceRange,
+            popularityRange,
+            countCommonTags,
+            commonTags,
+        });
 
         onHide();
     }
 
     return (
         <div>
-            <FiltersTitle>Precise the results</FiltersTitle>
+            <FiltersTitle>
+                {search === true
+                    ? 'Find the celebrity you always dreamed'
+                    : 'Precise the results'}
+            </FiltersTitle>
 
-            <FormSort fields={fields.slice(0, 1)} hideButton />
+            <FormSort fields={fields.slice(0, 3)} hideButton />
 
             <Subheader>Criteria :</Subheader>
 
-            <FormFilter fields={fields.slice(1)} hideButton />
+            <FormFilter fields={fields.slice(3)} hideButton />
 
             <Combobox
                 label="Common tags"
@@ -198,7 +339,7 @@ function Filters({ onHide, onConfirm }) {
     );
 }
 
-export default function ResultsFilters({ show, onHide, onConfirm }) {
+export default function ResultsFilters({ search, show, onHide, onConfirm }) {
     const overlayRef = useRef(null);
 
     useEffect(() => {
@@ -222,14 +363,22 @@ export default function ResultsFilters({ show, onHide, onConfirm }) {
                             show={show}
                             onClick={e => e.stopPropagation()}
                         >
-                            <Filters onHide={onHide} onConfirm={onConfirm} />
+                            <Filters
+                                search={search}
+                                onHide={onHide}
+                                onConfirm={onConfirm}
+                            />
                         </MobileDialogContainer>
                     ) : (
                         <DesktopDialogContainer
                             show={show}
                             onClick={e => e.stopPropagation()}
                         >
-                            <Filters onHide={onHide} onConfirm={onConfirm} />
+                            <Filters
+                                search={search}
+                                onHide={onHide}
+                                onConfirm={onConfirm}
+                            />
                         </DesktopDialogContainer>
                     )
                 }
