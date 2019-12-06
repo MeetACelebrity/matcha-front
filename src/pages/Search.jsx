@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
-// import { API_ENDPOINT, fetcher } from '../constants.js';
+import { API_ENDPOINT, fetcher } from '../constants.js';
 
 const Container = styled.div`
     ${tw`w-full h-full flex flex-col`}
@@ -24,10 +24,10 @@ function NoData() {
 }
 
 export default function Search() {
-    // const LIMIT = 10;
+    const LIMIT = 10;
 
-    // const [offset, setOffset] = useState(0);
-    const [results] = useState([{ uuid: 'lol' }, { uuid: 'lo2l' }]);
+    const [offset] = useState(0);
+    const [results, setResults] = useState([{ uuid: 'lol' }, { uuid: 'lo2l' }]);
 
     function onFiltersUpdate({
         searchText,
@@ -54,11 +54,34 @@ export default function Search() {
             countCommonTags,
             commonTags
         );
-        // fetcher(`${API_ENDPOINT}/match/search/${searchText}/${LIMIT}/${offset}`, {
-        //     credentials: 'include',
-        //     method: 'POST'
-        // })
-        //     .then()
+
+        fetcher(
+            `${API_ENDPOINT}/match/search/${searchText}/${LIMIT}/${offset}`,
+            {
+                credentials: 'include',
+                method: 'POST',
+                body: {
+                    location,
+                    tagsArray: commonTags,
+                    orderBy: sortBy,
+                    order: sortOrder,
+                    minAge: ageRange[0],
+                    maxAge: ageRange[1],
+                    minDistance: distanceRange[0],
+                    maxDistance: distanceRange[1],
+                    minScore: popularityRange[0],
+                    maxScore: popularityRange[1],
+                    minCommonTags: countCommonTags[0],
+                    maxCommonTags: countCommonTags[1],
+                },
+                json: true,
+            }
+        )
+            .then(res => res.json())
+            .then(({ results: { datas } }) => {
+                setResults(datas);
+            })
+            .catch(console.error);
     }
 
     return (

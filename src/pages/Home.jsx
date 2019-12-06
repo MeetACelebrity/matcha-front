@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 import MyProfile from '../components/MyProfile.jsx';
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
-import { API_ENDPOINT } from '../constants.js';
+import { API_ENDPOINT, fetcher } from '../constants.js';
 
 const ClosingContainer = styled.button`
     ${tw`absolute py-2 w-6 flex justify-center items-center bg-blue-700 text-white rounded-r opacity-25`}
@@ -79,6 +79,7 @@ export default function Home() {
 
     const [collapse, setCollapse] = useState(false);
     const homeViewRef = useRef(null);
+    const [body, setBody] = useState({});
     const [profiles, setProfiles] = useState([]);
     const offsetsFetchedRef = useRef([]);
     const [offset, setOffset] = useState(0);
@@ -93,8 +94,11 @@ export default function Home() {
 
         offsetsFetchedRef.current.push(offset);
 
-        fetch(`${API_ENDPOINT}/match/proposals/${LIMIT}/${offset}`, {
+        fetcher(`${API_ENDPOINT}/match/proposals/${LIMIT}/${offset}`, {
             credentials: 'include',
+            method: 'POST',
+            body,
+            json: true,
         })
             .then(res => res.json())
             .then(({ result: { data, hasMore } = {}, statusCode }) => {
@@ -119,7 +123,7 @@ export default function Home() {
                 setHasMore(hasMore);
             })
             .catch(console.error);
-    }, [mustFetch, offset]);
+    }, [body, mustFetch, offset]);
 
     function toggleCollapse() {
         const newValue = !collapse;
@@ -150,6 +154,28 @@ export default function Home() {
             .catch(console.error);
     }
 
+    function onFiltersUpdate({
+        sortBy,
+        sortOrder,
+        ageRange,
+        distanceRange,
+        popularityRange,
+        countCommonTags,
+    }) {
+        setBody({
+            orderBy: sortBy,
+            order: sortOrder,
+            minAge: ageRange[0],
+            maxAge: ageRange[1],
+            minDistance: distanceRange[0],
+            maxDistance: distanceRange[1],
+            minScore: popularityRange[0],
+            maxScore: popularityRange[1],
+            minCommonTags: countCommonTags[0],
+            maxCommonTags: countCommonTags[1],
+        });
+    }
+
     return (
         <Container>
             <MyProfile className={collapse ? 'collapse' : ''}>
@@ -171,6 +197,7 @@ export default function Home() {
                     ref={homeViewRef}
                     profiles={profiles}
                     onLike={onLike}
+                    onFiltersUpdate={onFiltersUpdate}
                     preview={true}
                 />
             )}

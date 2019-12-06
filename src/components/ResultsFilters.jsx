@@ -127,7 +127,7 @@ function Filters({ search, onHide, onConfirm }) {
     ] = useFormField('');
     const [coordinates, setCoordinates] = useState(null);
     const [placesAutocomplete, setPlacesAutocomplete] = useState(null);
-    const [sortBy, setSortBy] = useState('AGE');
+    const [sortBy, setSortBy] = useState('age');
     const [sortOrder, setSortOrder] = useState('ASC');
     const [ageRange, setAgeRange] = useInterval(0, 100);
     const [distanceRange, setDistanceRange] = useInterval(0, 120);
@@ -156,10 +156,10 @@ function Filters({ search, onHide, onConfirm }) {
                       setIsValid: () => {},
                       segmented: true,
                       items: [
-                          { value: 'AGE', text: 'Age' },
-                          { value: 'DISTANCE', text: 'Distance' },
-                          { value: 'POPULARITY', text: 'Popularity' },
-                          { value: 'TAGS', text: 'Common tags' },
+                          { value: 'age', text: 'Age' },
+                          { value: 'distance', text: 'Distance' },
+                          { value: 'score', text: 'Popularity' },
+                          { value: 'commonTags', text: 'Common tags' },
                       ],
                   },
                   {
