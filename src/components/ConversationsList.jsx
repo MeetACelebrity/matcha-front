@@ -73,7 +73,9 @@ export default function ConversationsList({ id, className }) {
 
         function onData(conversations) {
             console.log('on data', conversations);
-            setConversations(conversations);
+            setConversations(
+                conversations
+            );
         }
 
         pubsub.listen(onData);
@@ -81,7 +83,7 @@ export default function ConversationsList({ id, className }) {
         return () => {
             pubsub.unlisten(onData);
         };
-    }, [pubsub]);
+    }, [id, pubsub]);
 
     return (
         <Container className={className}>

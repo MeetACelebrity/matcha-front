@@ -72,8 +72,9 @@ const SendButton = styled.button`
 
 export default function ConversationId({ id }) {
     const {
-        context: { pubsub },
+        context: { pubsub, ws },
     } = useContext(AppContext);
+    const [message, setMessage] = useState('');
     const [conversation, setConversation] = useState(undefined);
     const messages = useMemo(() => {
         if (
@@ -86,17 +87,8 @@ export default function ConversationId({ id }) {
 
         return conversation.messages;
     }, [conversation]);
-    const title = useMemo(() => {
-        if (
-            !(
-                conversation !== undefined &&
-                typeof conversation.title === 'string'
-            )
-        )
-            return id;
 
-        return conversation.title;
-    }, [conversation, id]);
+    const title = (conversation && conversation.title) || id;
 
     useEffect(() => {
         if (!pubsub) return;
@@ -115,7 +107,13 @@ export default function ConversationId({ id }) {
     function onSend(e) {
         e.stopPropagation();
 
-        console.log('send !');
+        console.log('send :', id, message);
+
+        ws.publishMessage(id, message);
+        setConversation(conversation => ({
+            ...conversation,
+            messages: [...conversation.messages, message],
+        }));
     }
 
     return (
@@ -143,7 +141,11 @@ export default function ConversationId({ id }) {
 
             <Form>
                 <InputContainer>
-                    <Input placeholder="Write your message…" />
+                    <Input
+                        placeholder="Write your message…"
+                        value={message}
+                        onChange={({ target: { value } }) => setMessage(value)}
+                    />
 
                     <SendButton onClick={onSend}>
                         <FeathersIcon icon="send" size={16} />

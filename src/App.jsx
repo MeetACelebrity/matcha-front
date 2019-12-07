@@ -29,6 +29,8 @@ export default function App() {
     const [context, setContext] = useState({
         user: {},
         loggedIn: false,
+        pubsub: null,
+        ws: null,
     });
     const [, launchWS, pubsub] = useWS();
 
@@ -50,7 +52,10 @@ export default function App() {
                 });
 
                 if (loggedIn === true) {
-                    launchWS();
+                    setContext(context => ({
+                        ...context,
+                        ws: launchWS(),
+                    }));
                 }
 
                 return user;

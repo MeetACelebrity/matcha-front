@@ -66,6 +66,10 @@ export const WS_MESSAGES_TYPES = {
     INIT: 'INIT',
 };
 
+export const WS_OUT_MESSAGES_TYPES = {
+    NEW_MESSAGE: 'NEW_MESSAGE',
+};
+
 export const WS_RESPONSES_TYPES = {
     CONVERSATIONS: 'CONVERSATIONS',
     NEW_CONVERSATION: 'NEW_CONVERSATION',
@@ -116,8 +120,25 @@ class WS {
 
                 switch (message.type) {
                     case WS_RESPONSES_TYPES.CONVERSATIONS: {
-                        const { conversations } = message.payload;
-                        if (!Array.isArray(conversations)) break;
+                        const conversations = (
+                            message.payload.conversations || []
+                        ).map(({ uuid, users = [], messages }) => ({
+                            uuid,
+                            users,
+                            title:
+                                users.reduce((title, { username }) => {
+                                    if (title === null) return username;
+
+                                    return `${title} - ${username}`;
+                                }, null) || uuid,
+                            description:
+                                Array.isArray(messages) && messages[0]
+                                    ? messages[0].payload
+                                    : '',
+                            picture:
+                                'https://trello-attachments.s3.amazonaws.com/5dcbd72c39989f2478c2646d/300x166/e7586ac2b0e95ab0dd217ca9895217a4/Capture_d%E2%80%99e%CC%81cran_2019-11-20_a%CC%80_00.30.13.png',
+                            messages: Array.isArray(messages) ? messages : [],
+                        }));
 
                         for (const conversation of conversations) {
                             console.log('gotten conversation', conversation);
@@ -158,7 +179,17 @@ class WS {
     }
 
     send(msg) {
-        this.ws.send(JSON.stringify(msg));
+        return this.ws.send(JSON.stringify(msg));
+    }
+
+    publishMessage(conversationId, message) {
+        return this.send({
+            type: WS_OUT_MESSAGES_TYPES.NEW_MESSAGE,
+            payload: {
+                conversationId,
+                message,
+            },
+        });
     }
 }
 
@@ -171,6 +202,8 @@ export function useWS() {
         ws.setup();
 
         setWS(ws);
+
+        return ws;
     }, [pubsub]);
 
     return [ws, setupWS, pubsub];
