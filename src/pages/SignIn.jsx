@@ -2,11 +2,13 @@ import React, { useContext } from 'react';
 import { toast } from 'react-toastify';
 
 import { AppContext } from '../app-context.js';
+import { useWS } from '../ws.js';
 import { API_ENDPOINT, SIGN_IN_MESSAGES } from '../constants';
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
 
 export default function SignUp() {
+    const [, launchWS] = useWS();
     const [
         username,
         setUsername,
@@ -67,10 +69,12 @@ export default function SignUp() {
                 });
 
                 if (isError === false) {
-                    setContext({
+                    setContext(context => ({
+                        ...context,
                         user,
                         loggedIn: true,
-                    });
+                        ws: launchWS(),
+                    }));
                 }
             })
             .catch(console.error);

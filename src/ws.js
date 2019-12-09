@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { w3cwebsocket as WebSocketClient } from 'websocket';
 
 class PubSub {
@@ -193,18 +193,19 @@ class WS {
     }
 }
 
+const PUBSUB = new PubSub();
+
 export function useWS() {
-    const pubsub = useMemo(() => new PubSub(), []);
-
     const [ws, setWS] = useState(null);
+
     const setupWS = useCallback(() => {
-        const ws = new WS(pubsub);
-        ws.setup();
+        const websocket = new WS(PUBSUB);
+        websocket.setup();
 
-        setWS(ws);
+        setWS(websocket);
 
-        return ws;
-    }, [pubsub]);
+        return websocket;
+    }, []);
 
-    return [ws, setupWS, pubsub];
+    return [ws, setupWS, PUBSUB];
 }

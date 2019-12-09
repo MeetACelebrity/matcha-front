@@ -72,10 +72,7 @@ export default function ConversationsList({ id, className }) {
         if (!pubsub) return;
 
         function onData(conversations) {
-            console.log('on data', conversations);
-            setConversations(
-                conversations
-            );
+            setConversations(conversations);
         }
 
         pubsub.listen(onData);
