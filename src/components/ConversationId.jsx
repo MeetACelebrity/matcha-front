@@ -111,7 +111,7 @@ export default function ConversationId({ id }) {
 
         ws.publishMessage(id, message);
         setConversation(conversation => ({
-            ...conversation,
+            ...(conversation || []),
             messages: [...conversation.messages, message],
         }));
     }
