@@ -72,10 +72,21 @@ const SendButton = styled.button`
 
 export default function ConversationId({ id }) {
     const {
-        context: { pubsub, ws },
+        context: {
+            pubsub,
+            ws,
+            user: me,
+            user: { uuid: currentUserUuid },
+        },
     } = useContext(AppContext);
     const [message, setMessage] = useState('');
     const [conversation, setConversation] = useState(undefined);
+    // const users = useMemo(() => {
+    //     if (!(conversation !== undefined && Array.isArray(conversation.users)))
+    //         return [];
+
+    //     return conversation.users;
+    // }, [conversation]);
     const messages = useMemo(() => {
         if (
             !(
@@ -93,27 +104,47 @@ export default function ConversationId({ id }) {
     useEffect(() => {
         if (!pubsub) return;
 
+        let exit = false;
+
         function onData(data) {
-            setConversation(data);
+            console.log('data = ', data);
+
+            !exit && setConversation(data);
         }
 
         pubsub.subscribe(id, onData);
 
         return () => {
+            exit = true;
             pubsub.unsubscribe(id, onData);
         };
     }, [id, pubsub]);
 
     function onSend(e) {
-        e.stopPropagation();
+        if (e) {
+            e.stopPropagation();
+        }
 
-        console.log('send :', id, message);
+        setMessage('');
 
         ws.publishMessage(id, message);
-        setConversation(conversation => ({
-            ...(conversation || []),
-            messages: [...conversation.messages, message],
-        }));
+
+        pubsub._publish(id, {
+            ...conversation,
+            messages: [
+                ...conversation.messages,
+                {
+                    authorUuid: currentUserUuid,
+                    authorUsername: me.username,
+                    createdAt: +new Date(),
+                    payload: message,
+                }
+            ]
+        });
+    }
+
+    function isMyMessage(messageUuid) {
+        return currentUserUuid === messageUuid;
     }
 
     return (
@@ -122,17 +153,21 @@ export default function ConversationId({ id }) {
 
             <MessagesContainer>
                 <Messages>
-                    {messages.map((v, i) => {
-                        const left = i % 3 === 0;
-                        const nextLeft = (i + 1) % 3 === 0;
+                    {messages.map(({ uuid, authorUuid, payload }, i) => {
+                        const putOnLeft = !isMyMessage(authorUuid);
+
+                        const nextMessage = messages[i + 1];
+                        const isLastOfGroup =
+                            nextMessage === undefined ||
+                            authorUuid !== nextMessage.authorUuid;
 
                         return (
                             <Message
-                                className={left ? 'left' : 'right'}
-                                last={left !== nextLeft}
-                                key={i}
+                                className={putOnLeft ? 'left' : 'right'}
+                                last={isLastOfGroup}
+                                key={uuid || i}
                             >
-                                qdfgjqdfhgjkqdfg{'lol '.repeat(i % 20)}
+                                {payload}
                             </Message>
                         );
                     })}
@@ -145,6 +180,9 @@ export default function ConversationId({ id }) {
                         placeholder="Write your message…"
                         value={message}
                         onChange={({ target: { value } }) => setMessage(value)}
+                        onKeyPress={({ key }) => {
+                            key === 'Enter' && onSend();
+                        }}
                     />
 
                     <SendButton onClick={onSend}>
