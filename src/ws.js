@@ -131,10 +131,6 @@ class WS {
 
                                     return `${title} - ${username}`;
                                 }, null) || uuid,
-                            description:
-                                Array.isArray(messages) && messages[0]
-                                    ? messages[0].payload
-                                    : '',
                             picture:
                                 'https://trello-attachments.s3.amazonaws.com/5dcbd72c39989f2478c2646d/300x166/e7586ac2b0e95ab0dd217ca9895217a4/Capture_d%E2%80%99e%CC%81cran_2019-11-20_a%CC%80_00.30.13.png',
                             messages: Array.isArray(messages) ? messages : [],

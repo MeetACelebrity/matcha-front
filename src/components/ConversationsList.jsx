@@ -93,22 +93,29 @@ export default function ConversationsList({ id, className }) {
             </Head>
 
             <List>
-                {conversations.map(({ uuid, picture, title, description }) => (
-                    <Item
-                        as={Link}
-                        selected={uuid === id}
-                        to={`/chat/${uuid}`}
-                        key={uuid}
-                    >
-                        <Avatar src={picture} />
+                {conversations.map(({ uuid, picture, title, messages }) => {
+                    const description =
+                        Array.isArray(messages) && messages[messages.length - 1]
+                            ? messages[messages.length - 1].payload
+                            : '';
 
-                        <ItemContent>
-                            <Correspondant>{title}</Correspondant>
+                    return (
+                        <Item
+                            as={Link}
+                            selected={uuid === id}
+                            to={`/chat/${uuid}`}
+                            key={uuid}
+                        >
+                            <Avatar src={picture} />
 
-                            <Extract>{description}</Extract>
-                        </ItemContent>
-                    </Item>
-                ))}
+                            <ItemContent>
+                                <Correspondant>{title}</Correspondant>
+
+                                <Extract>{description}</Extract>
+                            </ItemContent>
+                        </Item>
+                    );
+                })}
             </List>
         </Container>
     );
