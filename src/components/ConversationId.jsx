@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useMemo, useContext } from 'react';
+import React, {
+    useState,
+    useEffect,
+    useRef,
+    useLayoutEffect,
+    useMemo,
+    useContext,
+} from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeathersIcon from 'feather-icons-react';
@@ -81,12 +88,9 @@ export default function ConversationId({ id }) {
     } = useContext(AppContext);
     const [message, setMessage] = useState('');
     const [conversation, setConversation] = useState(undefined);
-    // const users = useMemo(() => {
-    //     if (!(conversation !== undefined && Array.isArray(conversation.users)))
-    //         return [];
 
-    //     return conversation.users;
-    // }, [conversation]);
+    const messagesContainerRef = useRef(null);
+
     const messages = useMemo(() => {
         if (
             !(
@@ -120,6 +124,15 @@ export default function ConversationId({ id }) {
         };
     }, [id, pubsub]);
 
+    useLayoutEffect(() => {
+        if (messagesContainerRef.current === null) return;
+
+        messagesContainerRef.current.scrollTo({
+            top: 1000000,
+            behavior: 'smooth',
+        });
+    }, [messages]);
+
     function onSend(e) {
         if (e) {
             e.stopPropagation();
@@ -138,8 +151,8 @@ export default function ConversationId({ id }) {
                     authorUsername: me.username,
                     createdAt: +new Date(),
                     payload: message,
-                }
-            ]
+                },
+            ],
         });
     }
 
@@ -152,7 +165,7 @@ export default function ConversationId({ id }) {
             <Head>{title}</Head>
 
             <MessagesContainer>
-                <Messages>
+                <Messages ref={messagesContainerRef}>
                     {messages.map(({ uuid, authorUuid, payload }, i) => {
                         const putOnLeft = !isMyMessage(authorUuid);
 
