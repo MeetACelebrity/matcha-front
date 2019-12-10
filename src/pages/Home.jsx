@@ -81,18 +81,14 @@ export default function Home() {
     const homeViewRef = useRef(null);
     const [body, setBody] = useState({});
     const [profiles, setProfiles] = useState([]);
-    const offsetsFetchedRef = useRef([]);
+    const offsetsFetchedRef = useRef(new Set());
     const [offset, setOffset] = useState(0);
     const [, setHasMore] = useState(false);
-    const [mustFetch, setMustFetch] = useState(true);
 
     useEffect(() => {
-        if (mustFetch === false || offsetsFetchedRef.current.includes(offset))
-            return;
+        if (offsetsFetchedRef.current.has(offset)) return;
 
-        setMustFetch(false);
-
-        offsetsFetchedRef.current.push(offset);
+        offsetsFetchedRef.current.add(offset);
 
         fetcher(`${API_ENDPOINT}/match/proposals/${LIMIT}/${offset}`, {
             credentials: 'include',
@@ -119,11 +115,14 @@ export default function Home() {
                 }
 
                 setProfiles(profiles => [...profiles, ...data]);
-                setOffset(offset => offset + data.length);
                 setHasMore(hasMore);
+
+                if (data.length > 0) {
+                    setOffset(offset => offset + data.length + 1);
+                }
             })
             .catch(console.error);
-    }, [body, mustFetch, offset]);
+    }, [body, offset]);
 
     function toggleCollapse() {
         const newValue = !collapse;
@@ -165,15 +164,19 @@ export default function Home() {
         setBody({
             orderBy: sortBy,
             order: sortOrder,
-            minAge: ageRange[0],
-            maxAge: ageRange[1],
-            minDistance: distanceRange[0],
-            maxDistance: distanceRange[1],
-            minScore: popularityRange[0],
-            maxScore: popularityRange[1],
-            minCommonTags: countCommonTags[0],
-            maxCommonTags: countCommonTags[1],
+            minAge: ageRange[0] | 0,
+            maxAge: ageRange[1] | 0,
+            minDistance: distanceRange[0] | 0,
+            maxDistance: distanceRange[1] | 0,
+            minScore: popularityRange[0] | 0,
+            maxScore: popularityRange[1] | 0,
+            minCommonTags: countCommonTags[0] | 0,
+            maxCommonTags: countCommonTags[1] | 0,
         });
+
+        offsetsFetchedRef.current.clear();
+        setOffset(0);
+        setProfiles([]);
     }
 
     return (
@@ -190,17 +193,13 @@ export default function Home() {
                 </ClosingContainer>
             </MyProfile>
 
-            {profiles.length === 0 ? (
-                <div>AHAH NO DATA</div>
-            ) : (
-                <ProfilesContainer
-                    ref={homeViewRef}
-                    profiles={profiles}
-                    onLike={onLike}
-                    onFiltersUpdate={onFiltersUpdate}
-                    preview={true}
-                />
-            )}
+            <ProfilesContainer
+                ref={homeViewRef}
+                profiles={profiles}
+                onLike={onLike}
+                onFiltersUpdate={onFiltersUpdate}
+                preview={true}
+            />
         </Container>
     );
 }

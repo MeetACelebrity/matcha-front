@@ -15,19 +15,11 @@ const Title = styled.h2`
     font-family: 'Saira', sans-serif;
 `;
 
-const NoDataContainer = styled.p`
-    ${tw`px-2 my-auto text-center text-lg`}
-`;
-
-function NoData() {
-    return <NoDataContainer>The are no profiles to show</NoDataContainer>;
-}
-
 export default function Search() {
     const LIMIT = 10;
 
     const [offset] = useState(0);
-    const [results, setResults] = useState([{ uuid: 'lol' }, { uuid: 'lo2l' }]);
+    const [results, setResults] = useState([]);
 
     function onFiltersUpdate({
         searchText,
@@ -78,7 +70,7 @@ export default function Search() {
             }
         )
             .then(res => res.json())
-            .then(({ results: { datas } }) => {
+            .then(({ result: { datas } }) => {
                 setResults(datas);
             })
             .catch(console.error);
@@ -88,16 +80,12 @@ export default function Search() {
         <Container>
             <Title>Search celebrities</Title>
 
-            {results.length > 0 ? (
-                <ProfilesContainer
-                    search
-                    profiles={results}
-                    preview={true}
-                    onFiltersUpdate={onFiltersUpdate}
-                />
-            ) : (
-                <NoData />
-            )}
+            <ProfilesContainer
+                search
+                profiles={results}
+                preview={true}
+                onFiltersUpdate={onFiltersUpdate}
+            />
         </Container>
     );
 }

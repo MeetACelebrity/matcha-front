@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, forwardRef } from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
@@ -185,14 +185,14 @@ function Filters({ search, onHide, onConfirm }) {
                       label: 'Distance',
                       range: distanceRange,
                       setRange: setDistanceRange,
-                      max: 120,
+                      max: 1000,
                       formatValue: value => `${value} km`,
                   },
                   {
                       label: 'Popularity',
                       range: popularityRange,
                       setRange: setPopularityRange,
-                      max: 1000,
+                      max: 1000000,
                   },
                   {
                       label: 'Common tags',
@@ -219,10 +219,22 @@ function Filters({ search, onHide, onConfirm }) {
                       setIsValid: () => {},
                       segmented: true,
                       items: [
-                          { value: 'AGE', text: 'Age' },
-                          { value: 'DISTANCE', text: 'Distance' },
-                          { value: 'POPULARITY', text: 'Popularity' },
-                          { value: 'TAGS', text: 'Common tags' },
+                          { value: 'age', text: 'Age' },
+                          { value: 'distance', text: 'Distance' },
+                          { value: 'score', text: 'Popularity' },
+                          { value: 'commonTags', text: 'Common tags' },
+                      ],
+                  },
+                  {
+                      label: '',
+                      value: sortOrder,
+                      setValue: setSortOrder,
+                      isValid: true,
+                      setIsValid: () => {},
+                      segmented: true,
+                      items: [
+                          { value: 'ASC', text: 'Ascendant' },
+                          { value: 'DESC', text: 'Descendant' },
                       ],
                   },
                   {
@@ -236,14 +248,20 @@ function Filters({ search, onHide, onConfirm }) {
                       label: 'Distance',
                       range: distanceRange,
                       setRange: setDistanceRange,
-                      max: 120,
+                      max: 1000,
                       formatValue: value => `${value} km`,
                   },
                   {
                       label: 'Popularity',
                       range: popularityRange,
                       setRange: setPopularityRange,
-                      max: 1000,
+                      max: 1000000,
+                  },
+                  {
+                      label: 'Common tags',
+                      range: countCommonTags,
+                      setRange: setCountCommonTags,
+                      max: 10,
                   },
               ];
 
@@ -270,40 +288,42 @@ function Filters({ search, onHide, onConfirm }) {
                 ({
                     suggestion: {
                         latlng: { lat, lng },
+                        value,
                     },
                 }) => {
                     setCoordinates({ lat, long: lng });
-                    console.log({ lat, long: lng });
+                    setLocation(value);
                 }
             );
 
             setPlacesAutocomplete(placesAutocomplete);
         }
-    }, [placesAutocomplete]);
+    }, [placesAutocomplete, setLocation]);
 
     const propositions = [
-        { uuid: 'lol', text: 'Test' },
+        { uuid: 'tesla', text: 'tesla' },
         { uuid: 'lol1', text: 'Yolo' },
         { uuid: 'lol2', text: 'Lel' },
         { uuid: 'lol3', text: 'Ahah' },
     ];
 
-    const [, FormSort] = useForm({ fields: fields.slice(0, 1) });
-    const [, FormFilter] = useForm({ fields: fields.slice(1) });
+    const seperation = search === true ? 3 : 2;
+
+    const [, FormSort] = useForm({});
+    const [, FormFilter] = useForm({});
 
     function confirmFilters() {
         onConfirm({
             search,
             searchText,
-            location,
-            coordinates,
+            location: coordinates,
             sortBy,
             sortOrder,
             ageRange,
             distanceRange,
             popularityRange,
             countCommonTags,
-            commonTags,
+            commonTags: commonTags.map(({ text }) => text),
         });
 
         onHide();
@@ -317,19 +337,21 @@ function Filters({ search, onHide, onConfirm }) {
                     : 'Precise the results'}
             </FiltersTitle>
 
-            <FormSort fields={fields.slice(0, 3)} hideButton />
+            <FormSort fields={fields.slice(0, seperation)} hideButton />
 
             <Subheader>Criteria :</Subheader>
 
-            <FormFilter fields={fields.slice(3)} hideButton />
+            <FormFilter fields={fields.slice(seperation)} hideButton />
 
-            <Combobox
-                label="Common tags"
-                items={commonTags}
-                setItems={setCommonTags}
-                propositions={propositions}
-                onAddItem={null}
-            />
+            {search === true && (
+                <Combobox
+                    label="Common tags"
+                    items={commonTags}
+                    setItems={setCommonTags}
+                    propositions={propositions}
+                    onAddItem={null}
+                />
+            )}
 
             <ButtonsContainer>
                 <Button onClick={onHide}>Cancel</Button>
@@ -341,6 +363,10 @@ function Filters({ search, onHide, onConfirm }) {
 
 export default function ResultsFilters({ search, show, onHide, onConfirm }) {
     const overlayRef = useRef(null);
+    const modalsContainerRef = useMemo(
+        () => document.getElementById('modals-container'),
+        []
+    );
 
     useEffect(() => {
         function onClick() {
@@ -354,6 +380,10 @@ export default function ResultsFilters({ search, show, onHide, onConfirm }) {
         };
     }, [onHide]);
 
+    const Child = (
+        <Filters search={search} onHide={onHide} onConfirm={onConfirm} />
+    );
+
     return ReactDOM.createPortal(
         <Overlay show={show} ref={overlayRef}>
             <Media query="(max-width: 640px)">
@@ -363,27 +393,19 @@ export default function ResultsFilters({ search, show, onHide, onConfirm }) {
                             show={show}
                             onClick={e => e.stopPropagation()}
                         >
-                            <Filters
-                                search={search}
-                                onHide={onHide}
-                                onConfirm={onConfirm}
-                            />
+                            {Child}
                         </MobileDialogContainer>
                     ) : (
                         <DesktopDialogContainer
                             show={show}
                             onClick={e => e.stopPropagation()}
                         >
-                            <Filters
-                                search={search}
-                                onHide={onHide}
-                                onConfirm={onConfirm}
-                            />
+                            {Child}
                         </DesktopDialogContainer>
                     )
                 }
             </Media>
         </Overlay>,
-        document.getElementById('modals-container')
+        modalsContainerRef
     );
 }
