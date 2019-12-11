@@ -51,13 +51,18 @@ export default function ProfileCardTags({ tags, mini = false }) {
     const [shownTags, setShownTags] = useState([]);
     const [expanded, setExpanded] = useState(false);
 
+    const truncateTags = expanded === true || mini === false;
+
     useEffect(() => {
-        if (expanded === true || mini === false) {
+        console.log('tags, mini', tags, mini);
+        if (truncateTags) {
             setShownTags(tags);
         } else {
             setShownTags(tags.slice(0, 3));
         }
-    }, [tags, mini, expanded]);
+    }, [tags, mini, expanded, truncateTags]);
+
+    const hasMoreTags = !truncateTags && tags.length > 3;
 
     return (
         <TagsContainer>
@@ -71,7 +76,7 @@ export default function ProfileCardTags({ tags, mini = false }) {
                         </Tag>
                     ))}
 
-                    {mini === true && expanded === false && (
+                    {hasMoreTags && (
                         <Tag
                             key="more"
                             more
