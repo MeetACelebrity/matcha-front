@@ -165,13 +165,14 @@ export default function ImageCarousel({ images }) {
 
             {Array.isArray(images) && (
                 <Footer>
-                    {imagesStack.map((_, i) => (
-                        <Dot
-                            key={i}
-                            onClick={() => setDisplayedImage(i)}
-                            active={displayedImage === i}
-                        />
-                    ))}
+                    {imagesStack.length > 1 &&
+                        imagesStack.map((_, i) => (
+                            <Dot
+                                key={i}
+                                onClick={() => setDisplayedImage(i)}
+                                active={displayedImage === i}
+                            />
+                        ))}
                 </Footer>
             )}
         </Container>
