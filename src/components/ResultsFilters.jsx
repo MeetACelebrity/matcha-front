@@ -130,8 +130,8 @@ function Filters({ search, onHide, onConfirm }) {
     const [sortBy, setSortBy] = useState('age');
     const [sortOrder, setSortOrder] = useState('ASC');
     const [ageRange, setAgeRange] = useInterval(0, 100);
-    const [distanceRange, setDistanceRange] = useInterval(0, 120);
-    const [popularityRange, setPopularityRange] = useInterval(0, 1000);
+    const [distanceRange, setDistanceRange] = useInterval(0, 1000);
+    const [popularityRange, setPopularityRange] = useInterval(0, 1000000);
     const [countCommonTags, setCountCommonTags] = useInterval(0, 10);
     const [commonTags, setCommonTags] = useState([]);
 
