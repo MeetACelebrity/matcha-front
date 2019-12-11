@@ -10,35 +10,14 @@ const Container = styled.article`
     transition: all 100ms;
 `;
 
-export default function Profile({
-    uuid,
-    username,
-    givenName,
-    familyName,
-    profilePicture,
-    pictures,
-    images,
-    age,
-    distance,
-    liked,
-    hasLikedMe,
-    onLike,
-    preview,
-}) {
+export default function Profile(props) {
+    const { uuid, pictures, images, onLike } = props;
+
     return (
         <Container>
             <ProfileCard
-                uuid={uuid}
-                username={username}
-                givenName={givenName}
-                familyName={familyName}
-                age={age}
-                distance={distance}
-                profilePicture={profilePicture}
-                pictures={pictures || images}
-                preview={preview}
-                liked={liked}
-                hasLikedMe={hasLikedMe}
+                {...props}
+                pictures={(pictures || images || []).slice(0, 1)}
                 onLike={() => onLike(uuid)}
             />
         </Container>
