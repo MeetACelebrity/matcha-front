@@ -62,7 +62,7 @@ export default function ProfileCardTags({ tags, mini = false }) {
         }
     }, [tags, mini, expanded, truncateTags]);
 
-    const hasMoreTags = !truncateTags && tags.length > 3;
+    const hasMoreTags = !truncateTags && Array.isArray(tags) && tags.length > 3;
 
     return (
         <TagsContainer>
