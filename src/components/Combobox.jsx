@@ -123,6 +123,7 @@ export default function Combobox({
     const [propositionSelected, setPropositionSelected] = useState(-1);
     const [newItem, setNewItem] = useState('');
     const inputRef = useRef(null);
+    const tagsRefsMap = useRef(new Map());
 
     const open = useMemo(() => {
         return focus || items.length > 0 || newItem.length > 0;
@@ -181,6 +182,18 @@ export default function Combobox({
                 setPropositionSelected(propositionSelected + 1);
                 break;
             }
+            case 'ArrowLeft':
+            case 'ArrowRight': {
+                if (newItem !== '') break;
+
+                const forward = key === 'ArrowRight';
+
+                focusTag(
+                    forward ? -1 : items.length,
+                    forward ? 'forward' : 'backward'
+                );
+                break;
+            }
             case 'Backspace':
             case 'Delete': {
                 if (newItem === '') {
@@ -232,8 +245,6 @@ export default function Combobox({
     }
 
     function onPropositionSelect(id) {
-        console.log('click click click');
-
         const element = queryMatchingPropositions[id];
 
         if (element !== undefined) {
@@ -243,22 +254,65 @@ export default function Combobox({
                 onAddItem(element.text);
             }
         }
+
+        setNewItem('');
     }
 
-    function onTagKeyPress(uuid, text) {
+    function onTagKeyPress(uuid, text, index) {
         return e => {
             e.preventDefault();
+
             const { key } = e;
 
             switch (key) {
                 case 'Backspace':
                 case 'Delete': {
                     deleteItemByUuid(uuid, text);
+
+                    focusTag(index, 'forward');
+                    break;
+                }
+                case 'ArrowLeft': {
+                    focusTag(index, 'backward');
+
+                    break;
+                }
+                case 'ArrowRight': {
+                    focusTag(index, 'forward');
+
                     break;
                 }
                 default:
                     break;
             }
+        };
+    }
+
+    function focusTag(currentIndex, direction) {
+        if (
+            (currentIndex === 0 && direction === 'backward') ||
+            (currentIndex === items.length - 1 && direction === 'forward')
+        ) {
+            if (inputRef.current !== null) {
+                inputRef.current.focus();
+            }
+            return;
+        }
+
+        const index =
+            direction === 'forward' ? currentIndex + 1 : currentIndex - 1;
+
+        const item = items[index];
+        if (!(item && item.uuid)) return;
+
+        const element = tagsRefsMap.current.get(item.uuid);
+        if (element === undefined || element === null) return;
+        element.focus();
+    }
+
+    function saveRef(uuid) {
+        return element => {
+            tagsRefsMap.current.set(uuid, element);
         };
     }
 
@@ -269,10 +323,12 @@ export default function Combobox({
             </Label>
 
             <Selections>
-                {items.map(({ uuid, text }) => (
+                {items.map(({ uuid, text }, index) => (
                     <SelectionItem
                         key={uuid}
-                        onKeyDown={onTagKeyPress(uuid, text)}
+                        ref={saveRef(uuid)}
+                        onKeyDown={onTagKeyPress(uuid, text, index)}
+                        onClick={({ target }) => target.focus()}
                     >
                         {text}
                     </SelectionItem>
