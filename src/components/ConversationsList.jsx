@@ -64,7 +64,7 @@ const Extract = styled.p`
 
 export default function ConversationsList({ id, className }) {
     const {
-        context: { pubsub },
+        context: { wsPubsub: pubsub },
     } = useContext(AppContext);
     const [conversations, setConversations] = useState([]);
 

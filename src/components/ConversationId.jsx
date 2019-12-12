@@ -80,7 +80,7 @@ const SendButton = styled.button`
 export default function ConversationId({ id }) {
     const {
         context: {
-            pubsub,
+            wsPubsub: pubsub,
             ws,
             user: me,
             user: { uuid: currentUserUuid },

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { w3cwebsocket as WebSocketClient } from 'websocket';
+import { toast } from 'react-toastify';
 
 class PubSub {
     constructor() {
@@ -74,6 +75,7 @@ export const WS_RESPONSES_TYPES = {
     CONVERSATIONS: 'CONVERSATIONS',
     NEW_CONVERSATION: 'NEW_CONVERSATION',
     NEW_MESSAGE: 'NEW_MESSAGE',
+    NEW_NOTIFICATION: 'NEW_NOTIFICATION',
 };
 
 class WS {
@@ -165,6 +167,12 @@ class WS {
                         });
                         break;
                     }
+                    case WS_RESPONSES_TYPES.NEW_NOTIFICATION: {
+                        const { message: payload } = message.payload;
+
+                        toast(payload);
+                        break;
+                    }
                     default:
                         return;
                 }
@@ -189,13 +197,13 @@ class WS {
     }
 }
 
-const PUBSUB = new PubSub();
+const WS_PUBSUB = new PubSub();
 
 export function useWS() {
     const [ws, setWS] = useState(null);
 
     const setupWS = useCallback(() => {
-        const websocket = new WS(PUBSUB);
+        const websocket = new WS(WS_PUBSUB);
         websocket.setup();
 
         setWS(websocket);
@@ -203,5 +211,11 @@ export function useWS() {
         return websocket;
     }, []);
 
-    return [ws, setupWS, PUBSUB];
+    return [ws, setupWS, WS_PUBSUB];
+}
+
+const NOTIFICATIONS_PUBSUB = new PubSub();
+
+export function useNotifications() {
+    return [NOTIFICATIONS_PUBSUB];
 }

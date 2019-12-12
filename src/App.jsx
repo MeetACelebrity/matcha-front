@@ -11,7 +11,7 @@ import RoamingModePopUp from './components/RoamingModePopUp.jsx';
 import Routes from './Routes.jsx';
 import { AppContext } from './app-context.js';
 import { API_ENDPOINT, locateAndCompare, fetcher } from './constants.js';
-import { useWS } from './ws.js';
+import { useWS, useNotifications } from './ws.js';
 
 const Container = styled.div`
     font-family: 'Roboto';
@@ -29,10 +29,12 @@ export default function App() {
     const [context, setContext] = useState({
         user: {},
         loggedIn: false,
-        pubsub: null,
+        wsPubsub: null,
+        notificationsPubsub: null,
         ws: null,
     });
-    const [, launchWS, pubsub] = useWS();
+    const [, launchWS, wsPubsub] = useWS();
+    const [notificationsPubsub] = useNotifications();
 
     useEffect(() => {
         // fetch the api to know if the user is logged in ! :tada:
@@ -48,7 +50,8 @@ export default function App() {
                 setContext({
                     user,
                     loggedIn,
-                    pubsub,
+                    wsPubsub,
+                    notificationsPubsub,
                 });
 
                 if (loggedIn === true) {
@@ -118,7 +121,7 @@ export default function App() {
                 }
             })
             .catch(console.error);
-    }, [launchWS, pubsub, setLoaded]);
+    }, [launchWS, notificationsPubsub, setLoaded, wsPubsub]);
 
     function activateRoamingMode({
         latitude: lat,
