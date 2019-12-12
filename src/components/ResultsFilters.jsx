@@ -7,6 +7,7 @@ import places from 'places.js';
 
 import useForm, { useFormField } from './Form.jsx';
 import Combobox from './Combobox.jsx';
+import { API_ENDPOINT } from '../constants.js';
 
 const FiltersTitle = styled.h2`
     ${tw`text-xl`}
@@ -134,6 +135,13 @@ function Filters({ search, onHide, onConfirm }) {
     const [popularityRange, setPopularityRange] = useInterval(0, 1000000);
     const [countCommonTags, setCountCommonTags] = useInterval(0, 10);
     const [commonTags, setCommonTags] = useState([]);
+    const [intervalsLoaded, setIntervalLoaded] = useState(false);
+    const [maximumValues, setMaximumValues] = useState({
+        age: 100,
+        distance: 1000,
+        popularity: 1000000,
+        commonTags: 10,
+    });
 
     const addressTextFieldRef = useRef(null);
 
@@ -177,27 +185,27 @@ function Filters({ search, onHide, onConfirm }) {
                       label: 'Age',
                       range: ageRange,
                       setRange: setAgeRange,
-                      max: 100,
+                      max: maximumValues['age'],
                       formatValue: value => `${value} yo`,
                   },
                   {
                       label: 'Distance',
                       range: distanceRange,
                       setRange: setDistanceRange,
-                      max: 1000,
+                      max: maximumValues['distance'],
                       formatValue: value => `${value} km`,
                   },
                   {
                       label: 'Popularity',
                       range: popularityRange,
                       setRange: setPopularityRange,
-                      max: 1000000,
+                      max: maximumValues['popularity'],
                   },
                   {
                       label: 'Common tags',
                       range: countCommonTags,
                       setRange: setCountCommonTags,
-                      max: 10,
+                      max: maximumValues['commonTags'],
                   },
                   {
                       id: LOCATION_TEXT_FIELD_ID,
@@ -239,29 +247,54 @@ function Filters({ search, onHide, onConfirm }) {
                       label: 'Age',
                       range: ageRange,
                       setRange: setAgeRange,
-                      max: 100,
+                      max: maximumValues['age'],
                       formatValue: value => `${value} yo`,
                   },
                   {
                       label: 'Distance',
                       range: distanceRange,
                       setRange: setDistanceRange,
-                      max: 1000,
+                      max: maximumValues['distance'],
                       formatValue: value => `${value} km`,
                   },
                   {
                       label: 'Popularity',
                       range: popularityRange,
                       setRange: setPopularityRange,
-                      max: 1000000,
+                      max: maximumValues['popularity'],
                   },
                   {
                       label: 'Common tags',
                       range: countCommonTags,
                       setRange: setCountCommonTags,
-                      max: 10,
+                      max: maximumValues['commonTags'],
                   },
               ];
+
+    useEffect(() => {
+        console.log('useEffect', intervalsLoaded);
+        if (intervalsLoaded === true) return;
+
+        setIntervalLoaded(true);
+
+        fetch(`${API_ENDPOINT}/match/interval`, {
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(({ maxAge, maxScore, maxDistance, maxCommonTags }) => {
+                setMaximumValues({
+                    age: maxAge,
+                    distance: maxScore,
+                    popularity: maxDistance,
+                    commonTags: maxCommonTags,
+                });
+            })
+            .catch(err => {
+                console.error(err);
+
+                setIntervalLoaded(false);
+            });
+    }, [intervalsLoaded]);
 
     useEffect(() => {
         const el = document.getElementById(LOCATION_TEXT_FIELD_ID);
