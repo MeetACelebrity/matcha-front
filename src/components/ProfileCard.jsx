@@ -15,7 +15,7 @@ const previewContainerStyle = tw`pb-3 shadow-md`;
 const notFlatContainerStyle = tw`shadow-xl`;
 
 const Container = styled.article`
-    ${tw`relative bg-white`}
+    ${tw`relative bg-white flex flex-col justify-between h-full`}
 
     ${({ preview }) => preview && previewContainerStyle}
 
