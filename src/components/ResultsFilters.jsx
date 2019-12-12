@@ -146,7 +146,6 @@ function Filters({ search, onHide, onConfirm }) {
                       setValue: setSearchText,
                       isValid: searchTextIsValid,
                       setIsValid: setSearchTextIsValid,
-                      min: 1,
                   },
                   {
                       label: 'Sort by :',
@@ -207,7 +206,6 @@ function Filters({ search, onHide, onConfirm }) {
                       setValue: setLocation,
                       isValid: locationIsValid,
                       setIsValid: setLocationIsValid,
-                      min: 1,
                   },
               ]
             : [
