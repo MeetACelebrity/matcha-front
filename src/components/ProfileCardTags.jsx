@@ -54,8 +54,9 @@ export default function ProfileCardTags({ tags, mini = false }) {
     const truncateTags = expanded === true || mini === false;
 
     useEffect(() => {
-        console.log('tags, mini', tags, mini);
-        if (truncateTags) {
+        if (tags === null) {
+            setShownTags([]);
+        } else if (truncateTags) {
             setShownTags(tags);
         } else {
             setShownTags(tags.slice(0, 3));

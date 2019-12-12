@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Media from 'react-media';
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 import tw from 'tailwind.macro';
-import { Transition } from 'react-transition-group';
 
 import {
     Home,
@@ -24,6 +23,7 @@ import {
     ChatMasterView,
 } from './pages';
 import { AppContext } from './app-context';
+import Spinner from './components/Spinner.jsx';
 
 export const RoutesEnum = {
     HOME: '/proposals',
@@ -71,49 +71,6 @@ const Main = styled.main`
     }
 `;
 
-const rotate = keyframes`
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-`;
-
-const SpinnerContainerCss = tw`opacity-0`;
-
-const SpinnerContainer = styled.div`
-    --transition-duration: 300ms;
-    --transition-delay: 1000ms;
-
-    ${tw`absolute inset-0 flex justify-center items-center bg-white opacity-100 z-40`}
-
-    transition: opacity var(--transition-duration) var(--transition-delay);
-
-    ${({ fadeOut }) => fadeOut && SpinnerContainerCss}
-    ${({ hide }) =>
-        hide &&
-        css`
-            ${tw`hidden`}
-        `}
-`;
-
-const Spinner = styled.div`
-    &::after {
-        ${tw`block`}
-
-        content: '';
-        width: 64px;
-        height: 64px;
-        margin: 1px;
-        border-radius: 50%;
-        border: 10px solid #2a4365;
-        border-color: #2a4365 transparent #2a4365 transparent;
-        animation: ${rotate} 1.2s linear infinite;
-    }
-`;
-
 export default function Routes({ loaded = false }) {
     const {
         context: { loggedIn = false },
@@ -121,16 +78,7 @@ export default function Routes({ loaded = false }) {
 
     return (
         <Main>
-            <Transition in={!loaded} timeout={1300}>
-                {state => (
-                    <SpinnerContainer
-                        fadeOut={['exiting', 'exited'].includes(state)}
-                        hide={state === 'exited'}
-                    >
-                        <Spinner />
-                    </SpinnerContainer>
-                )}
-            </Transition>
+            <Spinner in={!loaded} timeout={1300} />
 
             {/**
                 When the width is less than 768px, me must separate HOME and ME routes.

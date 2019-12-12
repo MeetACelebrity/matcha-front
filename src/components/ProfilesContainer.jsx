@@ -6,9 +6,10 @@ import FeatherIcon from 'feather-icons-react';
 import Profile from './Profile.jsx';
 import FloatingButton from './FloatingButton.jsx';
 import ResultsFilters from './ResultsFilters.jsx';
+import Spinner from './Spinner.jsx';
 
 const Container = styled.section`
-    ${tw`p-5 overflow-y-auto`}
+    ${tw`p-5 overflow-y-auto relative min-h-full`}
 
     display: grid;
 
@@ -26,6 +27,18 @@ const Container = styled.section`
     grid-row-gap: 10px;
 `;
 
+const NoDataContainer = styled.div`
+    ${tw`absolute inset-0 flex justify-center items-center`}
+`;
+
+function NoData() {
+    return (
+        <NoDataContainer>
+            No one celebrity wants to have s** with you
+        </NoDataContainer>
+    );
+}
+
 function ShowFiltersButton({ onClick }) {
     return (
         <FloatingButton onClick={onClick} marginBottomMobile>
@@ -39,6 +52,7 @@ function ProfilesContainer(
         search = false,
         profiles = [],
         preview = false,
+        loading = false,
         onLike = () => {},
         onFiltersUpdate = () => {},
     },
@@ -56,18 +70,25 @@ function ProfilesContainer(
 
     return (
         <Container ref={ref}>
-            {profiles.map(profile => {
-                const { uuid } = profile;
+            <Spinner in={loading} timeout={1000} backgroundGray />
 
-                return (
-                    <Profile
-                        {...profile}
-                        key={uuid}
-                        preview={preview}
-                        onLike={onLike}
-                    />
-                );
-            })}
+            {!loading &&
+                (profiles.length > 0 ? (
+                    profiles.map(profile => {
+                        const { uuid } = profile;
+
+                        return (
+                            <Profile
+                                {...profile}
+                                key={uuid}
+                                preview={preview}
+                                onLike={onLike}
+                            />
+                        );
+                    })
+                ) : (
+                    <NoData />
+                ))}
 
             <ShowFiltersButton onClick={triggerModal} />
 

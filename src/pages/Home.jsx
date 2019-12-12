@@ -84,11 +84,14 @@ export default function Home() {
     const offsetsFetchedRef = useRef(new Set());
     const [offset, setOffset] = useState(0);
     const [, setHasMore] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (offsetsFetchedRef.current.has(offset)) return;
 
         offsetsFetchedRef.current.add(offset);
+
+        setLoading(true);
 
         fetcher(`${API_ENDPOINT}/match/proposals/${LIMIT}/${offset}`, {
             credentials: 'include',
@@ -121,7 +124,8 @@ export default function Home() {
                     setOffset(offset => offset + data.length + 1);
                 }
             })
-            .catch(console.error);
+            .catch(console.error)
+            .finally(() => setLoading(false));
     }, [body, offset]);
 
     function toggleCollapse() {
@@ -199,6 +203,7 @@ export default function Home() {
                 onLike={onLike}
                 onFiltersUpdate={onFiltersUpdate}
                 preview={true}
+                loading={loading}
             />
         </Container>
     );

@@ -20,11 +20,11 @@ export default function Search() {
 
     const [offset] = useState(0);
     const [results, setResults] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     function onFiltersUpdate({
         searchText,
         location,
-        coordinates,
         sortBy,
         sortOrder,
         ageRange,
@@ -33,19 +33,7 @@ export default function Search() {
         countCommonTags,
         commonTags,
     }) {
-        console.log(
-            'fetch',
-            searchText,
-            location,
-            coordinates,
-            sortBy,
-            sortOrder,
-            ageRange,
-            distanceRange,
-            popularityRange,
-            countCommonTags,
-            commonTags
-        );
+        setLoading(true);
 
         fetcher(
             `${API_ENDPOINT}/match/search/${searchText}/${LIMIT}/${offset}`,
@@ -73,7 +61,8 @@ export default function Search() {
             .then(({ result: { datas } }) => {
                 setResults(datas);
             })
-            .catch(console.error);
+            .catch(console.error)
+            .finally(() => setLoading(false));
     }
 
     return (
@@ -85,6 +74,7 @@ export default function Search() {
                 profiles={results}
                 preview={true}
                 onFiltersUpdate={onFiltersUpdate}
+                loading={loading}
             />
         </Container>
     );
