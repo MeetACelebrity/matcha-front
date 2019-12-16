@@ -142,6 +142,7 @@ function Filters({ search, onHide, onConfirm }) {
         popularity: 1000000,
         commonTags: 10,
     });
+    const [propositions, setPropositions] = useState([]);
 
     const addressTextFieldRef = useRef(null);
 
@@ -272,6 +273,17 @@ function Filters({ search, onHide, onConfirm }) {
               ];
 
     useEffect(() => {
+        fetch(`${API_ENDPOINT}/profile/tags`, {
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(propositions => {
+                setPropositions(propositions);
+            })
+            .catch(console.error);
+    }, []);
+
+    useEffect(() => {
         console.log('useEffect', intervalsLoaded);
         if (intervalsLoaded === true) return;
 
@@ -330,13 +342,6 @@ function Filters({ search, onHide, onConfirm }) {
             setPlacesAutocomplete(placesAutocomplete);
         }
     }, [placesAutocomplete, setLocation]);
-
-    const propositions = [
-        { uuid: 'tesla', text: 'tesla' },
-        { uuid: 'lol1', text: 'Yolo' },
-        { uuid: 'lol2', text: 'Lel' },
-        { uuid: 'lol3', text: 'Ahah' },
-    ];
 
     const seperation = search === true ? 3 : 2;
 
