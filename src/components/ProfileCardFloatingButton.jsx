@@ -22,26 +22,27 @@ const ButtonNav = styled(Button)``;
 export default function ProfileCardFloatingButton({
     edit = false,
     floating = true,
-    liked = false,
-    hasLikedMe = false,
+    likeStatus = 'VIRGIN',
     disabled = false,
     onLike,
 }) {
     const title = useMemo(() => {
         if (disabled === true) return 'Add a profile picture to like';
 
-        if (liked === true) {
-            if (hasLikedMe === true) return 'Match !';
-
-            return 'Dislike';
+        switch (likeStatus) {
+            case 'HAS_LIKED_US':
+                return 'Liked us';
+            case 'LIKED_IT':
+                return 'Already liked';
+            case 'MATCH':
+                return 'you matched !';
+            default:
+                return 'Like';
         }
-
-        if (liked === false) return 'Like';
-
-        return '';
-    }, [disabled, hasLikedMe, liked]);
+    }, [disabled, likeStatus]);
 
     const to = edit ? '/me/edit' : null;
+    const liked = likeStatus !== 'VIRGIN';
     const Icon = <FeatherIcon icon={edit === true ? 'edit-2' : 'heart'} />;
 
     if (edit === true) {
@@ -54,7 +55,7 @@ export default function ProfileCardFloatingButton({
 
     return (
         <Button
-            name={liked === true ? 'unlike-profile' : 'like-profile'}
+            name={liked ? 'unlike-profile' : 'like-profile'}
             floating={floating}
             disabled={disabled}
             liked={liked}
