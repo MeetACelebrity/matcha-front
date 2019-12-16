@@ -87,6 +87,31 @@ const LinksContainer = styled.div`
     ${tw`flex items-center justify-around flex-wrap py-4`}
 `;
 
+const OnLineStatusContainerOnlineStyle = tw`bg-green-600`;
+
+const OnLineStatusContainer = styled.div`
+    ${tw`flex items-center m-1 text-gray-600`}
+
+    &::before {
+        ${tw`w-2 h-2 rounded-full bg-red-600 mr-2`}
+
+        content: '';
+
+        ${({ isOnline }) =>
+            isOnline === true && OnLineStatusContainerOnlineStyle}
+    }
+`;
+
+function OnLineStatus({ isOnline }) {
+    const text = isOnline === true ? 'En ligne' : `Hors ligne`;
+
+    return (
+        <OnLineStatusContainer isOnline={isOnline}>
+            {text}
+        </OnLineStatusContainer>
+    );
+}
+
 function Biography({ biography }) {
     return (
         <BiographyContainer>
@@ -113,8 +138,9 @@ export default function ProfileCard({
     tags = [],
     addresses = [],
     distance,
-    liked = false,
-    hasLikedMe = false,
+    likeStatus = 'VIRGIN',
+    isOnline,
+    lastSeen,
     onLike,
     onBlock,
     onReport,
@@ -188,6 +214,10 @@ export default function ProfileCard({
                 </TextContainer>
 
                 <Address>{address}</Address>
+
+                {preview === false && (
+                    <OnLineStatus isOnline={isOnline} lastSeen={lastSeen} />
+                )}
             </Section>
         </>
     );
@@ -242,8 +272,7 @@ export default function ProfileCard({
                     edit={isCurrentUser}
                     floating={preview === false}
                     disabled={profilePicturesCount === 0}
-                    liked={liked}
-                    hasLikedMe={hasLikedMe}
+                    likeStatus={likeStatus}
                     onLike={onLike}
                 />
             )}
