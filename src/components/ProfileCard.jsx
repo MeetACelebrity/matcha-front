@@ -124,6 +124,31 @@ function Biography({ biography }) {
     );
 }
 
+function LikeButton({ onLike, profilePicturesCount, likeStatus }) {
+    let text = '';
+
+    switch (likeStatus) {
+        case 'HAS_LIKED_US':
+            text = 'Liked us';
+            break;
+        case 'LIKED_IT':
+            text = 'Liked';
+            break;
+        case 'MATCH':
+            text = 'Matched';
+            break;
+        default:
+            text = 'Like';
+            break;
+    }
+
+    return (
+        <Button text onClick={onLike} disabled={profilePicturesCount === 0}>
+            {text}
+        </Button>
+    );
+}
+
 export default function ProfileCard({
     uuid,
     username = 'Non connu',
@@ -233,13 +258,11 @@ export default function ProfileCard({
             <Section>
                 {preview === false && !isCurrentUser && (
                     <ActionsButtonsContainer>
-                        <Button
-                            text
-                            onClick={onLike}
-                            disabled={profilePicturesCount === 0}
-                        >
-                            Like
-                        </Button>
+                        <LikeButton
+                            onLike={onLike}
+                            profilePicturesCount={profilePicturesCount}
+                            likeStatus={likeStatus}
+                        />
                         <Button text red onClick={onBlock}>
                             Block
                         </Button>

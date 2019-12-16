@@ -32,10 +32,32 @@ export default function Profile() {
     }, [uuid]);
 
     function onLike() {
-        // TODO: must change that boolean assignment
-        const liked = false;
+        const isLikingTheProfile = ['VIRGIN', 'HAS_LIKED_US'].includes(
+            user.likeStatus
+        );
+        const action = isLikingTheProfile ? 'like' : 'unlike';
 
-        const action = liked ? 'unlike' : 'like';
+        let newStatus = '';
+
+        switch (user.likeStatus) {
+            case 'VIRGIN':
+                newStatus = 'LIKED_IT';
+                break;
+            case 'HAS_LIKED_US':
+                newStatus = 'MATCH';
+                break;
+            case 'LIKED_IT':
+                newStatus = 'VIRGIN';
+                break;
+            case 'MATCH':
+                newStatus = 'HAS_LIKED_US';
+                break;
+        }
+
+        setUser(user => ({
+            ...user,
+            likeStatus: newStatus,
+        }));
 
         fetch(`${API_ENDPOINT}/user/${action}/${uuid}`, {
             method: 'POST',
