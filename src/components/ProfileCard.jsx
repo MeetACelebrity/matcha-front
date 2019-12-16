@@ -215,7 +215,7 @@ export default function ProfileCard({
 
                 <Address>{address}</Address>
 
-                {preview === false && (
+                {preview === false && !isCurrentUser && (
                     <OnLineStatus isOnline={isOnline} lastSeen={lastSeen} />
                 )}
             </Section>
