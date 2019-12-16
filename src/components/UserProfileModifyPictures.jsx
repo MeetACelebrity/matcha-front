@@ -130,10 +130,23 @@ export default function UserProfileModifyPictures({
             .then(({ statusCode, image: { uuid, src, imageNumber } = {} }) => {
                 if (statusCode === 'DONE') {
                     // this was a successful uploading
-                    setUploadStack([
-                        ...uploadStack,
-                        { temporaryUuid, uuid, src, imageNumber },
-                    ]);
+
+                    const pictureObj = {
+                        temporaryUuid,
+                        uuid,
+                        src,
+                        imageNumber,
+                    };
+
+                    setUploadStack([...uploadStack, pictureObj]);
+
+                    setContext(context => ({
+                        ...context,
+                        user: {
+                            ...context.user,
+                            images: [...context.user.images, pictureObj],
+                        },
+                    }));
                 } else {
                     // an error occured
                 }
@@ -142,7 +155,7 @@ export default function UserProfileModifyPictures({
 
     function onDelete(uuid) {
         return () => {
-            setContext({
+            setContext(context => ({
                 ...context,
                 user: {
                     ...user,
@@ -150,7 +163,7 @@ export default function UserProfileModifyPictures({
                         ({ uuid: imageUuid }) => imageUuid !== uuid
                     ),
                 },
-            });
+            }));
 
             fetch(`${API_ENDPOINT}/profile/pics`, {
                 credentials: 'include',

@@ -44,7 +44,7 @@ const ChangePicture = styled.label`
     }
 `;
 
-function ProfileImage({ src }) {
+function ProfileImage({ src, setContext }) {
     const [displayedImage, setDisplayedImage] = useState(src);
     const reader = useMemo(() => new FileReader(), []);
 
@@ -55,8 +55,29 @@ function ProfileImage({ src }) {
     useEffect(() => {
         reader.onload = ({ target: { result } }) => {
             setDisplayedImage(result);
+
+            const uuid = String((Math.random() * 100000) | 0);
+
+            const pictureObj = {
+                uuid,
+                src,
+                imageNumber: 0,
+            };
+
+            setContext(context => ({
+                ...context,
+                user: {
+                    ...context.user,
+                    images: [
+                        pictureObj,
+                        ...context.user.images.filter(
+                            ({ imageNumber }) => imageNumber !== 0
+                        ),
+                    ],
+                },
+            }));
         };
-    }, [reader, setDisplayedImage]);
+    }, [reader, setContext, setDisplayedImage, src]);
 
     function onFileChange({
         target: {
@@ -95,7 +116,10 @@ function ProfileImage({ src }) {
     );
 }
 
-export default function UserProfileModifyProfileImage({ user: { images } }) {
+export default function UserProfileModifyProfileImage({
+    user: { images },
+    setContext,
+}) {
     const profilePicture = useMemo(
         () => images.find(elem => elem.imageNumber === 0),
         [images]
@@ -108,6 +132,7 @@ export default function UserProfileModifyProfileImage({ user: { images } }) {
         <Preferences>
             <ProfileImage
                 src={(profilePicture && profilePicture.src) || defaultImg}
+                setContext={setContext}
             />
         </Preferences>
     );
