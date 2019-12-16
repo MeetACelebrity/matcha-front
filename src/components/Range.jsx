@@ -75,6 +75,14 @@ export default function Range({
     useEffect(() => {
         const width = rect === null ? max : rect.width;
 
+        if (max === 0) {
+            setLowerBound(0);
+            setUpperBound(0);
+            setLowerBoundPercentage(0);
+            setUpperBoundPercentage(0);
+            return;
+        }
+
         const lowPercent = ((range[0] || 0) * 100) / max;
         const upPercent = ((range[1] || 0) * 100) / max;
 
@@ -92,7 +100,7 @@ export default function Range({
             else if (diff > rect.width) diff = rect.width;
 
             const doneSteps = Math.trunc((diff * STEPS) / rect.width);
-            const newValue = (doneSteps * max) / STEPS;
+            const newValue = ((doneSteps * max) / STEPS) | 0;
 
             switch (type) {
                 case 'left':
