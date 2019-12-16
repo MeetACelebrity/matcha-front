@@ -54,7 +54,7 @@ const MobileDialogContainer = styled.div`
     --dialog-max-width: 100%;
     --dialog-height: calc(100% - 64px);
 
-    ${tw`hidden absolute inset-x-0 bottom-0 bg-white opacity-100`}
+    ${tw`hidden absolute inset-x-0 bottom-0 bg-white opacity-100 overflow-x-hidden overflow-y-scroll`}
 
     height: var(--dialog-height);
     width: var(--dialog-max-width);
@@ -68,7 +68,7 @@ const DesktopDialogContainer = styled.div`
     --dialog-max-width: 800px;
     --dialog-min-height: 400px;
 
-    ${tw`m-auto bg-white p-2`}
+    ${tw`m-auto bg-white p-2 overflow-x-hidden overflow-y-scroll`}
 
     min-height: var(--dialog-max-height);
     width: var(--dialog-max-width);
@@ -130,10 +130,10 @@ function Filters({ search, onHide, onConfirm }) {
     const [placesAutocomplete, setPlacesAutocomplete] = useState(null);
     const [sortBy, setSortBy] = useState('age');
     const [sortOrder, setSortOrder] = useState('ASC');
-    const [ageRange, setAgeRange] = useInterval(0, 100);
-    const [distanceRange, setDistanceRange] = useInterval(0, 1000);
-    const [popularityRange, setPopularityRange] = useInterval(0, 1000000);
-    const [countCommonTags, setCountCommonTags] = useInterval(0, 10);
+    const [ageRange, setAgeRange] = useInterval(0, 20);
+    const [distanceRange, setDistanceRange] = useInterval(0, 10);
+    const [popularityRange, setPopularityRange] = useInterval(0, 100);
+    const [countCommonTags, setCountCommonTags] = useInterval(0, 0);
     const [commonTags, setCommonTags] = useState([]);
     const [intervalsLoaded, setIntervalLoaded] = useState(false);
     const [maximumValues, setMaximumValues] = useState({
