@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import { Link } from 'react-router-dom';
+import FeathersIcon from 'feather-icons-react';
 
 import { formatAddress } from '../constants.js';
 import { AppContext } from '../app-context.js';
@@ -52,7 +53,10 @@ const TextContainer = styled.div`
 
     ${({ secondary }) => secondary && tw`text-xl`}
 
-    & > :first-child::after {
+    ${({ small }) =>
+        small && tw`text-base`}
+
+    & > :first-child:not(svg)::after {
         content: '•';
 
         ${tw`mx-2`}
@@ -166,6 +170,7 @@ export default function ProfileCard({
     likeStatus = 'VIRGIN',
     isOnline,
     lastSeen,
+    score,
     onLike,
     onBlock,
     onReport,
@@ -237,6 +242,17 @@ export default function ProfileCard({
 
                     <h4>{age} years old</h4>
                 </TextContainer>
+
+                {score && (
+                    <TextContainer secondary small>
+                        <FeathersIcon
+                            icon="zap"
+                            title={`${username} score`}
+                            className="mr-2 fill-current stroke-current text-blue-700"
+                        />
+                        <span className="text-gray-700">{score}</span>
+                    </TextContainer>
+                )}
 
                 <Address>{address}</Address>
 
