@@ -8,6 +8,7 @@ import Button from './Button.jsx';
 import { mapRoutes, RoutesEnum } from '../Routes.jsx';
 import { AppContext } from '../app-context.js';
 import { toast } from 'react-toastify';
+import { API_ENDPOINT } from '../constants.js';
 
 const Header = styled.header`
     ${tw`flex justify-between items-center px-6 py-2 bg-white shadow z-50`}
@@ -21,14 +22,18 @@ export default function NavBar() {
     ]);
 
     const {
-        context: { loggedIn, newDataConversations, newDataNotifications },
+        context: { loggedIn, newDataConversations, newDataNotifications, ws },
         setContext,
     } = useContext(AppContext);
 
     const homeLink = loggedIn ? RoutesEnum.HOME : RoutesEnum.SIGN_UP;
 
     function logout() {
-        // fetch('')
+        fetch(`${API_ENDPOINT}/disconnect`, {
+            credentials: 'include',
+        }).catch(console.error);
+
+        ws.ws.close();
 
         setContext(context => ({
             ...context,
