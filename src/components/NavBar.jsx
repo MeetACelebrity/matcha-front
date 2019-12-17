@@ -7,6 +7,7 @@ import tw from 'tailwind.macro';
 import Button from './Button.jsx';
 import { mapRoutes, RoutesEnum } from '../Routes.jsx';
 import { AppContext } from '../app-context.js';
+import { toast } from 'react-toastify';
 
 const Header = styled.header`
     ${tw`flex justify-between items-center px-6 py-2 bg-white shadow z-50`}
@@ -21,9 +22,22 @@ export default function NavBar() {
 
     const {
         context: { loggedIn },
+        setContext,
     } = useContext(AppContext);
 
     const homeLink = loggedIn ? RoutesEnum.HOME : RoutesEnum.SIGN_UP;
+
+    function logout() {
+        // fetch('')
+
+        setContext(context => ({
+            ...context,
+            user: null,
+            loggedIn: false,
+        }));
+
+        toast('You successfully logged out');
+    }
 
     return (
         <Header>
@@ -33,19 +47,27 @@ export default function NavBar() {
 
             <nav className="flex">
                 {loggedIn ? (
-                    icons.map(({ to, icon, showOnMobile }, i) => (
+                    <>
+                        {icons.map(({ to, icon, showOnMobile }, i) => (
+                            <Button
+                                key={icon}
+                                to={to}
+                                icon={icon}
+                                outlined={false}
+                                className={classes({
+                                    'ml-2': i !== 0,
+                                    hidden: showOnMobile !== true,
+                                    'md:block': showOnMobile !== true,
+                                })}
+                            />
+                        ))}
                         <Button
-                            key={icon}
-                            to={to}
-                            icon={icon}
+                            icon="log-out"
                             outlined={false}
-                            className={classes({
-                                'ml-2': i !== 0,
-                                hidden: showOnMobile !== true,
-                                'md:block': showOnMobile !== true,
-                            })}
+                            className="ml-2"
+                            onClick={logout}
                         />
-                    ))
+                    </>
                 ) : (
                     <>
                         <Button to="/sign-in">Sign in</Button>
