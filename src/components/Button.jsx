@@ -4,16 +4,28 @@ import Icon from 'feather-icons-react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
+const BaseButtonFlatStyles = tw`bg-gray-300`;
+const BaseButtonBadgedAfterStyles = tw`bg-blue-700`;
+
 const BaseButton = styled.button`
     font-family: 'Saira', sans-serif;
 
-    ${tw`bg-blue-600 stroke-current rounded-full bg-white p-2 cursor-pointer uppercase`}
+    ${tw`bg-blue-600 stroke-current rounded-full bg-white p-2 cursor-pointer uppercase relative`}
 
     &.active.outlined {
         ${tw`text-blue-600`}
     }
 
-    ${({ flat }) => !flat && tw`bg-gray-300`}
+    ${({ flat }) => !flat && BaseButtonFlatStyles}
+
+    &::after {
+        ${tw`w-2 h-2 absolute right-0 bottom-0 bg-transparent rounded-full`}
+        content: '';
+
+        transition: background-color 200ms;
+
+        ${({ badged }) => badged && BaseButtonBadgedAfterStyles}
+    }
 `;
 
 const TextButtonRedStyles = tw`bg-red-500`;
@@ -49,6 +61,7 @@ export default function Button({
     to,
     flat = false,
     text = false,
+    badged = false,
     icon,
     children,
     className,
@@ -62,7 +75,13 @@ export default function Button({
 
     if (to === undefined) {
         return (
-            <Root className={className} flat={flat} icon={icon} {...props}>
+            <Root
+                className={className}
+                flat={flat}
+                icon={icon}
+                badged={badged ? 1 : 0}
+                {...props}
+            >
                 {child}
             </Root>
         );
@@ -75,6 +94,7 @@ export default function Button({
             className={className}
             to={to}
             icon={icon}
+            badged={badged ? 1 : 0}
             {...props}
         >
             {child}

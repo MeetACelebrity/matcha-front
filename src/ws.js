@@ -79,9 +79,10 @@ export const WS_RESPONSES_TYPES = {
 };
 
 class WS {
-    constructor(pubsub) {
+    constructor(pubsub, onChange) {
         this.ws = new WebSocketClient('ws://localhost:8080/', 'echo-protocol');
         this.pubsub = pubsub;
+        this.onChange = onChange;
     }
 
     setup() {
@@ -152,6 +153,8 @@ class WS {
                         const conversation = message.payload;
 
                         this.pubsub._publish(conversation.uuid, conversation);
+
+                        this.onChange('conversations');
                         break;
                     }
                     case WS_RESPONSES_TYPES.NEW_MESSAGE: {
@@ -165,12 +168,16 @@ class WS {
                             ...conversation,
                             messages: [...conversation.messages, messageProps],
                         });
+
+                        this.onChange('conversations');
                         break;
                     }
                     case WS_RESPONSES_TYPES.NEW_NOTIFICATION: {
                         const { message: payload } = message.payload;
 
                         toast(payload);
+
+                        this.onChange('notifications');
                         break;
                     }
                     default:
@@ -202,14 +209,17 @@ const WS_PUBSUB = new PubSub();
 export function useWS() {
     const [ws, setWS] = useState(null);
 
-    const setupWS = useCallback(() => {
-        const websocket = new WS(WS_PUBSUB);
-        websocket.setup();
+    const setupWS = useCallback(
+        onChange => {
+            const websocket = new WS(WS_PUBSUB, onChange);
+            websocket.setup();
 
-        setWS(websocket);
+            setWS(websocket);
 
-        return websocket;
-    }, []);
+            return websocket;
+        },
+        []
+    );
 
     return [ws, setupWS, WS_PUBSUB];
 }

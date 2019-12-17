@@ -21,7 +21,7 @@ export default function NavBar() {
     ]);
 
     const {
-        context: { loggedIn },
+        context: { loggedIn, newDataConversations, newDataNotifications },
         setContext,
     } = useContext(AppContext);
 
@@ -48,19 +48,30 @@ export default function NavBar() {
             <nav className="flex">
                 {loggedIn ? (
                     <>
-                        {icons.map(({ to, icon, showOnMobile }, i) => (
-                            <Button
-                                key={icon}
-                                to={to}
-                                icon={icon}
-                                outlined={false}
-                                className={classes({
-                                    'ml-2': i !== 0,
-                                    hidden: showOnMobile !== true,
-                                    'md:block': showOnMobile !== true,
-                                })}
-                            />
-                        ))}
+                        {icons.map(({ to, icon, showOnMobile }, i) => {
+                            let badged = false;
+
+                            if (to.includes('notifications')) {
+                                badged = newDataNotifications;
+                            } else if (to.includes('chat')) {
+                                badged = newDataConversations;
+                            }
+
+                            return (
+                                <Button
+                                    key={icon}
+                                    to={to}
+                                    icon={icon}
+                                    outlined={false}
+                                    badged={badged}
+                                    className={classes({
+                                        'ml-2': i !== 0,
+                                        hidden: showOnMobile !== true,
+                                        'md:block': showOnMobile !== true,
+                                    })}
+                                />
+                            );
+                        })}
                         <Button
                             icon="log-out"
                             outlined={false}

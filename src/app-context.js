@@ -7,6 +7,9 @@ export const AppContext = createContext({
         wsPubsub: null,
         notificationsPubsub: null,
         ws: null,
+        newDataConversations: false,
+        newDataNotifications: false,
+        notifications: []
     },
     setContext: () => {},
 });

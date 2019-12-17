@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
@@ -32,9 +32,21 @@ export default function App() {
         wsPubsub: null,
         notificationsPubsub: null,
         ws: null,
+        newDataConversations: false,
+        newDataNotifications: false,
+        notifications: [],
     });
     const [, launchWS, wsPubsub] = useWS();
     const [notificationsPubsub] = useNotifications();
+
+    const onNewDataConversations = useCallback(type => {
+        setContext(context => ({
+            ...context,
+            [type === 'conversations'
+                ? 'newDataConversations'
+                : 'newDataNotifications']: true,
+        }));
+    }, []);
 
     useEffect(() => {
         // fetch the api to know if the user is logged in ! :tada:
@@ -47,17 +59,18 @@ export default function App() {
                 const loggedIn =
                     user === null || user === undefined ? false : true;
 
-                setContext({
+                setContext(context => ({
+                    ...context,
                     user,
                     loggedIn,
                     wsPubsub,
                     notificationsPubsub,
-                });
+                }));
 
                 if (loggedIn === true) {
                     setContext(context => ({
                         ...context,
-                        ws: launchWS(),
+                        ws: launchWS(onNewDataConversations),
                     }));
                 }
 
@@ -121,7 +134,39 @@ export default function App() {
                 }
             })
             .catch(console.error);
-    }, [launchWS, notificationsPubsub, setLoaded, wsPubsub]);
+    }, [
+        launchWS,
+        notificationsPubsub,
+        onNewDataConversations,
+        setLoaded,
+        wsPubsub,
+    ]);
+
+    useEffect(() => {
+        fetch(`${API_ENDPOINT}/user/notif/get`, {
+            credentials: 'include',
+        })
+            .then(res => res.json())
+            .then(notifications => {
+                if (!Array.isArray(notifications)) return;
+
+                const newDataNotifications = notifications.reduce(
+                    (agg, { seen }) => {
+                        if (agg === true || seen === false) return true;
+
+                        return false;
+                    },
+                    false
+                );
+
+                setContext(context => ({
+                    ...context,
+                    notifications,
+                    newDataNotifications,
+                }));
+            })
+            .catch(console.error);
+    }, []);
 
     function activateRoamingMode({
         latitude: lat,
