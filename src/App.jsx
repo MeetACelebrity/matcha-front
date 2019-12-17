@@ -48,6 +48,19 @@ export default function App() {
         }));
     }, []);
 
+    const pushNotification = useCallback(notification => {
+        setContext(context => ({
+            ...context,
+            notifications: [
+                ...context.notifications,
+                {
+                    ...notification,
+                    createdAt: +new Date(),
+                },
+            ],
+        }));
+    }, []);
+
     useEffect(() => {
         // fetch the api to know if the user is logged in ! :tada:
         fetch(`${API_ENDPOINT}/me`, {
@@ -70,7 +83,7 @@ export default function App() {
                 if (loggedIn === true) {
                     setContext(context => ({
                         ...context,
-                        ws: launchWS(onNewDataConversations),
+                        ws: launchWS(onNewDataConversations, pushNotification),
                     }));
                 }
 
@@ -134,13 +147,7 @@ export default function App() {
                 }
             })
             .catch(console.error);
-    }, [
-        launchWS,
-        notificationsPubsub,
-        onNewDataConversations,
-        setLoaded,
-        wsPubsub,
-    ]);
+    }, [launchWS, notificationsPubsub, onNewDataConversations, pushNotification, setLoaded, wsPubsub]);
 
     useEffect(() => {
         fetch(`${API_ENDPOINT}/user/notif/get`, {

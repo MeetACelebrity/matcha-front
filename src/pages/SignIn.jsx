@@ -73,7 +73,28 @@ export default function SignUp() {
                         ...context,
                         user,
                         loggedIn: true,
-                        ws: launchWS(),
+                        ws: launchWS(
+                            type => {
+                                setContext(context => ({
+                                    ...context,
+                                    [type === 'conversations'
+                                        ? 'newDataConversations'
+                                        : 'newDataNotifications']: true,
+                                }));
+                            },
+                            notification => {
+                                setContext(context => ({
+                                    ...context,
+                                    notifications: [
+                                        ...context.notifications,
+                                        {
+                                            ...notification,
+                                            createdAt: +new Date(),
+                                        },
+                                    ],
+                                }));
+                            }
+                        ),
                     }));
                 }
             })

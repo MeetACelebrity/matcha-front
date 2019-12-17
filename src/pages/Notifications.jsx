@@ -64,6 +64,10 @@ const NOTIFICATIONS_TYPES = new Map([
 
 const d = +new Date() - 1000;
 
+function NoData() {
+    return <div className="text-center">You received no one notification</div>;
+}
+
 export default function Notifications() {
     const {
         context: { notifications: notificationsArray },
@@ -72,11 +76,11 @@ export default function Notifications() {
 
     const notifications = useMemo(
         () =>
-            notificationsArray.map(({ uuid, type, message }) => ({
+            notificationsArray.map(({ uuid, type, message, createdAt }) => ({
                 uuid,
                 title: NOTIFICATIONS_TYPES.get(type),
                 description: message,
-                createdAt: d,
+                createdAt: createdAt || d,
             })),
         [notificationsArray]
     );
@@ -97,17 +101,21 @@ export default function Notifications() {
         <Container>
             <Title>Notifications</Title>
 
-            {notifications.map(({ uuid, title, description, createdAt }) => (
-                <Notification key={uuid}>
-                    <NotificationTitle>{title}</NotificationTitle>
+            {notifications.length > 0 ? (
+                notifications.map(({ uuid, title, description, createdAt }) => (
+                    <Notification key={uuid}>
+                        <NotificationTitle>{title}</NotificationTitle>
 
-                    <NotificationDescription>
-                        {description}
-                    </NotificationDescription>
+                        <NotificationDescription>
+                            {description}
+                        </NotificationDescription>
 
-                    <NotificationDate datetime={createdAt} />
-                </Notification>
-            ))}
+                        <NotificationDate datetime={createdAt} />
+                    </Notification>
+                ))
+            ) : (
+                <NoData />
+            )}
         </Container>
     );
 }
