@@ -243,7 +243,7 @@ export default function ProfileCard({
                     <h4>{age} years old</h4>
                 </TextContainer>
 
-                {score && (
+                {typeof score === 'number' && (
                     <TextContainer secondary small>
                         <FeathersIcon
                             icon="zap"
