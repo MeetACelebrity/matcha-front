@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
+import { AppContext } from '../app-context.js';
 import RelativeTime from '../components/RelativeTime.jsx';
+// import { API_ENDPOINT } from '../constants.js';
 
 const Container = styled.article`
     ${tw`mx-auto px-5 w-full mt-6`}
@@ -52,24 +54,44 @@ const NotificationDate = styled(RelativeTime)`
     ${tw`text-red text-sm text-gray-600 font-medium`}
 `;
 
+const NOTIFICATIONS_TYPES = new Map([
+    ['GOT_LIKE', 'Someone liked you'],
+    ['GOT_VISIT', 'Someone visited your profile'],
+    ['GOT_MESSAGE', 'New message'],
+    ['GOT_LIKE_MUTUAL', "It's a match !"],
+    ['GOT_UNLIKE_MUTUAL', 'Undo match'],
+]);
+
 const d = +new Date() - 1000;
 
 export default function Notifications() {
-    const [notifications] = useState([
-        {
-            uuid: 'qdfgqdfg89789qfdg',
-            title: 'New message',
-            description:
-                'JohnDick sent a new message : "I want to suppress your pussy"',
-            createdAt: d,
-        },
-        {
-            uuid: 'qrdgjqdfhgxjdqfg',
-            title: 'Someone visited your profile',
-            description: 'JohnDick has visited your profile',
-            createdAt: d,
-        },
-    ]);
+    const {
+        context: { notifications: notificationsArray },
+        setContext,
+    } = useContext(AppContext);
+
+    const notifications = useMemo(
+        () =>
+            notificationsArray.map(({ uuid, type, message }) => ({
+                uuid,
+                title: NOTIFICATIONS_TYPES.get(type),
+                description: message,
+                createdAt: d,
+            })),
+        [notificationsArray]
+    );
+
+    useEffect(() => {
+        // TODO: Send a fetch to set the seen property of all the notifications to `true`
+        // Promise.all(notifications.map(({uuid}) => fetch(`${API_ENDPOINT}`, {
+        //     credentials: 'include'
+        // }).catch(console.error))).catch(console.error)
+
+        setContext(context => ({
+            ...context,
+            newDataNotifications: false,
+        }));
+    }, [setContext]);
 
     return (
         <Container>
