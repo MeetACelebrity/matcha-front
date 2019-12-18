@@ -8,6 +8,7 @@ import places from 'places.js';
 import useForm, { useFormField } from './Form.jsx';
 import Combobox from './Combobox.jsx';
 import { API_ENDPOINT } from '../constants.js';
+import { trunc } from '../components/Range.jsx';
 
 const FiltersTitle = styled.h2`
     ${tw`text-xl`}
@@ -296,17 +297,28 @@ function Filters({ search, onHide, onConfirm }) {
             .then(({ maxAge, maxScore, maxDistance, maxCommonTags }) => {
                 setMaximumValues({
                     age: maxAge,
-                    distance: maxScore,
-                    popularity: maxDistance,
+                    distance: maxDistance,
+                    popularity: maxScore,
                     commonTags: maxCommonTags,
                 });
+
+                setAgeRange(([min]) => [min, trunc(maxAge)]);
+                setDistanceRange(([min]) => [min, trunc(maxDistance)]);
+                setPopularityRange(([min]) => [min, trunc(maxScore)]);
+                setCountCommonTags(([min]) => [min, trunc(maxCommonTags)]);
             })
             .catch(err => {
                 console.error(err);
 
                 setIntervalLoaded(false);
             });
-    }, [intervalsLoaded]);
+    }, [
+        intervalsLoaded,
+        setAgeRange,
+        setCountCommonTags,
+        setDistanceRange,
+        setPopularityRange,
+    ]);
 
     useEffect(() => {
         const el = document.getElementById(LOCATION_TEXT_FIELD_ID);
