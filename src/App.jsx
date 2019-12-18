@@ -53,10 +53,7 @@ export default function App() {
             ...context,
             notifications: [
                 ...context.notifications,
-                {
-                    ...notification,
-                    createdAt: +new Date(),
-                },
+                notification
             ],
         }));
     }, []);

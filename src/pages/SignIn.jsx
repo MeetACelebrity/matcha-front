@@ -87,10 +87,7 @@ export default function SignUp() {
                                     ...context,
                                     notifications: [
                                         ...context.notifications,
-                                        {
-                                            ...notification,
-                                            createdAt: +new Date(),
-                                        },
+                                        notification
                                     ],
                                 }));
                             }
