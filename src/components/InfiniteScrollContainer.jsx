@@ -5,8 +5,13 @@ export default function InfiniteScrollContainer({
     fetchMore = () => {},
     hasMore = false,
     useWindow = false,
-    loader = <div key={-1}>loading ...</div>,
+    loader = (
+        <div key={-1} className="mx-auto">
+            loading ...
+        </div>
+    ),
     children,
+    className,
 }) {
     return (
         <InfiniteScroll
@@ -15,6 +20,7 @@ export default function InfiniteScrollContainer({
             hasMore={hasMore}
             loader={loader}
             useWindow={useWindow}
+            className={className}
         >
             {children}
         </InfiniteScroll>

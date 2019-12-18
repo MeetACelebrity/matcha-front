@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
@@ -16,11 +16,57 @@ const Title = styled.h2`
 `;
 
 export default function Search() {
-    const LIMIT = 10;
+    const LIMIT = 5;
 
-    const [offset] = useState(0);
-    const [results, setResults] = useState([]);
+    const [offset, setOffset] = useState(0);
+    const [searchText, setSearchText] = useState('');
+    const [body, setBody] = useState({});
+    const [profiles, setProfiles] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
+
+    const offsetsFetchedRef = useRef(new Set());
+
+    const fetchData = useCallback(
+        (offset, body, searchText, hideLoader = false) => {
+            if (offsetsFetchedRef.current.has(offset)) return;
+
+            offsetsFetchedRef.current.add(offset);
+
+            setLoading(!hideLoader);
+
+            fetcher(
+                `${API_ENDPOINT}/match/search/${searchText}/${LIMIT}/${offset}`,
+                {
+                    credentials: 'include',
+                    method: 'POST',
+                    body,
+                    json: true,
+                }
+            )
+                .then(res => res.json())
+                .then(({ result: { datas: newProfiles, hasMore } }) => {
+                    if (
+                        Array.isArray(newProfiles) &&
+                        Boolean(hasMore) === hasMore
+                    ) {
+                        setProfiles(profiles => [...profiles, ...newProfiles]);
+                        setHasMore(hasMore);
+
+                        if (newProfiles.length > 0) {
+                            setOffset(offset => offset + newProfiles.length);
+                        }
+                    }
+                })
+                .catch(console.error)
+                .finally(() => setLoading(false));
+        },
+        []
+    );
+
+    function fetchMore() {
+        fetchData(offset, body, searchText, true);
+    }
 
     function onFiltersUpdate({
         searchText,
@@ -33,36 +79,28 @@ export default function Search() {
         countCommonTags,
         commonTags,
     }) {
-        setLoading(true);
+        const body = {
+            location,
+            tagsArray: commonTags,
+            orderBy: sortBy,
+            order: sortOrder,
+            minAge: ageRange[0] | 0,
+            maxAge: ageRange[1] | 0,
+            minDistance: distanceRange[0] | 0,
+            maxDistance: distanceRange[1] | 0,
+            minScore: popularityRange[0] | 0,
+            maxScore: popularityRange[1] | 0,
+            minCommonTags: countCommonTags[0] | 0,
+            maxCommonTags: countCommonTags[1] | 0,
+        };
 
-        fetcher(
-            `${API_ENDPOINT}/match/search/${searchText}/${LIMIT}/${offset}`,
-            {
-                credentials: 'include',
-                method: 'POST',
-                body: {
-                    location,
-                    tagsArray: commonTags,
-                    orderBy: sortBy,
-                    order: sortOrder,
-                    minAge: ageRange[0],
-                    maxAge: ageRange[1],
-                    minDistance: distanceRange[0],
-                    maxDistance: distanceRange[1],
-                    minScore: popularityRange[0],
-                    maxScore: popularityRange[1],
-                    minCommonTags: countCommonTags[0],
-                    maxCommonTags: countCommonTags[1],
-                },
-                json: true,
-            }
-        )
-            .then(res => res.json())
-            .then(({ result: { datas } }) => {
-                setResults(datas);
-            })
-            .catch(console.error)
-            .finally(() => setLoading(false));
+        setSearchText(searchText);
+        setBody(body);
+        setOffset(0);
+        setProfiles([]);
+        offsetsFetchedRef.current.clear();
+
+        fetchData(0, body, searchText, false);
     }
 
     return (
@@ -71,10 +109,12 @@ export default function Search() {
 
             <ProfilesContainer
                 search
-                profiles={results}
+                profiles={profiles}
                 preview={true}
                 onFiltersUpdate={onFiltersUpdate}
                 loading={loading}
+                fetchMore={fetchMore}
+                hasMore={hasMore}
             />
         </Container>
     );

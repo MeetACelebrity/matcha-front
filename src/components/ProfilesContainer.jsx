@@ -7,24 +7,29 @@ import Profile from './Profile.jsx';
 import FloatingButton from './FloatingButton.jsx';
 import ResultsFilters from './ResultsFilters.jsx';
 import Spinner from './Spinner.jsx';
+import InfiniteScrollContainer from './InfiniteScrollContainer.jsx';
 
 const Container = styled.section`
-    ${tw`p-5 overflow-y-auto relative min-h-full`}
+    ${tw`p-5 overflow-y-auto relative h-full`}
 
-    display: grid;
+    > .scroll-container {
+        ${tw`relative`}
 
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        display: grid;
 
-    @media (min-width: 768px) {
-        grid-template-columns: repeat(auto-fill, minmax(325px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+
+        @media (min-width: 768px) {
+            grid-template-columns: repeat(auto-fill, minmax(325px, 1fr));
+        }
+
+        @media (min-width: 1280px) {
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        }
+
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
     }
-
-    @media (min-width: 1280px) {
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    }
-
-    grid-column-gap: 10px;
-    grid-row-gap: 10px;
 `;
 
 const NoDataContainer = styled.div`
@@ -55,6 +60,8 @@ function ProfilesContainer(
         loading = false,
         onLike = () => {},
         onFiltersUpdate = () => {},
+        fetchMore = () => {},
+        hasMore = false,
     },
     ref
 ) {
@@ -74,18 +81,24 @@ function ProfilesContainer(
 
             {!loading &&
                 (profiles.length > 0 ? (
-                    profiles.map(profile => {
-                        const { uuid } = profile;
+                    <InfiniteScrollContainer
+                        fetchMore={fetchMore}
+                        hasMore={hasMore}
+                        className="scroll-container"
+                    >
+                        {profiles.map(profile => {
+                            const { uuid } = profile;
 
-                        return (
-                            <Profile
-                                {...profile}
-                                key={uuid}
-                                preview={preview}
-                                onLike={onLike}
-                            />
-                        );
-                    })
+                            return (
+                                <Profile
+                                    {...profile}
+                                    key={uuid}
+                                    preview={preview}
+                                    onLike={onLike}
+                                />
+                            );
+                        })}
+                    </InfiniteScrollContainer>
                 ) : (
                     <NoData />
                 ))}

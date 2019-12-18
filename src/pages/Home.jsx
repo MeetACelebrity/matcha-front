@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
@@ -75,7 +75,7 @@ const Container = styled.section`
 `;
 
 export default function Home() {
-    const LIMIT = 10;
+    const LIMIT = 5;
 
     const [collapse, setCollapse] = useState(false);
     const homeViewRef = useRef(null);
@@ -83,15 +83,15 @@ export default function Home() {
     const [profiles, setProfiles] = useState([]);
     const offsetsFetchedRef = useRef(new Set());
     const [offset, setOffset] = useState(0);
-    const [, setHasMore] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const fetchData = useCallback((offset, body, hideLoader = false) => {
         if (offsetsFetchedRef.current.has(offset)) return;
 
         offsetsFetchedRef.current.add(offset);
 
-        setLoading(true);
+        setLoading(!hideLoader);
 
         fetcher(`${API_ENDPOINT}/match/proposals/${LIMIT}/${offset}`, {
             credentials: 'include',
@@ -121,12 +121,21 @@ export default function Home() {
                 setHasMore(hasMore);
 
                 if (data.length > 0) {
-                    setOffset(offset => offset + data.length + 1);
+                    setOffset(offset => offset + data.length);
                 }
             })
             .catch(console.error)
             .finally(() => setLoading(false));
-    }, [body, offset]);
+    }, []);
+
+    useEffect(() => {
+        // Fetch data on first load
+        fetchData(0, {});
+    }, [fetchData]);
+
+    function fetchMore() {
+        fetchData(offset, body, true);
+    }
 
     function toggleCollapse() {
         const newValue = !collapse;
@@ -165,7 +174,7 @@ export default function Home() {
         popularityRange,
         countCommonTags,
     }) {
-        setBody({
+        const body = {
             orderBy: sortBy,
             order: sortOrder,
             minAge: ageRange[0] | 0,
@@ -176,11 +185,14 @@ export default function Home() {
             maxScore: popularityRange[1] | 0,
             minCommonTags: countCommonTags[0] | 0,
             maxCommonTags: countCommonTags[1] | 0,
-        });
+        };
 
         offsetsFetchedRef.current.clear();
+        setBody(body);
         setOffset(0);
         setProfiles([]);
+
+        fetchData(0, body, false);
     }
 
     return (
@@ -204,6 +216,8 @@ export default function Home() {
                 onFiltersUpdate={onFiltersUpdate}
                 preview={true}
                 loading={loading}
+                fetchMore={fetchMore}
+                hasMore={hasMore}
             />
         </Container>
     );
