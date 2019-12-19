@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
@@ -30,11 +31,26 @@ export default function PasswordResetEmailAsking() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(response => console.log(response));
+            .then(({ statusCode }) => {
+                if (statusCode === 'DONE') {
+                    toast(`A password reset email has been sent to ${email}`, {
+                        type: 'success',
+                    });
+                    return;
+                }
+                toast('An error occured, try again later', {
+                    type: 'error',
+                });
+            })
+            .catch(() => {
+                toast('An error occured, try again later', {
+                    type: 'error',
+                });
+            });
     }
 
     return (
-        <LayoutSignOn title="So, we forget password hey ?">
+        <LayoutSignOn title="Password reset">
             <FormComponent
                 onSubmit={onSubmit}
                 fields={fields}

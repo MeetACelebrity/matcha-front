@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 import { toast } from 'react-toastify';
+import { NavLink } from 'react-router-dom';
 
 import { AppContext } from '../app-context.js';
 import { useWS } from '../ws.js';
 import { API_ENDPOINT, SIGN_IN_MESSAGES } from '../constants';
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
+import { RoutesEnum } from '../Routes.jsx';
 
 export default function SignUp() {
     const [, launchWS] = useWS();
@@ -87,7 +89,7 @@ export default function SignUp() {
                                     ...context,
                                     notifications: [
                                         ...context.notifications,
-                                        notification
+                                        notification,
                                     ],
                                 }));
                             }
@@ -105,6 +107,10 @@ export default function SignUp() {
                 fields={fields}
                 isValid={isValidRef}
             />
+
+            <NavLink to={RoutesEnum.RESET_PASSWORD_EMAIL} className="mt-4">
+                I forgot my password
+            </NavLink>
         </LayoutSignOn>
     );
 }
