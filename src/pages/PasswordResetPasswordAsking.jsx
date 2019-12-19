@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
@@ -23,6 +24,7 @@ export default function PasswordResetPasswordAsking() {
             isValid: isPasswordValid,
             setIsValid: setPasswordIsValid,
             min: 6,
+            type: 'password',
         },
     ];
 
@@ -40,7 +42,28 @@ export default function PasswordResetPasswordAsking() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(response => console.log(response));
+            .then(({ statusCode }) => {
+                if (statusCode === 'DONE') {
+                    toast('You can log in using your new password', {
+                        type: 'success',
+                    });
+                    return;
+                }
+
+                const message =
+                    statusCode === 'LINK_INCORRECT'
+                        ? 'The link you followed is invalid'
+                        : 'An error occured, try again later';
+
+                toast(message, {
+                    type: 'error',
+                });
+            })
+            .catch(() => {
+                toast('An error occured, try again later', {
+                    type: 'error',
+                });
+            });
     }
 
     return (
