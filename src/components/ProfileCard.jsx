@@ -108,7 +108,12 @@ const OnLineStatusContainer = styled.div`
 `;
 
 function OnLineStatus({ isOnline, lastSeen }) {
-    const text = isOnline === true ? 'Online' : 'Last seen:';
+    const text =
+        isOnline === true
+            ? 'Online'
+            : lastSeen === null
+            ? 'Offline'
+            : 'Last seen:';
 
     return (
         <OnLineStatusContainer isOnline={isOnline}>
