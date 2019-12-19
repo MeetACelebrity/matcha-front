@@ -11,6 +11,7 @@ import ProfileCardTags from './ProfileCardTags.jsx';
 import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
 import Sex from './Sex.jsx';
 import Button from './Button.jsx';
+import RelativeTime from './RelativeTime.jsx';
 
 const previewContainerStyle = tw`pb-3 shadow-md`;
 const notFlatContainerStyle = tw`shadow-xl`;
@@ -106,12 +107,16 @@ const OnLineStatusContainer = styled.div`
     }
 `;
 
-function OnLineStatus({ isOnline }) {
-    const text = isOnline === true ? 'En ligne' : `Hors ligne`;
+function OnLineStatus({ isOnline, lastSeen }) {
+    const text = isOnline === true ? 'Online' : 'Last seen:';
 
     return (
         <OnLineStatusContainer isOnline={isOnline}>
             {text}
+
+            {!isOnline && lastSeen && (
+                <RelativeTime datetime={+new Date(lastSeen)} className="ml-1" />
+            )}
         </OnLineStatusContainer>
     );
 }
