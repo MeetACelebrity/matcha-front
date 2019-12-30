@@ -5,6 +5,7 @@ import FeathersIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 import { AppContext } from '../app-context.js';
+import { API_ENDPOINT } from '../constants.js';
 
 const Container = styled.div`
     ${tw`w-full min-h-full relative flex flex-col bg-white`}
@@ -65,6 +66,7 @@ const Extract = styled.p`
 export default function ConversationsList({ id, className }) {
     const {
         context: { wsPubsub: pubsub },
+        setContext,
     } = useContext(AppContext);
     const [conversations, setConversations] = useState([]);
 
@@ -72,6 +74,16 @@ export default function ConversationsList({ id, className }) {
         if (!pubsub) return;
 
         function onData(conversations) {
+            fetch(`${API_ENDPOINT}/user/chat/saw-messages`, {
+                credentials: 'include',
+                method: 'PUT',
+            }).catch(() => {});
+
+            setContext(context => ({
+                ...context,
+                newDataConversations: false,
+            }));
+
             setConversations(conversations);
         }
 
@@ -80,7 +92,7 @@ export default function ConversationsList({ id, className }) {
         return () => {
             pubsub.unlisten(onData);
         };
-    }, [id, pubsub]);
+    }, [id, pubsub, setContext]);
 
     return (
         <Container className={className}>

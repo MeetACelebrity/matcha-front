@@ -111,8 +111,6 @@ export default function ConversationId({ id }) {
         let exit = false;
 
         function onData(data) {
-            console.log('data = ', data);
-
             !exit && setConversation(data);
         }
 

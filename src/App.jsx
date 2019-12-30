@@ -51,10 +51,7 @@ export default function App() {
     const pushNotification = useCallback(notification => {
         setContext(context => ({
             ...context,
-            notifications: [
-                ...context.notifications,
-                notification
-            ],
+            notifications: [...context.notifications, notification],
         }));
     }, []);
 
@@ -75,6 +72,7 @@ export default function App() {
                     loggedIn,
                     wsPubsub,
                     notificationsPubsub,
+                    newDataConversations: (user && !user.sawMessages) || false,
                 }));
 
                 if (loggedIn === true) {
@@ -144,7 +142,14 @@ export default function App() {
                 }
             })
             .catch(console.error);
-    }, [launchWS, notificationsPubsub, onNewDataConversations, pushNotification, setLoaded, wsPubsub]);
+    }, [
+        launchWS,
+        notificationsPubsub,
+        onNewDataConversations,
+        pushNotification,
+        setLoaded,
+        wsPubsub,
+    ]);
 
     useEffect(() => {
         fetch(`${API_ENDPOINT}/user/notif/get`, {

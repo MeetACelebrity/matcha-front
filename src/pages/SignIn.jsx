@@ -94,6 +94,8 @@ export default function SignUp() {
                                 }));
                             }
                         ),
+                        newDataConversations:
+                            (user && !user.sawMessages) || false,
                     }));
                 }
             })
