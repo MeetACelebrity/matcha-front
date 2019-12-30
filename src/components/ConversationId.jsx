@@ -158,6 +158,11 @@ export default function ConversationId({ id }) {
         return currentUserUuid === messageUuid;
     }
 
+    // If the id is not correct
+    if (String(id).length !== 36) {
+        return <Container />;
+    }
+
     return (
         <Container>
             <Head>{title}</Head>
