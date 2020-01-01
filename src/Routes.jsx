@@ -86,35 +86,51 @@ export default function Routes({ loaded = false }) {
             */}
             {loaded &&
                 (loggedIn ? (
-                    <Switch>
-                        <Route
-                            path={RoutesEnum.ME_EDIT}
-                            component={UserProfileModify}
-                        />
-                        <Route path={RoutesEnum.PROFILE} component={Profile} />
-                        <Route path={RoutesEnum.SEARCH} component={Search} />
-                        <Route
-                            path={RoutesEnum.NOTIFICATIONS}
-                            component={Notifications}
-                        />
-                        <Route
-                            path={RoutesEnum.MY_LOVERS}
-                            component={MyLovers}
-                        />
-                        <Route
-                            path={RoutesEnum.MY_VISITORS}
-                            component={MyVisitors}
-                        />
-                        <Route path="/404" component={NotFound} />
+                    <Media query={{ maxWidth: 768 }}>
+                        {screenIsSmall => {
+                            console.log('new version');
+                            const template = (children, before = null) => (
+                                <Switch>
+                                    {before}
 
-                        <Media query={{ maxWidth: 768 }}>
-                            {screenIsSmall =>
+                                    <Route
+                                        path={RoutesEnum.HOME}
+                                        component={Home}
+                                    />
+                                    <Route
+                                        path={RoutesEnum.ME_EDIT}
+                                        component={UserProfileModify}
+                                    />
+                                    <Route
+                                        path={RoutesEnum.PROFILE}
+                                        component={Profile}
+                                    />
+                                    <Route
+                                        path={RoutesEnum.SEARCH}
+                                        component={Search}
+                                    />
+                                    <Route
+                                        path={RoutesEnum.NOTIFICATIONS}
+                                        component={Notifications}
+                                    />
+                                    <Route
+                                        path={RoutesEnum.MY_LOVERS}
+                                        component={MyLovers}
+                                    />
+                                    <Route
+                                        path={RoutesEnum.MY_VISITORS}
+                                        component={MyVisitors}
+                                    />
+
+                                    {children}
+
+                                    <Route component={NotFound} />
+                                </Switch>
+                            );
+
+                            return template(
                                 screenIsSmall ? (
                                     <>
-                                        <Route
-                                            path={RoutesEnum.HOME}
-                                            component={Home}
-                                        />
                                         <Route
                                             path={RoutesEnum.ME}
                                             component={UserProfile}
@@ -131,27 +147,21 @@ export default function Routes({ loaded = false }) {
                                         />
                                     </>
                                 ) : (
-                                    <>
-                                        <Route
-                                            path={RoutesEnum.HOME}
-                                            component={Home}
-                                        />
-                                        <Route
-                                            path="/chat/:uuid?"
-                                            component={ChatMasterView}
-                                        />
-                                        <Redirect
-                                            exact
-                                            from={RoutesEnum.ME}
-                                            to={RoutesEnum.HOME}
-                                        />
-                                    </>
+                                    <Route
+                                        path="/chat/:uuid?"
+                                        component={ChatMasterView}
+                                    />
+                                ),
+                                screenIsSmall ? null : (
+                                    <Redirect
+                                        exact
+                                        from={RoutesEnum.ME}
+                                        to={RoutesEnum.HOME}
+                                    />
                                 )
-                            }
-                        </Media>
-
-                        <Redirect from="/" to="/404" />
-                    </Switch>
+                            );
+                        }}
+                    </Media>
                 ) : (
                     <Switch>
                         <Route path={RoutesEnum.SIGN_IN} component={SignIn} />
