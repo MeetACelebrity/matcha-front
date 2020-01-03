@@ -102,7 +102,8 @@ export default function UserProfileModifyOtherInformations({ user }) {
             }),
         })
             .then(res => res.json())
-            .then(console.log);
+            .then(console.log)
+            .catch(() => {});
     }
 
     return (

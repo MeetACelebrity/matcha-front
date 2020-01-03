@@ -1,3 +1,5 @@
+import { useRef, useEffect } from 'react';
+
 export const API_ENDPOINT = 'http://localhost:8080';
 export const CLOUD_ENDPOINT = 'http://localhost:8081';
 
@@ -104,4 +106,18 @@ export function formatAddress({ name, county, country, city }) {
     }
 
     return str.trim();
+}
+
+export function useIsMounted() {
+    const isMounted = useRef(false);
+
+    useEffect(() => {
+        isMounted.current = true;
+
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
+    return isMounted;
 }

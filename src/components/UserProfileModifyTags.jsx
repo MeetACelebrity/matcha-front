@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { API_ENDPOINT } from '../constants';
+import { API_ENDPOINT, useIsMounted } from '../constants';
 
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import Combobox from './Combobox.jsx';
@@ -12,6 +12,7 @@ export default function UserProfileModifyTags({
     setContext,
 }) {
     const [propositions, setPropositions] = useState([]);
+    const isMounted = useIsMounted();
 
     useEffect(() => {
         fetch(`${API_ENDPOINT}/profile/tags`, {
@@ -19,13 +20,14 @@ export default function UserProfileModifyTags({
         })
             .then(res => res.json())
             .then(propositions => {
+                if (!isMounted.current) return;
+
                 setPropositions(propositions);
             })
             .catch(console.error);
-    }, []);
+    }, [isMounted]);
 
     function addTag(tag) {
-        console.log('add tag lol ?', tag);
         fetch(`${API_ENDPOINT}/profile/tags/add`, {
             method: 'PUT',
             credentials: 'include',
@@ -39,7 +41,6 @@ export default function UserProfileModifyTags({
     }
 
     function removeTag(tag) {
-        console.log('remove tag', tag);
         fetch(`${API_ENDPOINT}/profile/tags/delete`, {
             method: 'DELETE',
             credentials: 'include',

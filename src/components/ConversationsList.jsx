@@ -5,7 +5,7 @@ import FeathersIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 import { AppContext } from '../app-context.js';
-import { API_ENDPOINT } from '../constants.js';
+import { API_ENDPOINT, useIsMounted } from '../constants.js';
 
 const Container = styled.div`
     ${tw`w-full min-h-full relative flex flex-col bg-white`}
@@ -69,11 +69,14 @@ export default function ConversationsList({ id, className }) {
         setContext,
     } = useContext(AppContext);
     const [conversations, setConversations] = useState([]);
+    const isMounted = useIsMounted();
 
     useEffect(() => {
         if (!pubsub) return;
 
         function onData(conversations) {
+            if (!isMounted.current) return;
+
             fetch(`${API_ENDPOINT}/user/chat/saw-messages`, {
                 credentials: 'include',
                 method: 'PUT',
@@ -92,7 +95,7 @@ export default function ConversationsList({ id, className }) {
         return () => {
             pubsub.unlisten(onData);
         };
-    }, [id, pubsub, setContext]);
+    }, [id, isMounted, pubsub, setContext]);
 
     return (
         <Container className={className}>

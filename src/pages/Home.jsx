@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 import MyProfile from '../components/MyProfile.jsx';
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
-import { API_ENDPOINT, fetcher } from '../constants.js';
+import { API_ENDPOINT, fetcher, useIsMounted } from '../constants.js';
 
 const ClosingContainer = styled.button`
     ${tw`absolute py-2 w-6 flex justify-center items-center bg-blue-700 text-white rounded-r opacity-25`}
@@ -86,47 +86,58 @@ export default function Home() {
     const [hasMore, setHasMore] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const fetchData = useCallback((offset, body, hideLoader = false) => {
-        if (offsetsFetchedRef.current.has(offset)) return;
+    const isMounted = useIsMounted();
 
-        offsetsFetchedRef.current.add(offset);
+    const fetchData = useCallback(
+        (offset, body, hideLoader = false) => {
+            if (offsetsFetchedRef.current.has(offset)) return;
 
-        setLoading(!hideLoader);
+            offsetsFetchedRef.current.add(offset);
 
-        fetcher(`${API_ENDPOINT}/match/proposals/${LIMIT}/${offset}`, {
-            credentials: 'include',
-            method: 'POST',
-            body,
-            json: true,
-        })
-            .then(res => res.json())
-            .then(({ result: { data, hasMore } = {}, statusCode }) => {
-                if (typeof statusCode === 'string') {
-                    if (statusCode === 'INCOMPLETE_PROFILE') {
-                        toast('Complete your profile guy! 😛', {
-                            type: 'info',
+            setLoading(!hideLoader);
+
+            fetcher(`${API_ENDPOINT}/match/proposals/${LIMIT}/${offset}`, {
+                credentials: 'include',
+                method: 'POST',
+                body,
+                json: true,
+            })
+                .then(res => res.json())
+                .then(({ result: { data, hasMore } = {}, statusCode }) => {
+                    if (!isMounted.current) return;
+
+                    if (typeof statusCode === 'string') {
+                        if (statusCode === 'INCOMPLETE_PROFILE') {
+                            toast('Complete your profile guy! 😛', {
+                                type: 'info',
+                            });
+
+                            return;
+                        }
+
+                        toast('An error occured during suggestions fetching', {
+                            type: 'error',
                         });
 
                         return;
                     }
 
-                    toast('An error occured during suggestions fetching', {
-                        type: 'error',
-                    });
+                    setProfiles(profiles => [...profiles, ...data]);
+                    setHasMore(hasMore);
 
-                    return;
-                }
+                    if (data.length > 0) {
+                        setOffset(offset => offset + data.length);
+                    }
+                })
+                .catch(console.error)
+                .finally(() => {
+                    if (!isMounted.current) return;
 
-                setProfiles(profiles => [...profiles, ...data]);
-                setHasMore(hasMore);
-
-                if (data.length > 0) {
-                    setOffset(offset => offset + data.length);
-                }
-            })
-            .catch(console.error)
-            .finally(() => setLoading(false));
-    }, []);
+                    setLoading(false);
+                });
+        },
+        [isMounted]
+    );
 
     useEffect(() => {
         // Fetch data on first load

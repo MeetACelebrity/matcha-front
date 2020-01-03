@@ -71,7 +71,7 @@ export default function UserProfileModifyGeneral({ user }) {
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, givenName, familyName }),
-        });
+        }).catch(() => {});
     }
 
     return (

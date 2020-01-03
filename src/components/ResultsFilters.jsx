@@ -7,7 +7,7 @@ import places from 'places.js';
 
 import useForm, { useFormField } from './Form.jsx';
 import Combobox from './Combobox.jsx';
-import { API_ENDPOINT } from '../constants.js';
+import { API_ENDPOINT, useIsMounted } from '../constants.js';
 import { trunc } from '../components/Range.jsx';
 
 const FiltersTitle = styled.h2`
@@ -147,6 +147,8 @@ function Filters({ search, onHide, onConfirm }) {
 
     const addressTextFieldRef = useRef(null);
 
+    const isMounted = useIsMounted();
+
     const fields =
         search === true
             ? [
@@ -279,14 +281,15 @@ function Filters({ search, onHide, onConfirm }) {
         })
             .then(res => res.json())
             .then(propositions => {
+                if (!isMounted.current) return;
+
                 setPropositions(propositions);
             })
             .catch(console.error);
-    }, []);
+    }, [isMounted]);
 
     useEffect(() => {
-        console.log('useEffect', intervalsLoaded);
-        if (intervalsLoaded === true) return;
+        if (intervalsLoaded === true || !isMounted.current) return;
 
         setIntervalLoaded(true);
 
@@ -295,6 +298,8 @@ function Filters({ search, onHide, onConfirm }) {
         })
             .then(res => res.json())
             .then(({ maxAge, maxScore, maxDistance, maxCommonTags }) => {
+                if (!isMounted.current) return;
+
                 setMaximumValues({
                     age: maxAge,
                     distance: maxDistance,
@@ -314,6 +319,7 @@ function Filters({ search, onHide, onConfirm }) {
             });
     }, [
         intervalsLoaded,
+        isMounted,
         setAgeRange,
         setCountCommonTags,
         setDistanceRange,
@@ -322,7 +328,7 @@ function Filters({ search, onHide, onConfirm }) {
 
     useEffect(() => {
         const el = document.getElementById(LOCATION_TEXT_FIELD_ID);
-        if (el === null) return;
+        if (el === null || !isMounted.current) return;
 
         addressTextFieldRef.current = el;
 
@@ -346,6 +352,8 @@ function Filters({ search, onHide, onConfirm }) {
                         value,
                     },
                 }) => {
+                    if (!isMounted.current) return;
+
                     setCoordinates({ lat, long: lng });
                     setLocation(value);
                 }
@@ -353,7 +361,7 @@ function Filters({ search, onHide, onConfirm }) {
 
             setPlacesAutocomplete(placesAutocomplete);
         }
-    }, [placesAutocomplete, setLocation]);
+    }, [isMounted, placesAutocomplete, setLocation]);
 
     const seperation = search === true ? 3 : 2;
 

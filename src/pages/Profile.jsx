@@ -3,7 +3,7 @@ import { Redirect, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
-import { API_ENDPOINT, fetcher } from '../constants.js';
+import { API_ENDPOINT, fetcher, useIsMounted } from '../constants.js';
 
 import ProfileCard from '../components/ProfileCard.jsx';
 
@@ -16,6 +16,8 @@ export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState(null);
 
+    const isMounted = useIsMounted();
+
     useEffect(() => {
         setIsLoading(true);
 
@@ -24,12 +26,16 @@ export default function Profile() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(user => setUser(user))
+            .then(user => {
+                if (!isMounted.current) return;
+
+                setUser(user);
+            })
             .catch(console.error)
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [uuid]);
+    }, [isMounted, uuid]);
 
     function onLike() {
         const isLikingTheProfile = ['VIRGIN', 'HAS_LIKED_US'].includes(

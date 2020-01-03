@@ -63,7 +63,8 @@ export default function UserProfileModifyPassword() {
             body: JSON.stringify({ currentPassword, newPassword }),
         })
             .then(res => res.json())
-            .then(console.log);
+            .then(console.log)
+            .catch(() => {});
     }
 
     return (

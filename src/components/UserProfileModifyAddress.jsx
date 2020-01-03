@@ -114,7 +114,8 @@ export default function UserProfileModifyAddress({
                 body: { isPrimary: true, auto: false, ...address, ...latlng },
             })
                 .then(res => res.json())
-                .then(console.log);
+                .then(console.log)
+                .catch(() => {});
         }
 
         if (
@@ -129,7 +130,8 @@ export default function UserProfileModifyAddress({
                 body: { value: roamingPref ? 'ACCEPTED' : 'REFUSED' },
             })
                 .then(res => res.json())
-                .then(console.log);
+                .then(console.log)
+                .catch(() => {});
 
             if (roamingPref === true) {
                 fetcher(`${API_ENDPOINT}/profile/location`, {
@@ -139,7 +141,8 @@ export default function UserProfileModifyAddress({
                     body: { acceptGeolocation: true },
                 })
                     .then(res => res.json())
-                    .then(console.log);
+                    .then(console.log)
+                    .catch(() => {});
             }
 
             setContext({

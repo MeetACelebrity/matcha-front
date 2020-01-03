@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import { NavLink } from 'react-router-dom';
 
-import { API_ENDPOINT } from '../constants.js';
+import { API_ENDPOINT, useIsMounted } from '../constants.js';
 import InfiniteScrollContainer from './InfiniteScrollContainer.jsx';
 
 const Container = styled.article`
@@ -58,8 +58,10 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
     const [hasMore, setHasMore] = useState(true);
     const [offsetsFetched, setOffsetsFetched] = useState([]);
 
+    const isMounted = useIsMounted();
+
     const fetchLovers = useCallback(() => {
-        if (offsetsFetched.includes(offset)) return;
+        if (offsetsFetched.includes(offset) || !isMounted.current) return;
 
         setOffsetsFetched([...offsetsFetched, offset]);
 
@@ -78,6 +80,8 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
                         hasMore,
                     },
                 }) => {
+                    if (!isMounted.current) return;
+
                     if (newLoversCount > 0) {
                         setLovers([...lovers, ...newLovers]);
                         setOffset(offset + newLoversCount);
@@ -87,7 +91,7 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
                 }
             )
             .catch(console.error);
-    }, [dataProperty, lovers, offset, offsetsFetched, type]);
+    }, [dataProperty, isMounted, lovers, offset, offsetsFetched, type]);
 
     useEffect(() => {
         fetchLovers();

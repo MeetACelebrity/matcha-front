@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import AddPictureButton from './UserProfileModifyPicturesAddPictureButton.jsx';
 import Picture from './UserProfileModifyPicturesPicture.jsx';
-import { API_ENDPOINT } from '../constants.js';
+import { API_ENDPOINT, useIsMounted } from '../constants.js';
 
 const PicturesContainer = styled.div`
     ${tw`flex items-center justify-start overflow-x-scroll w-full`}
@@ -30,7 +30,11 @@ export default function UserProfileModifyPictures({
         [images]
     );
 
+    const isMounted = useIsMounted();
+
     useEffect(() => {
+        if (!isMounted.current) return;
+
         for (const { temporaryUuid, uuid, imageNumber } of uploadStack) {
             setContext({
                 ...context,
@@ -56,9 +60,19 @@ export default function UserProfileModifyPictures({
                 uploadStack.filter(({ uuid: taskUuid }) => taskUuid !== uuid)
             );
         }
-    }, [uploadStack, setContext, context, images, user, setUploadStack]);
+    }, [
+        uploadStack,
+        setContext,
+        context,
+        images,
+        user,
+        setUploadStack,
+        isMounted,
+    ]);
 
     useEffect(() => {
+        if (!isMounted.current) return;
+
         for (const { temporaryUuid, result, imageNumber } of readingStack) {
             setContext({
                 ...context,
@@ -81,7 +95,15 @@ export default function UserProfileModifyPictures({
                 )
             );
         }
-    }, [context, setContext, user, images, readingStack, setReadingStack]);
+    }, [
+        context,
+        setContext,
+        user,
+        images,
+        readingStack,
+        setReadingStack,
+        isMounted,
+    ]);
 
     function onFileChange({
         target: {
@@ -89,6 +111,8 @@ export default function UserProfileModifyPictures({
         },
         target,
     }) {
+        if (!isMounted.current) return;
+
         if (
             !['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(
                 file.type
@@ -105,6 +129,8 @@ export default function UserProfileModifyPictures({
         const reader = new FileReader();
 
         reader.onload = ({ target: { result } }) => {
+            if (!isMounted.current) return;
+
             setReadingStack([
                 ...readingStack,
                 { temporaryUuid, result, imageNumber: images.length },
@@ -128,7 +154,7 @@ export default function UserProfileModifyPictures({
         })
             .then(res => res.json())
             .then(({ statusCode, image: { uuid, src, imageNumber } = {} }) => {
-                if (statusCode === 'DONE') {
+                if (!isMounted.current || statusCode === 'DONE') {
                     // this was a successful uploading
 
                     const pictureObj = {
@@ -150,11 +176,14 @@ export default function UserProfileModifyPictures({
                 } else {
                     // an error occured
                 }
-            });
+            })
+            .catch(() => {});
     }
 
     function onDelete(uuid) {
         return () => {
+            if (!isMounted.current) return;
+
             setContext(context => ({
                 ...context,
                 user: {
@@ -172,7 +201,8 @@ export default function UserProfileModifyPictures({
                 body: JSON.stringify({ pics: uuid }),
             })
                 .then(res => res.json())
-                .then(console.log);
+                .then(console.log)
+                .catch(() => {});
         };
     }
 

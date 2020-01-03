@@ -99,7 +99,8 @@ function ProfileImage({ src, setContext }) {
             body: formData,
         })
             .then(res => res.json())
-            .then(console.log);
+            .then(console.log)
+            .catch(() => {});
     }
 
     return (

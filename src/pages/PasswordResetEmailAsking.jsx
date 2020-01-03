@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
-import { API_ENDPOINT } from '../constants';
+import { API_ENDPOINT, useIsMounted } from '../constants';
 
 export default function PasswordResetEmailAsking() {
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
@@ -21,6 +21,8 @@ export default function PasswordResetEmailAsking() {
 
     const [isValid, FormComponent] = useForm({ fields, onSubmit });
 
+    const isMounted = useIsMounted();
+
     function onSubmit() {
         fetch(`${API_ENDPOINT}/auth/reset-password/asking`, {
             method: 'POST',
@@ -32,6 +34,8 @@ export default function PasswordResetEmailAsking() {
         })
             .then(res => res.json())
             .then(({ statusCode }) => {
+                if (!isMounted.current) return;
+
                 if (statusCode === 'DONE') {
                     toast(`A password reset email has been sent to ${email}`, {
                         type: 'success',

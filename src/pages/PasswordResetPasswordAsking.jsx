@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
-import { API_ENDPOINT } from '../constants';
+import { API_ENDPOINT, useIsMounted } from '../constants';
 
 export default function PasswordResetPasswordAsking() {
     const { uuid, token } = useParams();
@@ -30,6 +30,8 @@ export default function PasswordResetPasswordAsking() {
 
     const [isValid, FormComponent] = useForm({ fields, onSubmit });
 
+    const isMounted = useIsMounted();
+
     function onSubmit() {
         fetch(`${API_ENDPOINT}/auth/reset-password/changing/`, {
             method: 'POST',
@@ -43,6 +45,8 @@ export default function PasswordResetPasswordAsking() {
         })
             .then(res => res.json())
             .then(({ statusCode }) => {
+                if (!isMounted.current) return;
+
                 if (statusCode === 'DONE') {
                     toast('You can log in using your new password', {
                         type: 'success',

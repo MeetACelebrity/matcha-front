@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
-import { API_ENDPOINT, fetcher } from '../constants.js';
+import { API_ENDPOINT, fetcher, useIsMounted } from '../constants.js';
 
 const Container = styled.div`
     ${tw`w-full h-full flex flex-col`}
@@ -27,6 +27,8 @@ export default function Search() {
 
     const offsetsFetchedRef = useRef(new Set());
 
+    const isMounted = useIsMounted();
+
     const fetchData = useCallback(
         (offset, body, searchText, hideLoader = false) => {
             if (offsetsFetchedRef.current.has(offset)) return;
@@ -46,6 +48,8 @@ export default function Search() {
             )
                 .then(res => res.json())
                 .then(({ result: { datas: newProfiles, hasMore } }) => {
+                    if (!isMounted.current) return;
+
                     if (
                         Array.isArray(newProfiles) &&
                         Boolean(hasMore) === hasMore
@@ -61,7 +65,7 @@ export default function Search() {
                 .catch(console.error)
                 .finally(() => setLoading(false));
         },
-        []
+        [isMounted]
     );
 
     function fetchMore() {

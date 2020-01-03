@@ -39,7 +39,8 @@ export default function UserProfileModifyBiography({ user }) {
             json: true,
         })
             .then(res => res.json())
-            .then(console.log);
+            .then(console.log)
+            .catch(() => {});
     }
 
     return (

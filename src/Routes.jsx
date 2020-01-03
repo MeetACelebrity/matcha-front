@@ -90,6 +90,7 @@ export default function Routes({ loaded = false }) {
                         {screenIsSmall => {
                             const template = (children, before = null) => (
                                 <Switch>
+                                    <Redirect exact path="/" to={RoutesEnum.HOME} />
                                     <Redirect
                                         path={RoutesEnum.SIGN_IN}
                                         to={RoutesEnum.HOME}

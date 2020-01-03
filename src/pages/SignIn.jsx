@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 import { AppContext } from '../app-context.js';
 import { useWS } from '../ws.js';
-import { API_ENDPOINT, SIGN_IN_MESSAGES } from '../constants';
+import { API_ENDPOINT, SIGN_IN_MESSAGES, useIsMounted } from '../constants';
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
 import { RoutesEnum } from '../Routes.jsx';
@@ -24,6 +24,8 @@ export default function SignUp() {
         setPasswordIsValid,
     ] = useFormField('');
     const { setContext } = useContext(AppContext);
+
+    const isMounted = useIsMounted();
 
     const fields = [
         {
@@ -63,6 +65,8 @@ export default function SignUp() {
         })
             .then(res => res.json())
             .then(({ statusCode, user }) => {
+                if (!isMounted.current) return;
+
                 const isError = statusCode !== 'DONE';
                 const message = SIGN_IN_MESSAGES.get(statusCode);
 
