@@ -88,9 +88,26 @@ export default function Routes({ loaded = false }) {
                 (loggedIn ? (
                     <Media query={{ maxWidth: 768 }}>
                         {screenIsSmall => {
-                            console.log('new version');
                             const template = (children, before = null) => (
                                 <Switch>
+                                    <Redirect
+                                        path={RoutesEnum.SIGN_IN}
+                                        to={RoutesEnum.HOME}
+                                    />
+                                    <Redirect
+                                        path={RoutesEnum.SIGN_UP}
+                                        to={RoutesEnum.HOME}
+                                    />
+                                    <Redirect
+                                        path={RoutesEnum.RESET_PASSWORD_EMAIL}
+                                        to={RoutesEnum.HOME}
+                                    />
+                                    <Redirect
+                                        path={
+                                            RoutesEnum.RESET_PASSWORD_PASSWORD
+                                        }
+                                        to={RoutesEnum.HOME}
+                                    />
                                     {before}
 
                                     <Route
@@ -124,7 +141,8 @@ export default function Routes({ loaded = false }) {
 
                                     {children}
 
-                                    <Route component={NotFound} />
+                                    <Route path="/404" component={NotFound} />
+                                    <Redirect from="/" to="/404" />
                                 </Switch>
                             );
 
