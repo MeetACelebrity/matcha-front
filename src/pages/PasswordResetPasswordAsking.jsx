@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { useParams, Redirect } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import { AppContext } from '../app-context.js';
 import useForm, { useFormField } from '../components/Form.jsx';
+import { useWS } from '../ws.js';
 import LayoutSignOn from '../layouts/SignOn.jsx';
 import { API_ENDPOINT, useIsMounted } from '../constants';
+import { setupContextAfterLoggingIn } from './SignIn.jsx';
 
 export default function PasswordResetPasswordAsking() {
     const { uuid, token } = useParams();
+    const { setContext } = useContext(AppContext);
+    const [, launchWS] = useWS();
 
-    const [redirect, setRedirect] = useState(false);
     const [
         password,
         setPassword,
@@ -19,7 +23,17 @@ export default function PasswordResetPasswordAsking() {
 
     const fields = [
         {
+            label: '',
+            value: '',
+            name: 'username',
+            autocomplete: 'username',
+            hidden: true,
+            disableValidation: true,
+        },
+        {
             label: 'New Password',
+            name: 'new-password',
+            autocomplete: 'new-password',
             value: password,
             setValue: setPassword,
             isValid: isPasswordValid,
@@ -45,15 +59,22 @@ export default function PasswordResetPasswordAsking() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(({ statusCode }) => {
+            .then(async ({ statusCode, user }) => {
                 if (!isMounted.current) return;
 
                 if (statusCode === 'DONE') {
-                    toast('You can log in using your new password', {
-                        type: 'success',
-                    });
+                    toast(
+                        'Success ! You are getting redirected to your home !',
+                        {
+                            type: 'success',
+                        }
+                    );
 
-                    setRedirect(true);
+                    await setupContextAfterLoggingIn({
+                        setContext,
+                        user,
+                        launchWS,
+                    });
                     return;
                 }
 
@@ -71,10 +92,6 @@ export default function PasswordResetPasswordAsking() {
                     type: 'error',
                 });
             });
-    }
-
-    if (redirect) {
-        return <Redirect to="/sign-in" />;
     }
 
     return (

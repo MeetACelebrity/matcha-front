@@ -11,6 +11,8 @@ export default function PasswordResetEmailAsking() {
     const fields = [
         {
             label: 'Email',
+            autocomplete: 'email',
+            name: 'email',
             value: email,
             setValue: setEmail,
             isValid: isEmailValid,

@@ -10,6 +10,42 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
 import { RoutesEnum } from '../Routes.jsx';
 
+export async function setupContextAfterLoggingIn({
+    setContext,
+    user,
+    launchWS,
+}) {
+    const result = await getNotifications();
+    if (result === undefined) return;
+
+    const { notifications, newDataNotifications } = result;
+
+    setContext(context => ({
+        ...context,
+        user,
+        loggedIn: true,
+        ws: launchWS(
+            type => {
+                setContext(context => ({
+                    ...context,
+                    [type === 'conversations'
+                        ? 'newDataConversations'
+                        : 'newDataNotifications']: true,
+                }));
+            },
+            notification => {
+                setContext(context => ({
+                    ...context,
+                    notifications: [...context.notifications, notification],
+                }));
+            }
+        ),
+        newDataConversations: (user && !user.sawMessages) || false,
+        notifications,
+        newDataNotifications,
+    }));
+}
+
 export default function SignUp() {
     const [, launchWS] = useWS();
     const [
@@ -76,39 +112,11 @@ export default function SignUp() {
                 });
 
                 if (isError === false) {
-                    const result = await getNotifications();
-                    if (result === undefined) return;
-
-                    const { notifications, newDataNotifications } = result;
-
-                    setContext(context => ({
-                        ...context,
+                    await setupContextAfterLoggingIn({
+                        setContext,
                         user,
-                        loggedIn: true,
-                        ws: launchWS(
-                            type => {
-                                setContext(context => ({
-                                    ...context,
-                                    [type === 'conversations'
-                                        ? 'newDataConversations'
-                                        : 'newDataNotifications']: true,
-                                }));
-                            },
-                            notification => {
-                                setContext(context => ({
-                                    ...context,
-                                    notifications: [
-                                        ...context.notifications,
-                                        notification,
-                                    ],
-                                }));
-                            }
-                        ),
-                        newDataConversations:
-                            (user && !user.sawMessages) || false,
-                        notifications,
-                        newDataNotifications,
-                    }));
+                        launchWS,
+                    });
                 }
             })
             .catch(console.error);
