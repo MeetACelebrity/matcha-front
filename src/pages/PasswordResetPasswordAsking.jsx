@@ -1,5 +1,5 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import useForm, { useFormField } from '../components/Form.jsx';
@@ -9,6 +9,7 @@ import { API_ENDPOINT, useIsMounted } from '../constants';
 export default function PasswordResetPasswordAsking() {
     const { uuid, token } = useParams();
 
+    const [redirect, setRedirect] = useState(false);
     const [
         password,
         setPassword,
@@ -51,6 +52,8 @@ export default function PasswordResetPasswordAsking() {
                     toast('You can log in using your new password', {
                         type: 'success',
                     });
+
+                    setRedirect(true);
                     return;
                 }
 
@@ -68,6 +71,10 @@ export default function PasswordResetPasswordAsking() {
                     type: 'error',
                 });
             });
+    }
+
+    if (redirect) {
+        return <Redirect to="/sign-in" />;
     }
 
     return (
