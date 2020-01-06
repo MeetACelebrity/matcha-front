@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import { NavLink } from 'react-router-dom';
 
 import { API_ENDPOINT, useIsMounted } from '../constants.js';
 import InfiniteScrollContainer from './InfiniteScrollContainer.jsx';
+import UnknownUserImage from '../assets/unknown_person.png';
 
 const Container = styled.article`
-    ${tw`mx-auto px-5 w-full mt-6`}
+    ${tw`mx-auto p-5 w-full overflow-y-auto relative h-full`}
 
     @media (min-width: 768px) {
         ${tw`w-3/5`}
@@ -56,45 +57,52 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
     const [lovers, setLovers] = useState([]);
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [offsetsFetched, setOffsetsFetched] = useState([]);
+    const offsetsFetchedRef = useRef(new Set());
 
     const isMounted = useIsMounted();
 
-    const fetchLovers = useCallback(() => {
-        if (offsetsFetched.includes(offset) || !isMounted.current) return;
+    const fetchLovers = useCallback(
+        offset => {
+            if (offsetsFetchedRef.current.has(offset)) return;
 
-        setOffsetsFetched([...offsetsFetched, offset]);
+            offsetsFetchedRef.current.add(offset);
 
-        return fetch(
-            `${API_ENDPOINT}/user/${type}/history/${LIMIT}/${offset}`,
-            {
-                credentials: 'include',
-            }
-        )
-            .then(res => res.json())
-            .then(
-                ({
-                    [dataProperty]: {
-                        data: newLovers,
-                        data: { length: newLoversCount },
-                        hasMore,
-                    },
-                }) => {
-                    if (!isMounted.current) return;
-
-                    if (newLoversCount > 0) {
-                        setLovers([...lovers, ...newLovers]);
-                        setOffset(offset + newLoversCount);
-                    }
-
-                    setHasMore(hasMore);
+            return fetch(
+                `${API_ENDPOINT}/user/${type}/history/${LIMIT}/${offset}`,
+                {
+                    credentials: 'include',
                 }
             )
-            .catch(console.error);
-    }, [dataProperty, isMounted, lovers, offset, offsetsFetched, type]);
+                .then(res => res.json())
+                .then(
+                    ({
+                        [dataProperty]: {
+                            data: newLovers,
+                            data: { length: newLoversCount },
+                            hasMore,
+                        },
+                    }) => {
+                        if (!isMounted.current) return;
+
+                        setHasMore(hasMore);
+
+                        if (newLoversCount > 0) {
+                            setLovers(lovers => [...lovers, ...newLovers]);
+                            setOffset(offset => offset + newLoversCount);
+                        }
+                    }
+                )
+                .catch(console.error);
+        },
+        [dataProperty, isMounted, type]
+    );
+
+    function fetchMore() {
+        fetchLovers(offset);
+    }
 
     useEffect(() => {
-        fetchLovers();
+        fetchLovers(0);
     }, [fetchLovers]);
 
     return (
@@ -105,14 +113,14 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
                 <div>{noData}</div>
             ) : (
                 <InfiniteScrollContainer
-                    fetchMore={fetchLovers}
+                    fetchMore={fetchMore}
                     hasMore={hasMore}
-                    useWindow
+                    className="mb-5 text-center"
                 >
                     {lovers.map(({ uuid, username, src }, i) => (
                         <Item as={NavLink} to={`/profile/${uuid}`} key={i}>
                             <Picture
-                                src={src}
+                                src={src || UnknownUserImage}
                                 alt={`${username}'s profile picture`}
                             />
 

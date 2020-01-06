@@ -84,7 +84,7 @@ function ProfilesContainer(
                     <InfiniteScrollContainer
                         fetchMore={fetchMore}
                         hasMore={hasMore}
-                        className="scroll-container"
+                        className="scroll-container mb-5"
                     >
                         {profiles.map(profile => {
                             const { uuid } = profile;

@@ -122,10 +122,10 @@ export default function Home() {
                         return;
                     }
 
-                    setProfiles(profiles => [...profiles, ...data]);
                     setHasMore(hasMore);
 
                     if (data.length > 0) {
+                        setProfiles(profiles => [...profiles, ...data]);
                         setOffset(offset => offset + data.length);
                     }
                 })

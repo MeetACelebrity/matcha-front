@@ -3,6 +3,8 @@ import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 
+import UnknownUserImage from '../assets/unknown_person.png';
+
 const Container = styled.div`
     ${tw`relative max-w-full h-64 overflow-x-hidden`}
 `;
@@ -111,8 +113,7 @@ export default function ImageCarousel({ images }) {
             !Array.isArray(images) || images.length === 0
                 ? [
                       {
-                          src:
-                              'https://images.unsplash.com/photo-1544202748-bdc9a259c98e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=677&q=80',
+                          src: UnknownUserImage,
                       },
                   ]
                 : [...images];
