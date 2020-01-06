@@ -4,7 +4,11 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import { API_ENDPOINT } from '../constants';
 
-export default function UserProfileModifyPassword() {
+export default function UserProfileModifyPassword({
+    context: {
+        user: { username },
+    },
+}) {
     const formId = 'modify-password';
 
     const [
@@ -23,7 +27,7 @@ export default function UserProfileModifyPassword() {
     const fields = [
         {
             label: '',
-            value: '',
+            value: username,
             name: 'username',
             autocomplete: 'username',
             hidden: true,

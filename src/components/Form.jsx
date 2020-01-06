@@ -99,10 +99,14 @@ export default function useForm({ fields = [] }) {
     let isValid = useRef(false);
 
     useEffect(() => {
-        isValid.current = !fields.some(field => {
-            if (field.disableValidation === true) return true;
-            return field.isValid === false;
-        });
+        isValid.current = fields.reduce(
+            (agg, { disableValidation, isValid }) => {
+                if (agg === false) return agg;
+
+                return disableValidation === true || isValid === true;
+            },
+            true
+        );
     }, [fields]);
 
     return [isValid, FormComponent];
