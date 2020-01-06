@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { toast } from 'react-toastify';
 import { NavLink } from 'react-router-dom';
 
+import { getNotifications } from '../App.jsx';
 import { AppContext } from '../app-context.js';
 import { useWS } from '../ws.js';
 import { API_ENDPOINT, SIGN_IN_MESSAGES, useIsMounted } from '../constants';
@@ -64,7 +65,7 @@ export default function SignUp() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .then(({ statusCode, user }) => {
+            .then(async ({ statusCode, user }) => {
                 if (!isMounted.current) return;
 
                 const isError = statusCode !== 'DONE';
@@ -75,6 +76,11 @@ export default function SignUp() {
                 });
 
                 if (isError === false) {
+                    const result = await getNotifications();
+                    if (result === null) return;
+
+                    const { notifications, newDataNotifications } = result;
+
                     setContext(context => ({
                         ...context,
                         user,
@@ -100,6 +106,8 @@ export default function SignUp() {
                         ),
                         newDataConversations:
                             (user && !user.sawMessages) || false,
+                        notifications,
+                        newDataNotifications,
                     }));
                 }
             })

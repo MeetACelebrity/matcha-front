@@ -24,6 +24,31 @@ const Container = styled.div`
     grid-template-rows: 1fr auto 1fr;
 `;
 
+export function getNotifications() {
+    return fetch(`${API_ENDPOINT}/user/notif/get`, {
+        credentials: 'include',
+    })
+        .then(res => res.json())
+        .then(notifications => {
+            if (!Array.isArray(notifications)) return null;
+
+            const newDataNotifications = notifications.reduce(
+                (agg, { seen }) => {
+                    if (agg === true || seen === false) return true;
+
+                    return false;
+                },
+                false
+            );
+
+            return {
+                notifications,
+                newDataNotifications,
+            };
+        })
+        .catch(console.error);
+}
+
 export default function App() {
     const [loaded, setLoaded] = useState(false);
     const [context, setContext] = useState({
@@ -152,29 +177,18 @@ export default function App() {
     ]);
 
     useEffect(() => {
-        fetch(`${API_ENDPOINT}/user/notif/get`, {
-            credentials: 'include',
-        })
-            .then(res => res.json())
-            .then(notifications => {
-                if (!Array.isArray(notifications)) return;
+        getNotifications({
+            setContext,
+        }).then(result => {
+            if (result === null) return;
+            const { notifications, newDataNotifications } = result;
 
-                const newDataNotifications = notifications.reduce(
-                    (agg, { seen }) => {
-                        if (agg === true || seen === false) return true;
-
-                        return false;
-                    },
-                    false
-                );
-
-                setContext(context => ({
-                    ...context,
-                    notifications,
-                    newDataNotifications,
-                }));
-            })
-            .catch(console.error);
+            setContext(context => ({
+                ...context,
+                notifications,
+                newDataNotifications,
+            }));
+        });
     }, []);
 
     function activateRoamingMode({
