@@ -4,7 +4,7 @@ import tw from 'tailwind.macro';
 
 import { AppContext } from '../app-context.js';
 import RelativeTime from '../components/RelativeTime.jsx';
-// import { API_ENDPOINT } from '../constants.js';
+import { API_ENDPOINT } from '../constants.js';
 
 const Container = styled.article`
     ${tw`mx-auto px-5 w-full mt-6`}
@@ -86,10 +86,9 @@ export default function Notifications() {
     );
 
     useEffect(() => {
-        // TODO: Send a fetch to set the seen property of all the notifications to `true`
-        // Promise.all(notifications.map(({uuid}) => fetch(`${API_ENDPOINT}`, {
-        //     credentials: 'include'
-        // }).catch(console.error))).catch(console.error)
+        fetch(`${API_ENDPOINT}/user/saw-notifications`, {
+            credentials: 'include',
+        }).catch(console.error);
 
         setContext(context => ({
             ...context,

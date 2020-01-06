@@ -77,7 +77,7 @@ export default function SignUp() {
 
                 if (isError === false) {
                     const result = await getNotifications();
-                    if (result === null) return;
+                    if (result === undefined) return;
 
                     const { notifications, newDataNotifications } = result;
 

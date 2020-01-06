@@ -30,7 +30,7 @@ export function getNotifications() {
     })
         .then(res => res.json())
         .then(notifications => {
-            if (!Array.isArray(notifications)) return null;
+            if (!Array.isArray(notifications)) return undefined;
 
             const newDataNotifications = notifications.reduce(
                 (agg, { seen }) => {
@@ -180,7 +180,7 @@ export default function App() {
         getNotifications({
             setContext,
         }).then(result => {
-            if (result === null) return;
+            if (result === undefined) return;
             const { notifications, newDataNotifications } = result;
 
             setContext(context => ({
