@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 import { API_ENDPOINT } from '../constants';
 import useForm, { useFormField } from '../components/Form.jsx';
 import LayoutSignOn from '../layouts/SignOn.jsx';
+
+const SIGN_UP_RESPONSES_TOAST_MESSAGES = new Map([
+    ['EMAIL_INCORRECT', 'The provided email is not correct'],
+    ['USERNAME_INCORRECT', 'The provided username is not correct'],
+    ['GIVEN_NAME_INCORRECT', 'The provided given name is not correct'],
+    ['FAMILY_NAME_INCORRECT', 'The provided family name is not correct'],
+    ['PASSWORD_INCORRECT', 'The provided password is not correct'],
+    ['FORBIDDEN_INFORMATION', 'The provided username/email is incorrect'],
+]);
 
 export default function SignUp() {
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
@@ -98,8 +108,6 @@ export default function SignUp() {
     const [isValidRef, FormComponent] = useForm({ fields, onSubmit });
 
     useEffect(() => {
-        console.log('call use effect');
-
         if (acceptGeolocation === true && 'geolocation' in navigator) {
             // Get the current location of the user through JS API
             const p = new Promise((resolve, reject) => {
@@ -151,8 +159,23 @@ export default function SignUp() {
         })
             .then(res => res.json())
             .then(async ({ statusCode, userUuid: uuid }) => {
-                if (statusCode !== 'DONE')
-                    throw new Error('Incorrect response');
+                if (statusCode !== 'DONE') {
+                    const message = SIGN_UP_RESPONSES_TOAST_MESSAGES.get(
+                        statusCode
+                    );
+                    if (message === undefined) {
+                        throw new Error('Incorrect response');
+                    }
+
+                    toast(message, {
+                        type: 'error',
+                    });
+                    return;
+                }
+
+                toast('We sent you an email to confirm your account', {
+                    type: 'success',
+                });
 
                 try {
                     // send the current location to the API if the response is successful
@@ -172,10 +195,14 @@ export default function SignUp() {
                         .then(console.log)
                         .catch(console.error);
                 } catch (e) {
-                    console.error(e);
+                    throw new Error('Incorrect response');
                 }
             })
-            .catch(console.error);
+            .catch(() => {
+                toast('An error occured, try again later', {
+                    type: 'error',
+                });
+            });
     }
 
     return (
