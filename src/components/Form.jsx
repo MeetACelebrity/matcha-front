@@ -103,7 +103,7 @@ export default function useForm({ fields = [] }) {
             (agg, { disableValidation, isValid }) => {
                 if (agg === false) return agg;
 
-                return disableValidation === true || isValid === true;
+                return disableValidation === true || isValid !== false;
             },
             true
         );
