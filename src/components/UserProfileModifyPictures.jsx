@@ -19,6 +19,7 @@ export default function UserProfileModifyPictures({
     user: { images },
     context,
     setContext,
+    triggerToast,
 }) {
     const [uploadStack, setUploadStack] = useState([]);
     const [readingStack, setReadingStack] = useState([]);
@@ -154,6 +155,10 @@ export default function UserProfileModifyPictures({
         })
             .then(res => res.json())
             .then(({ statusCode, image: { uuid, src, imageNumber } = {} }) => {
+                triggerToast(
+                    statusCode === 'DONE' ? 'The image has been added' : false
+                );
+
                 if (!isMounted.current || statusCode === 'DONE') {
                     // this was a successful uploading
 
@@ -177,7 +182,7 @@ export default function UserProfileModifyPictures({
                     // an error occured
                 }
             })
-            .catch(() => {});
+            .catch(() => triggerToast(false));
     }
 
     function onDelete(uuid) {
@@ -201,8 +206,14 @@ export default function UserProfileModifyPictures({
                 body: JSON.stringify({ pics: uuid }),
             })
                 .then(res => res.json())
-                .then(console.log)
-                .catch(() => {});
+                .then(({ statusCode }) => {
+                    triggerToast(
+                        statusCode === 'DONE'
+                            ? 'The image has been deleted'
+                            : false
+                    );
+                })
+                .catch(() => triggerToast(false));
         };
     }
 

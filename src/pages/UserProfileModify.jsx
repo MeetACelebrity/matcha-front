@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
+import { toast } from 'react-toastify';
 
 import { AppContext } from '../app-context.js';
 
@@ -57,6 +58,15 @@ export default function UserProfileModifyPage() {
         UserProfileModifyPictures,
     ];
 
+    function triggerToast(state, error = false) {
+        const message =
+            state === false ? 'An error occured, try again latter' : state;
+
+        toast(message, {
+            type: state === false || error === true ? 'error' : 'success',
+        });
+    }
+
     return (
         <Container>
             <Title>Edit Profile</Title>
@@ -67,6 +77,7 @@ export default function UserProfileModifyPage() {
                     user={user}
                     context={context}
                     setContext={setContext}
+                    triggerToast={triggerToast}
                 />
             ))}
         </Container>

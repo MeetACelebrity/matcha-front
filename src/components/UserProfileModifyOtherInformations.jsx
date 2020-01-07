@@ -10,7 +10,11 @@ const intl = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
 });
 
-export default function UserProfileModifyOtherInformations({ user }) {
+export default function UserProfileModifyOtherInformations({
+    user,
+    setContext,
+    triggerToast,
+}) {
     const formId = 'modify-other-informations';
 
     const [
@@ -85,6 +89,7 @@ export default function UserProfileModifyOtherInformations({ user }) {
 
     function onSubmit() {
         const date = new Date(birthday);
+
         fetch(`${API_ENDPOINT}/profile/extended`, {
             method: 'PUT',
             credentials: 'include',
@@ -102,8 +107,27 @@ export default function UserProfileModifyOtherInformations({ user }) {
             }),
         })
             .then(res => res.json())
-            .then(console.log)
-            .catch(() => {});
+            .then(({ statusCode }) => {
+                triggerToast(
+                    statusCode === 'DONE'
+                        ? 'Your extended profile has been changed'
+                        : statusCode === 'UNDER_BIRTHDAY'
+                        ? 'You are too young'
+                        : false,
+                    statusCode === 'UNDER_BIRTHDAY' ? true : false
+                );
+            })
+            .catch(() => triggerToast(false));
+
+        setContext(context => ({
+            ...context,
+            user: {
+                ...context.user,
+                birthday: date,
+                gender,
+                sexualOrientation,
+            },
+        }));
     }
 
     return (

@@ -9,6 +9,7 @@ export default function UserProfileModifyAddress({
     user: { addresses, roaming },
     context,
     setContext,
+    triggerToast,
 }) {
     const formId = 'modify-address';
 
@@ -114,8 +115,14 @@ export default function UserProfileModifyAddress({
                 body: { isPrimary: true, auto: false, ...address, ...latlng },
             })
                 .then(res => res.json())
-                .then(console.log)
-                .catch(() => {});
+                .then(({ statusCode }) => {
+                    triggerToast(
+                        statusCode === 'DONE'
+                            ? 'Your address has been changed'
+                            : false
+                    );
+                })
+                .catch(() => triggerToast(false));
         }
 
         if (

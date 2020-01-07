@@ -8,6 +8,7 @@ export default function UserProfileModifyPassword({
     context: {
         user: { username },
     },
+    triggerToast,
 }) {
     const formId = 'modify-password';
 
@@ -67,8 +68,14 @@ export default function UserProfileModifyPassword({
             body: JSON.stringify({ currentPassword, newPassword }),
         })
             .then(res => res.json())
-            .then(console.log)
-            .catch(() => {});
+            .then(({ statusCode }) => {
+                triggerToast(
+                    statusCode === 'DONE'
+                        ? 'Your password has been changed'
+                        : false
+                );
+            })
+            .catch(() => triggerToast(false));
     }
 
     return (

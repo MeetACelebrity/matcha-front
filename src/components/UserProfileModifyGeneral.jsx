@@ -4,7 +4,7 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import { API_ENDPOINT } from '../constants';
 
-export default function UserProfileModifyGeneral({ user }) {
+export default function UserProfileModifyGeneral({ user, triggerToast }) {
     const formId = 'modify-general';
 
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
@@ -71,7 +71,16 @@ export default function UserProfileModifyGeneral({ user }) {
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, givenName, familyName }),
-        }).catch(() => {});
+        })
+            .then(res => res.json())
+            .then(({ statusCode }) => {
+                triggerToast(
+                    statusCode === 'DONE'
+                        ? 'Your informations have been changed'
+                        : false
+                );
+            })
+            .catch(() => triggerToast(false));
     }
 
     return (

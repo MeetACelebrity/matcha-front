@@ -10,6 +10,7 @@ export default function UserProfileModifyTags({
     user: { tags = [] },
     context,
     setContext,
+    triggerToast,
 }) {
     const [propositions, setPropositions] = useState([]);
     const isMounted = useIsMounted();
@@ -36,8 +37,15 @@ export default function UserProfileModifyTags({
             }),
             headers: { 'Content-Type': 'application/json' },
         })
-            .then(console.log)
-            .catch(console.error);
+            .then(res => res.json())
+            .then(({ statusCode }) => {
+                triggerToast(
+                    statusCode === 'DONE' ? 'The tag has been added' : false
+                );
+            })
+            .catch(() => {
+                triggerToast(false);
+            });
     }
 
     function removeTag(tag) {
@@ -49,8 +57,13 @@ export default function UserProfileModifyTags({
             }),
             headers: { 'Content-Type': 'application/json' },
         })
-            .then(console.log)
-            .catch(console.error);
+            .then(res => res.json())
+            .then(({ statusCode }) => {
+                triggerToast(
+                    statusCode === 'DONE' ? 'The tag has been deleted' : false
+                );
+            })
+            .catch(() => triggerToast(false));
     }
 
     function setTags(tags) {

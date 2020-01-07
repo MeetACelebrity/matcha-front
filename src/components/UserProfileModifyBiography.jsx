@@ -4,7 +4,7 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import { API_ENDPOINT, fetcher } from '../constants';
 
-export default function UserProfileModifyBiography({ user }) {
+export default function UserProfileModifyBiography({ user, triggerToast }) {
     const formId = 'modify-biography';
 
     const [
@@ -39,8 +39,17 @@ export default function UserProfileModifyBiography({ user }) {
             json: true,
         })
             .then(res => res.json())
-            .then(console.log)
-            .catch(() => {});
+            .then(({ statusCode }) => {
+                triggerToast(
+                    statusCode === 'DONE'
+                        ? 'Your biography has been changed'
+                        : statusCode === 'BIOGRAPHY_INCORRECT'
+                        ? 'Your biography is not correct'
+                        : false,
+                    statusCode === 'BIOGRAPHY_INCORRECT'
+                );
+            })
+            .catch(() => triggerToast(false));
     }
 
     return (

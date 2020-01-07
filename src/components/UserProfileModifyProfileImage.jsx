@@ -44,7 +44,7 @@ const ChangePicture = styled.label`
     }
 `;
 
-function ProfileImage({ src, setContext }) {
+function ProfileImage({ src, setContext, triggerToast }) {
     const [displayedImage, setDisplayedImage] = useState(src);
     const reader = useMemo(() => new FileReader(), []);
 
@@ -99,8 +99,14 @@ function ProfileImage({ src, setContext }) {
             body: formData,
         })
             .then(res => res.json())
-            .then(console.log)
-            .catch(() => {});
+            .then(({ statusCode }) => {
+                triggerToast(
+                    statusCode === 'DONE'
+                        ? 'Your profile picture has been changed'
+                        : false
+                );
+            })
+            .catch(() => triggerToast(false));
     }
 
     return (
