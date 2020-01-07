@@ -117,7 +117,12 @@ function ProfileImage({ src, setContext, triggerToast }) {
 
             <Aside>
                 <ChangePicture>
-                    <input type="file" hidden onChange={onFileChange} />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        onChange={onFileChange}
+                    />
                     <FeatherIcon icon="edit-2" />
                 </ChangePicture>
             </Aside>

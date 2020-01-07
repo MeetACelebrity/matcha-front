@@ -66,6 +66,8 @@ export default function Profile() {
             case 'MATCH':
                 newStatus = 'HAS_LIKED_US';
                 break;
+            default:
+                return;
         }
 
         setUser(user => ({
