@@ -111,7 +111,9 @@ export default function ConversationId({ id }) {
         let exit = false;
 
         function onData(data) {
-            !exit && setConversation(data);
+            if (exit) return;
+
+            setConversation(data);
         }
 
         pubsub.subscribe(id, onData);
@@ -137,6 +139,8 @@ export default function ConversationId({ id }) {
         }
 
         setMessage('');
+
+        if (conversation === undefined) return
 
         ws.publishMessage(id, message);
 

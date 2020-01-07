@@ -49,6 +49,10 @@ class PubSub {
     _publish(key, value) {
         this._map.set(key, value);
 
+        this._trigger(key, value);
+    }
+
+    _trigger(key, value) {
         const subscribers = this._subscribers.get(key) || [];
 
         for (const subscriber of subscribers) {
@@ -56,6 +60,12 @@ class PubSub {
         }
 
         this._listeners.forEach(listener => listener([...this._map.values()]));
+    }
+
+    _delete(key) {
+        this._map.delete(key);
+
+        this._trigger(key, undefined);
     }
 
     _get(key) {
@@ -74,6 +84,7 @@ export const WS_OUT_MESSAGES_TYPES = {
 export const WS_RESPONSES_TYPES = {
     CONVERSATIONS: 'CONVERSATIONS',
     NEW_CONVERSATION: 'NEW_CONVERSATION',
+    DELETE_CONVERSATION: 'DELETE_CONVERSATION',
     NEW_MESSAGE: 'NEW_MESSAGE',
     NEW_NOTIFICATION: 'NEW_NOTIFICATION',
 };
@@ -135,8 +146,6 @@ class WS {
 
                                     return `${title} - ${username}`;
                                 }, null) || uuid,
-                            picture:
-                                'https://trello-attachments.s3.amazonaws.com/5dcbd72c39989f2478c2646d/300x166/e7586ac2b0e95ab0dd217ca9895217a4/Capture_d%E2%80%99e%CC%81cran_2019-11-20_a%CC%80_00.30.13.png',
                             messages: Array.isArray(messages) ? messages : [],
                         }));
 
@@ -162,12 +171,16 @@ class WS {
 
                                     return `${title} - ${username}`;
                                 }, null) || uuid,
-                            picture:
-                                'https://trello-attachments.s3.amazonaws.com/5dcbd72c39989f2478c2646d/300x166/e7586ac2b0e95ab0dd217ca9895217a4/Capture_d%E2%80%99e%CC%81cran_2019-11-20_a%CC%80_00.30.13.png',
                             messages: Array.isArray(messages) ? messages : [],
                         });
 
                         this.onChange('conversations');
+                        break;
+                    }
+                    case WS_RESPONSES_TYPES.DELETE_CONVERSATION: {
+                        const { uuid } = message.payload;
+
+                        this.pubsub._delete(uuid);
                         break;
                     }
                     case WS_RESPONSES_TYPES.NEW_MESSAGE: {
