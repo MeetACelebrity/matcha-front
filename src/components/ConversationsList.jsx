@@ -16,7 +16,7 @@ const Head = styled.div`
 `;
 
 const List = styled.div`
-    ${tw`flex-1`}
+    ${tw`flex-1 relative`}
 
     height: calc(100% - 3rem);
 `;
@@ -61,6 +61,10 @@ const Correspondant = styled.h4`
 
 const Extract = styled.p`
     ${tw`text-gray-700 font-thin text-sm`}
+`;
+
+const NoData = styled.p`
+    ${tw`h-full w-full flex items-center justify-center py-3 text-gray-600`}
 `;
 
 export default function ConversationsList({ id, className }) {
@@ -108,29 +112,34 @@ export default function ConversationsList({ id, className }) {
             </Head>
 
             <List>
-                {conversations.map(({ uuid, picture, title, messages }) => {
-                    const description =
-                        Array.isArray(messages) && messages[messages.length - 1]
-                            ? messages[messages.length - 1].payload
-                            : '';
+                {conversations.length === 0 ? (
+                    <NoData>You joined no conversation</NoData>
+                ) : (
+                    conversations.map(({ uuid, picture, title, messages }) => {
+                        const description =
+                            Array.isArray(messages) &&
+                            messages[messages.length - 1]
+                                ? messages[messages.length - 1].payload
+                                : '';
 
-                    return (
-                        <Item
-                            as={Link}
-                            selected={uuid === id}
-                            to={`/chat/${uuid}`}
-                            key={uuid}
-                        >
-                            <Avatar src={picture} />
+                        return (
+                            <Item
+                                as={Link}
+                                selected={uuid === id}
+                                to={`/chat/${uuid}`}
+                                key={uuid}
+                            >
+                                <Avatar src={picture} />
 
-                            <ItemContent>
-                                <Correspondant>{title}</Correspondant>
+                                <ItemContent>
+                                    <Correspondant>{title}</Correspondant>
 
-                                <Extract>{description}</Extract>
-                            </ItemContent>
-                        </Item>
-                    );
-                })}
+                                    <Extract>{description}</Extract>
+                                </ItemContent>
+                            </Item>
+                        );
+                    })
+                )}
             </List>
         </Container>
     );
