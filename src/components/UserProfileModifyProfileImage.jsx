@@ -62,7 +62,7 @@ function ProfileImage({ src, setContext, triggerToast }) {
 
             const pictureObj = {
                 uuid,
-                src,
+                src: result,
                 imageNumber: 0,
             };
 
