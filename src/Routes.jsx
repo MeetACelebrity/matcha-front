@@ -200,21 +200,29 @@ export default function Routes({ loaded = false }) {
                         }}
                     </Media>
                 ) : (
-                    <Switch>
-                        <Route path={RoutesEnum.SIGN_IN} component={SignIn} />
-                        <Route path={RoutesEnum.SIGN_UP} component={SignUp} />
-                        <Route
-                            path={RoutesEnum.RESET_PASSWORD_EMAIL}
-                            component={PasswordResetEmailAsking}
-                        />
-                        <Route
-                            path={RoutesEnum.RESET_PASSWORD_PASSWORD}
-                            component={PasswordResetPasswordAsking}
-                        />
+                    <Suspense fallback={<Spinner in timeout={1300} />}>
+                        <Switch>
+                            <Route
+                                path={RoutesEnum.SIGN_IN}
+                                component={SignIn}
+                            />
+                            <Route
+                                path={RoutesEnum.SIGN_UP}
+                                component={SignUp}
+                            />
+                            <Route
+                                path={RoutesEnum.RESET_PASSWORD_EMAIL}
+                                component={PasswordResetEmailAsking}
+                            />
+                            <Route
+                                path={RoutesEnum.RESET_PASSWORD_PASSWORD}
+                                component={PasswordResetPasswordAsking}
+                            />
 
-                        <Route path="/404" component={NotFound} />
-                        <Redirect from="/" to="/404" />
-                    </Switch>
+                            <Route path="/404" component={NotFound} />
+                            <Redirect from="/" to="/404" />
+                        </Switch>
+                    </Suspense>
                 ))}
         </Main>
     );
