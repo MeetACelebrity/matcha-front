@@ -4,6 +4,8 @@ import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 import { API_ENDPOINT } from '../constants';
 
+import UnknownUserPicture from '../assets/unknown_person.png';
+
 const Preferences = styled.section`
     ${tw`mt-8`}
 `;
@@ -126,15 +128,14 @@ function ProfileImage({ src, setContext, triggerToast }) {
 export default function UserProfileModifyProfileImage({
     user: { images },
     setContext,
-    triggerToast
+    triggerToast,
 }) {
     const profilePicture = useMemo(
         () => images.find(elem => elem.imageNumber === 0),
         [images]
     );
 
-    const defaultImg =
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuxmY1pVMGW7ufTP52hu3JGzOQSZjO5ummeKvMG3wuQi4v5RqE&s';
+    const defaultImg = UnknownUserPicture;
 
     return (
         <Preferences>
