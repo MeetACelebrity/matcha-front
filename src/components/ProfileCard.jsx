@@ -12,6 +12,7 @@ import ProfileCardFloatingButton from './ProfileCardFloatingButton.jsx';
 import Sex from './Sex.jsx';
 import Button from './Button.jsx';
 import RelativeTime from './RelativeTime.jsx';
+import SexualOrientation from './SexualOrientation.jsx';
 
 const previewContainerStyle = tw`pb-3 shadow-md`;
 const notFlatContainerStyle = tw`shadow-xl`;
@@ -37,6 +38,7 @@ const Section = styled.section`
 const Gender = styled.aside`
     ${tw`text-blue-600`}
 `;
+
 const TextContainer = styled.div`
     ${tw`flex items-center flex-wrap text-2xl mx-1`}
 
@@ -169,6 +171,7 @@ export default function ProfileCard({
     givenName = 'Non connu',
     familyName = 'Non connu',
     gender = 'LOL',
+    sexualOrientation,
     age = 30,
     biography = '',
     profilePicture,
@@ -240,8 +243,12 @@ export default function ProfileCard({
                 <TextContainer primary>
                     <h2>{username}</h2>
 
-                    <Gender>
+                    <Gender className="flex">
                         <Sex sex={gender} />
+
+                        <SexualOrientation
+                            sexualOrientation={sexualOrientation}
+                        />
                     </Gender>
                 </TextContainer>
 
