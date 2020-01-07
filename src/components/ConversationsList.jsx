@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
-import FeathersIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 import { AppContext } from '../app-context.js';
@@ -12,7 +11,7 @@ const Container = styled.div`
 `;
 
 const Head = styled.div`
-    ${tw`h-12 flex justify-between items-center px-4 py-2 bg-white shadow`}
+    ${tw`h-12 flex justify-center items-center px-4 py-2 bg-white shadow`}
 `;
 
 const List = styled.div`
@@ -104,11 +103,7 @@ export default function ConversationsList({ id, className }) {
     return (
         <Container className={className}>
             <Head>
-                <div></div>
-
                 <h3>Conversations</h3>
-
-                <FeathersIcon icon="plus-circle" />
             </Head>
 
             <List>
