@@ -8,7 +8,15 @@ import { API_ENDPOINT, fetcher, useIsMounted } from '../constants.js';
 import ProfileCard from '../components/ProfileCard.jsx';
 
 const Container = styled.article`
-    ${tw`mx-auto px-5 w-3/5`}
+    ${tw`mx-auto px-5 w-full`}
+
+    @media (min-width: 768px) {
+        ${tw`w-4/5`}
+    }
+
+    @media (min-width: 1280px) {
+        ${tw`w-3/5`}
+    }
 `;
 
 export default function Profile() {
