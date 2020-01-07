@@ -17,7 +17,7 @@ const Button = styled.button`
         ${tw`bg-gray-300 text-gray-700`}
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
         ${({ marginBottomMobile }) =>
             marginBottomMobile && MarginBottomMobileStyles}
     }
