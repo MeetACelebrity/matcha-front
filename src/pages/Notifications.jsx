@@ -7,7 +7,7 @@ import RelativeTime from '../components/RelativeTime.jsx';
 import { API_ENDPOINT } from '../constants.js';
 
 const Container = styled.article`
-    ${tw`mx-auto px-5 w-full mt-6`}
+    ${tw`mx-auto px-5 w-full mt-6 mb-4`}
 
     @media (min-width: 768px) {
         ${tw`w-3/5`}
