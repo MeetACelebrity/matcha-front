@@ -153,22 +153,25 @@ export default function Routes({ loaded = false }) {
 
                             return template(
                                 screenIsSmall ? (
-                                    <>
+                                    [
                                         <Route
+                                            key={RoutesEnum.ME}
                                             path={RoutesEnum.ME}
                                             component={UserProfile}
-                                        />
+                                        />,
                                         <Route
+                                            key="/chat"
                                             path="/chat"
                                             exact
                                             component={ChatList}
-                                        />
+                                        />,
                                         <Route
+                                            key="/chat/:uuid"
                                             path="/chat/:uuid"
                                             exact
                                             component={ChatConversation}
-                                        />
-                                    </>
+                                        />,
+                                    ]
                                 ) : (
                                     <Route
                                         path="/chat/:uuid?"
