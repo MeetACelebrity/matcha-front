@@ -36,7 +36,7 @@ export async function setupContextAfterLoggingIn({
             notification => {
                 setContext(context => ({
                     ...context,
-                    notifications: [...context.notifications, notification],
+                    notifications: [notification, ...context.notifications],
                 }));
             }
         ),

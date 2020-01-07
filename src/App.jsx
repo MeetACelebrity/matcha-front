@@ -76,7 +76,7 @@ export default function App() {
     const pushNotification = useCallback(notification => {
         setContext(context => ({
             ...context,
-            notifications: [...context.notifications, notification],
+            notifications: [notification, ...context.notifications],
         }));
     }, []);
 
