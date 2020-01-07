@@ -55,7 +55,7 @@ const MobileDialogContainer = styled.div`
     --dialog-max-width: 100%;
     --dialog-height: calc(100% - 64px);
 
-    ${tw`hidden absolute inset-x-0 bottom-0 bg-white opacity-100 overflow-x-hidden overflow-y-scroll`}
+    ${tw`hidden absolute inset-x-0 bottom-0 bg-white opacity-100 overflow-x-hidden overflow-y-scroll px-2`}
 
     height: var(--dialog-height);
     width: var(--dialog-max-width);
