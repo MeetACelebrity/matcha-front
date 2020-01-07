@@ -68,7 +68,10 @@ const NoData = styled.p`
 
 export default function ConversationsList({ id, className }) {
     const {
-        context: { wsPubsub: pubsub },
+        context: {
+            wsPubsub: pubsub,
+            user: { uuid: meUuid },
+        },
         setContext,
     } = useContext(AppContext);
     const [conversations, setConversations] = useState([]);
@@ -110,12 +113,22 @@ export default function ConversationsList({ id, className }) {
                 {conversations.length === 0 ? (
                     <NoData>You joined no conversation</NoData>
                 ) : (
-                    conversations.map(({ uuid, picture, title, messages }) => {
+                    conversations.map(({ uuid, title, messages, users }) => {
                         const description =
                             Array.isArray(messages) &&
                             messages[messages.length - 1]
                                 ? messages[messages.length - 1].payload
                                 : '';
+
+                        const picture = users.reduce(
+                            (picture, { uuid: userUuid, profilePic }) => {
+                                if (picture !== null || userUuid === meUuid)
+                                    return picture;
+
+                                return profilePic;
+                            },
+                            null
+                        );
 
                         return (
                             <Item
