@@ -19,7 +19,9 @@ const Container = styled.p`
 `;
 
 export default function SexualOrientation({ sexualOrientation }) {
-    const orientation = SEXUAL_ORIENTATIONS_TEXTS.get(sexualOrientation);
+    const orientation = SEXUAL_ORIENTATIONS_TEXTS.get(
+        sexualOrientation || 'BISEXUAL'
+    );
 
     return <Container title={orientation.title}>{orientation.label}</Container>;
 }
