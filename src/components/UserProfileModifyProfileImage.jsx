@@ -126,6 +126,7 @@ function ProfileImage({ src, setContext, triggerToast }) {
 export default function UserProfileModifyProfileImage({
     user: { images },
     setContext,
+    triggerToast
 }) {
     const profilePicture = useMemo(
         () => images.find(elem => elem.imageNumber === 0),
@@ -140,6 +141,7 @@ export default function UserProfileModifyProfileImage({
             <ProfileImage
                 src={(profilePicture && profilePicture.src) || defaultImg}
                 setContext={setContext}
+                triggerToast={triggerToast}
             />
         </Preferences>
     );
