@@ -1,10 +1,14 @@
-import React, { useContext } from 'react';
+import React, { Suspense, useContext } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Media from 'react-media';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
-import {
+import PAGES from './pages';
+import { AppContext } from './app-context';
+import Spinner from './components/Spinner.jsx';
+
+const {
     Home,
     SignIn,
     SignUp,
@@ -21,9 +25,7 @@ import {
     ChatList,
     ChatConversation,
     ChatMasterView,
-} from './pages';
-import { AppContext } from './app-context';
-import Spinner from './components/Spinner.jsx';
+} = PAGES;
 
 export const RoutesEnum = {
     HOME: '/proposals',
@@ -89,66 +91,75 @@ export default function Routes({ loaded = false }) {
                     <Media query={{ maxWidth: 768 }}>
                         {screenIsSmall => {
                             const template = (children, before = null) => (
-                                <Switch>
-                                    <Redirect
-                                        exact
-                                        path="/"
-                                        to={RoutesEnum.HOME}
-                                    />
-                                    <Redirect
-                                        path={RoutesEnum.SIGN_IN}
-                                        to={RoutesEnum.HOME}
-                                    />
-                                    <Redirect
-                                        path={RoutesEnum.SIGN_UP}
-                                        to={RoutesEnum.HOME}
-                                    />
-                                    <Redirect
-                                        path={RoutesEnum.RESET_PASSWORD_EMAIL}
-                                        to={RoutesEnum.HOME}
-                                    />
-                                    <Redirect
-                                        path={
-                                            RoutesEnum.RESET_PASSWORD_PASSWORD
-                                        }
-                                        to={RoutesEnum.HOME}
-                                    />
-                                    {before}
+                                <Suspense
+                                    fallback={<Spinner in timeout={1300} />}
+                                >
+                                    <Switch>
+                                        <Redirect
+                                            exact
+                                            path="/"
+                                            to={RoutesEnum.HOME}
+                                        />
+                                        <Redirect
+                                            path={RoutesEnum.SIGN_IN}
+                                            to={RoutesEnum.HOME}
+                                        />
+                                        <Redirect
+                                            path={RoutesEnum.SIGN_UP}
+                                            to={RoutesEnum.HOME}
+                                        />
+                                        <Redirect
+                                            path={
+                                                RoutesEnum.RESET_PASSWORD_EMAIL
+                                            }
+                                            to={RoutesEnum.HOME}
+                                        />
+                                        <Redirect
+                                            path={
+                                                RoutesEnum.RESET_PASSWORD_PASSWORD
+                                            }
+                                            to={RoutesEnum.HOME}
+                                        />
+                                        {before}
 
-                                    <Route
-                                        path={RoutesEnum.HOME}
-                                        component={Home}
-                                    />
-                                    <Route
-                                        path={RoutesEnum.ME_EDIT}
-                                        component={UserProfileModify}
-                                    />
-                                    <Route
-                                        path={RoutesEnum.PROFILE}
-                                        component={Profile}
-                                    />
-                                    <Route
-                                        path={RoutesEnum.SEARCH}
-                                        component={Search}
-                                    />
-                                    <Route
-                                        path={RoutesEnum.NOTIFICATIONS}
-                                        component={Notifications}
-                                    />
-                                    <Route
-                                        path={RoutesEnum.MY_LOVERS}
-                                        component={MyLovers}
-                                    />
-                                    <Route
-                                        path={RoutesEnum.MY_VISITORS}
-                                        component={MyVisitors}
-                                    />
+                                        <Route
+                                            path={RoutesEnum.HOME}
+                                            component={Home}
+                                        />
+                                        <Route
+                                            path={RoutesEnum.ME_EDIT}
+                                            component={UserProfileModify}
+                                        />
+                                        <Route
+                                            path={RoutesEnum.PROFILE}
+                                            component={Profile}
+                                        />
+                                        <Route
+                                            path={RoutesEnum.SEARCH}
+                                            component={Search}
+                                        />
+                                        <Route
+                                            path={RoutesEnum.NOTIFICATIONS}
+                                            component={Notifications}
+                                        />
+                                        <Route
+                                            path={RoutesEnum.MY_LOVERS}
+                                            component={MyLovers}
+                                        />
+                                        <Route
+                                            path={RoutesEnum.MY_VISITORS}
+                                            component={MyVisitors}
+                                        />
 
-                                    {children}
+                                        {children}
 
-                                    <Route path="/404" component={NotFound} />
-                                    <Redirect from="/" to="/404" />
-                                </Switch>
+                                        <Route
+                                            path="/404"
+                                            component={NotFound}
+                                        />
+                                        <Redirect from="/" to="/404" />
+                                    </Switch>
+                                </Suspense>
                             );
 
                             return template(
