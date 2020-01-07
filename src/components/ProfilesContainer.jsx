@@ -1,5 +1,5 @@
 import React, { useState, useCallback, forwardRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 
@@ -11,6 +11,12 @@ import InfiniteScrollContainer from './InfiniteScrollContainer.jsx';
 
 const Container = styled.section`
     ${tw`p-5 overflow-y-auto relative h-full`}
+
+    ${({ exited }) =>
+        !exited &&
+        css`
+            transform: translate(0);
+        `}
 
     > .scroll-container {
         ${tw`relative`}
@@ -66,6 +72,7 @@ function ProfilesContainer(
     ref
 ) {
     const [showFiltersDialog, setShowFiltersDialog] = useState(false);
+    const [exited, setExited] = useState(false);
 
     function triggerModal(e) {
         e.stopPropagation();
@@ -76,8 +83,14 @@ function ProfilesContainer(
     const onHide = useCallback(() => setShowFiltersDialog(false), []);
 
     return (
-        <Container ref={ref}>
-            <Spinner in={loading} timeout={1000} backgroundGray />
+        <Container ref={ref} exited={exited}>
+            <Spinner
+                in={loading}
+                timeout={1000}
+                backgroundGray
+                onEnter={() => setExited(false)}
+                onExited={() => setExited(true)}
+            />
 
             {!loading &&
                 (profiles.length > 0 ? (

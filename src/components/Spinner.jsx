@@ -21,7 +21,7 @@ const SpinnerContainer = styled.div`
     --transition-duration: 300ms;
     --transition-delay: 1000ms;
 
-    ${tw`absolute inset-0 flex justify-center items-center bg-white opacity-100 z-40`}
+    ${tw`fixed inset-0 flex justify-center items-center bg-white opacity-100 z-40`}
 
     transition: opacity var(--transition-duration) var(--transition-delay);
 
@@ -50,9 +50,10 @@ export default function Spinner({
     in: trigger,
     timeout,
     backgroundGray = false,
+    ...props
 }) {
     return (
-        <Transition in={trigger} timeout={timeout}>
+        <Transition in={trigger} timeout={timeout} {...props}>
             {state => (
                 <SpinnerContainer
                     fadeOut={['exiting', 'exited'].includes(state)}
