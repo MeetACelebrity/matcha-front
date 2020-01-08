@@ -58,6 +58,7 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
     const [lovers, setLovers] = useState([]);
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(true);
     const offsetsFetchedRef = useRef(new Set());
 
     const isMounted = useIsMounted();
@@ -67,6 +68,8 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
             if (offsetsFetchedRef.current.has(offset)) return;
 
             offsetsFetchedRef.current.add(offset);
+
+            setLoading(true)
 
             return fetch(
                 `${API_ENDPOINT}/user/${type}/history/${LIMIT}/${offset}`,
@@ -95,6 +98,11 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
                 )
                 .catch(() => {
                     toast('An error occured during data fetching');
+                })
+                .finally(() => {
+                    if (!isMounted.current) return
+
+                    setLoading(false)
                 });
         },
         [dataProperty, isMounted, type]
@@ -113,7 +121,7 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
             <Title>{title}</Title>
 
             {lovers.length === 0 ? (
-                <div>{noData}</div>
+                <div>{loading ? 'loading …' : noData}</div>
             ) : (
                 <InfiniteScrollContainer
                     fetchMore={fetchMore}
