@@ -123,6 +123,8 @@ export default function UserProfileModifyAddress({
                     );
                 })
                 .catch(() => triggerToast(false));
+        } else {
+            triggerToast('Take a valid address', true);
         }
 
         if (

@@ -24,7 +24,7 @@ export default function UserProfileModifyOtherInformations({
         setBirthdayIsValid,
     ] = useFormField('');
     const [gender, setGender, isGenderValid, setGenderIsValid] = useFormField(
-        'M'
+        'MALE'
     );
     const [
         sexualOrientation,
@@ -34,11 +34,15 @@ export default function UserProfileModifyOtherInformations({
     ] = useFormField('BISEXUAL');
 
     useEffect(() => {
-        if (user.gender !== null) setGender(user.gender);
-        if (user.sexualOrientation !== null)
+        if (user.gender) setGender(user.gender);
+        if (user.sexualOrientation)
             setSexualOrientation(user.sexualOrientation);
-        if (user.birthday !== null) {
-            setBirthday(intl.format(new Date(user.birthday)));
+        if (user.birthday) {
+            try {
+                setBirthday(intl.format(new Date(user.birthday)));
+            } catch (e) {
+                return;
+            }
         }
     }, [
         setGender,
@@ -57,6 +61,9 @@ export default function UserProfileModifyOtherInformations({
             isValid: isBirthdayValid,
             setIsValid: setBirthdayIsValid,
             mask: [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/],
+            min: 10,
+            max: 11,
+            isDate: true
         },
         {
             label: 'Gender',

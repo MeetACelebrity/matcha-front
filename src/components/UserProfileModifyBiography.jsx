@@ -4,7 +4,11 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import { API_ENDPOINT, fetcher } from '../constants';
 
-export default function UserProfileModifyBiography({ user, triggerToast }) {
+export default function UserProfileModifyBiography({
+    user,
+    triggerToast,
+    setContext,
+}) {
     const formId = 'modify-biography';
 
     const [
@@ -26,6 +30,7 @@ export default function UserProfileModifyBiography({ user, triggerToast }) {
             isValid: isABiographyValid,
             setIsValid: setBiographyIsValid,
             textarea: true,
+            min: 1
         },
     ];
 
@@ -50,6 +55,14 @@ export default function UserProfileModifyBiography({ user, triggerToast }) {
                 );
             })
             .catch(() => triggerToast(false));
+
+        setContext(context => ({
+            ...context,
+            user: {
+                ...context.user,
+                biography,
+            },
+        }));
     }
 
     return (

@@ -4,7 +4,11 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import { API_ENDPOINT } from '../constants';
 
-export default function UserProfileModifyGeneral({ user, triggerToast }) {
+export default function UserProfileModifyGeneral({
+    user,
+    triggerToast,
+    setContext,
+}) {
     const formId = 'modify-general';
 
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
@@ -81,6 +85,16 @@ export default function UserProfileModifyGeneral({ user, triggerToast }) {
                 );
             })
             .catch(() => triggerToast(false));
+
+        setContext(context => ({
+            ...context,
+            user: {
+                ...context.user,
+                email,
+                givenName,
+                familyName,
+            },
+        }));
     }
 
     return (

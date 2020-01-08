@@ -26,6 +26,10 @@ function isMinRespected(minimum) {
     };
 }
 
+function isValidDate(string) {
+    return !Number.isNaN(+new Date(string)) || 'Invalid date';
+}
+
 export default function TextField(props) {
     const [errors, setErrors] = useState([]);
     const [hasBeenUsed, setHasBeenUsed] = useState(false);
@@ -44,6 +48,7 @@ export default function TextField(props) {
         triggerValidation,
         mask,
         label,
+        isDate,
     } = props;
 
     function setValue(value) {
@@ -64,6 +69,8 @@ export default function TextField(props) {
         if (max > -1) checkers.push(isMaxRespected(max));
 
         if (min > -1) checkers.push(isMinRespected(min));
+
+        if (isDate === true) checkers.push(isValidDate);
 
         if (
             // If a validation has been requested explicitly
@@ -94,6 +101,7 @@ export default function TextField(props) {
         hasBeenUsed,
         triggerValidation,
         disableValidation,
+        isDate,
     ]);
 
     if (Array.isArray(mask)) {
