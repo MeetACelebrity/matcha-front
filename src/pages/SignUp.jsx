@@ -63,7 +63,7 @@ export default function SignUp() {
             setValue: setUsername,
             isValid: isUsernameValid,
             setIsValid: setUsernameIsValid,
-            min: 1,
+            min: 3,
         },
         {
             name: 'given-name',
@@ -73,7 +73,7 @@ export default function SignUp() {
             setValue: setGivenName,
             isValid: isGivenNameValid,
             setIsValid: setGivenNameIsValid,
-            min: 1,
+            min: 3,
         },
         {
             name: 'family-name',
@@ -83,7 +83,7 @@ export default function SignUp() {
             setValue: setFamilyName,
             isValid: isFamilyNameValid,
             setIsValid: setFamilyNameIsValid,
-            min: 1,
+            min: 3,
         },
         {
             name: 'new-password',

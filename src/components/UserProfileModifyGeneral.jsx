@@ -53,7 +53,7 @@ export default function UserProfileModifyGeneral({
             setValue: setGivenName,
             isValid: isGivenNameValid,
             setIsValid: setGivenNameIsValid,
-            min: 1,
+            min: 3,
         },
         {
             label: 'Family name',
@@ -61,7 +61,7 @@ export default function UserProfileModifyGeneral({
             setValue: setFamilyName,
             isValid: isFamilyNameValid,
             setIsValid: setFamilyNameIsValid,
-            min: 1,
+            min: 3,
         },
     ];
 
