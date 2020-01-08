@@ -202,6 +202,7 @@ export default function Routes({ loaded = false }) {
                 ) : (
                     <Suspense fallback={<Spinner in timeout={1300} />}>
                         <Switch>
+                            <Redirect exact from="/" to={RoutesEnum.SIGN_IN} />
                             <Route
                                 path={RoutesEnum.SIGN_IN}
                                 component={SignIn}
