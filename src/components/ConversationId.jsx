@@ -73,6 +73,10 @@ const Input = styled.input`
     &::placeholder {
         ${tw`text-gray-800`}
     }
+
+    &:focus {
+        ${tw`outline-none`}
+    }
 `;
 
 const SendButton = styled.button`
