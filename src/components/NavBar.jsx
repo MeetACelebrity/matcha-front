@@ -31,7 +31,7 @@ export default function NavBar() {
     function logout() {
         fetch(`${API_ENDPOINT}/disconnect`, {
             credentials: 'include',
-        }).catch(console.error);
+        }).catch(() => {});
 
         ws.ws.close();
 

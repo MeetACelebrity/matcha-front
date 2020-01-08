@@ -135,10 +135,7 @@ export default function UserProfileModifyAddress({
                 method: 'PUT',
                 credentials: 'include',
                 body: { value: roamingPref ? 'ACCEPTED' : 'REFUSED' },
-            })
-                .then(res => res.json())
-                .then(console.log)
-                .catch(() => {});
+            }).catch(() => {});
 
             if (roamingPref === true) {
                 fetcher(`${API_ENDPOINT}/profile/location`, {
@@ -146,10 +143,7 @@ export default function UserProfileModifyAddress({
                     method: 'PUT',
                     credentials: 'include',
                     body: { acceptGeolocation: true },
-                })
-                    .then(res => res.json())
-                    .then(console.log)
-                    .catch(() => {});
+                }).catch(() => {});
             }
 
             setContext({

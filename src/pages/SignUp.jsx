@@ -116,7 +116,6 @@ export default function SignUp() {
                         resolve({ latitude, longitude });
                     },
                     error => {
-                        console.error('an error occured', error);
                         if (error.code !== error.PERMISSION_DENIED) {
                             reject(error);
                             return;
@@ -190,10 +189,7 @@ export default function SignUp() {
                             uuid,
                         }),
                         headers: { 'Content-Type': 'application/json' },
-                    })
-                        .then(res => res.json())
-                        .then(console.log)
-                        .catch(console.error);
+                    }).catch(() => {});
                 } catch (e) {
                     throw new Error('Incorrect response');
                 }

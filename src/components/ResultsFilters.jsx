@@ -285,7 +285,7 @@ function Filters({ search, onHide, onConfirm }) {
 
                 setPropositions(propositions);
             })
-            .catch(console.error);
+            .catch(() => {});
     }, [isMounted]);
 
     useEffect(() => {
@@ -312,9 +312,7 @@ function Filters({ search, onHide, onConfirm }) {
                 setPopularityRange(([min]) => [min, trunc(maxScore)]);
                 setCountCommonTags(([min]) => [min, trunc(maxCommonTags)]);
             })
-            .catch(err => {
-                console.error(err);
-
+            .catch(() => {
                 setIntervalLoaded(false);
             });
     }, [

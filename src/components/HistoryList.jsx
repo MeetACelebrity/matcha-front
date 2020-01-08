@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { API_ENDPOINT, useIsMounted } from '../constants.js';
 import InfiniteScrollContainer from './InfiniteScrollContainer.jsx';
@@ -92,7 +93,9 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
                         }
                     }
                 )
-                .catch(console.error);
+                .catch(() => {
+                    toast('An error occured during data fetching');
+                });
         },
         [dataProperty, isMounted, type]
     );

@@ -119,7 +119,7 @@ export default function SignUp() {
                     });
                 }
             })
-            .catch(console.error);
+            .catch(() => {});
     }
 
     return (

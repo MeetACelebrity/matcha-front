@@ -25,7 +25,7 @@ export default function UserProfileModifyTags({
 
                 setPropositions(propositions);
             })
-            .catch(console.error);
+            .catch(() => {});
     }, [isMounted]);
 
     function addTag(tag) {

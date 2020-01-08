@@ -88,7 +88,7 @@ export default function Notifications() {
     useEffect(() => {
         fetch(`${API_ENDPOINT}/user/saw-notifications`, {
             credentials: 'include',
-        }).catch(console.error);
+        }).catch(() => {});
 
         setContext(context => ({
             ...context,

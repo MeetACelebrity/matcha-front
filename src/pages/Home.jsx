@@ -129,7 +129,7 @@ export default function Home() {
                         setOffset(offset => offset + data.length);
                     }
                 })
-                .catch(console.error)
+                .catch(() => {})
                 .finally(() => {
                     if (!isMounted.current) return;
 
@@ -171,10 +171,7 @@ export default function Home() {
         fetch(`${API_ENDPOINT}/user/like/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        })
-            .then(res => res.json())
-            .then(console.log)
-            .catch(console.error);
+        }).catch(() => {});
     }
 
     function onFiltersUpdate({

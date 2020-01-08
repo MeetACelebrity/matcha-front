@@ -46,7 +46,7 @@ export function getNotifications() {
                 newDataNotifications,
             };
         })
-        .catch(console.error);
+        .catch(() => {});
 }
 
 export default function App() {
@@ -86,7 +86,7 @@ export default function App() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .catch(console.error)
+            .catch(() => {})
             .then(user => {
                 const loggedIn =
                     user === null || user === undefined ? false : true;
@@ -140,8 +140,6 @@ export default function App() {
                         lng,
                     });
 
-                    console.log('can ask =', canAskForRoamingMode);
-
                     if (canAskForRoamingMode === false) return;
 
                     if (user.roaming !== 'ACCEPTED') {
@@ -163,10 +161,10 @@ export default function App() {
                         })(true);
                     }
                 } catch (e) {
-                    console.error(e);
+                    return;
                 }
             })
-            .catch(console.error);
+            .catch(() => {});
     }, [
         launchWS,
         notificationsPubsub,
@@ -243,7 +241,7 @@ export default function App() {
                     )
                 );
             } catch (e) {
-                console.error(e);
+                return;
             }
         };
     }

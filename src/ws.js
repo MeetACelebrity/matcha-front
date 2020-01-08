@@ -98,13 +98,9 @@ class WS {
     }
 
     setup() {
-        this.ws.onerror = () => {
-            console.log('Connection Error');
-        };
+        this.ws.onerror = () => {};
 
         this.ws.onopen = () => {
-            console.log('WebSocket Client Connected');
-
             const init = () => {
                 if (this.ws.readyState !== this.ws.OPEN) {
                     setTimeout(init, 10);
@@ -119,9 +115,7 @@ class WS {
             init();
         };
 
-        this.ws.onclose = () => {
-            console.log('echo-protocol Client Closed');
-        };
+        this.ws.onclose = () => {};
 
         this.ws.onmessage = e => {
             if (typeof e.data === 'string') {
@@ -150,8 +144,6 @@ class WS {
                         }));
 
                         for (const conversation of conversations) {
-                            console.log('gotten conversation', conversation);
-
                             this.pubsub._publish(
                                 conversation.uuid,
                                 conversation
@@ -210,8 +202,6 @@ class WS {
                     default:
                         return;
                 }
-
-                console.log('message =', message);
             }
         };
     }

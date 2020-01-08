@@ -39,8 +39,10 @@ export default function Profile() {
 
                 setUser(user);
             })
-            .catch(console.error)
+            .catch(() => {})
             .finally(() => {
+                if (!isMounted.current) return;
+
                 setIsLoading(false);
             });
     }, [isMounted, uuid]);
@@ -78,30 +80,21 @@ export default function Profile() {
         fetch(`${API_ENDPOINT}/user/${action}/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        })
-            .then(res => res.json())
-            .then(console.log)
-            .catch(console.error);
+        }).catch(() => {});
     }
 
     function onBlock() {
         fetch(`${API_ENDPOINT}/user/block/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        })
-            .then(res => res.json())
-            .then(console.log)
-            .catch(console.error);
+        }).catch(() => {});
     }
 
     function onReport() {
         fetch(`${API_ENDPOINT}/user/report/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        })
-            .then(res => res.json())
-            .then(console.log)
-            .catch(console.error);
+        }).catch(() => {});
     }
 
     if (isLoading === false && user === null) {

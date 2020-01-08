@@ -62,8 +62,12 @@ export default function Search() {
                         }
                     }
                 })
-                .catch(console.error)
-                .finally(() => setLoading(false));
+                .catch(() => {})
+                .finally(() => {
+                    if (!isMounted.current) return;
+
+                    setLoading(false);
+                });
         },
         [isMounted]
     );
