@@ -257,7 +257,7 @@ export default function ProfileCard({
                         {givenName} {familyName}
                     </h3>
 
-                    <h4>{age} years old</h4>
+                    <h4>{age === null ? 'N/D' : age} years old</h4>
                 </TextContainer>
 
                 {typeof score === 'number' && (

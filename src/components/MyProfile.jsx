@@ -11,6 +11,8 @@ export default function MyProfile(props) {
     } = useContext(AppContext);
 
     const age = useMemo(() => {
+        if (birthday === null) return null;
+
         function calculateAge(birthday) {
             const ageDifMs = Date.now() - birthday;
             const ageDate = new Date(ageDifMs);
