@@ -123,18 +123,20 @@ export default function UserProfileModifyOtherInformations({
                         : false,
                     statusCode === 'UNDER_BIRTHDAY' ? true : false
                 );
+
+                if (statusCode === 'DONE') {
+                    setContext(context => ({
+                        ...context,
+                        user: {
+                            ...context.user,
+                            birthday: date,
+                            gender,
+                            sexualOrientation,
+                        },
+                    }));
+                }
             })
             .catch(() => triggerToast(false));
-
-        setContext(context => ({
-            ...context,
-            user: {
-                ...context.user,
-                birthday: date,
-                gender,
-                sexualOrientation,
-            },
-        }));
     }
 
     return (

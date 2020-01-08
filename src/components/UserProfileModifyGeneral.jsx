@@ -83,18 +83,20 @@ export default function UserProfileModifyGeneral({
                         ? 'Your informations have been changed'
                         : false
                 );
+
+                if (statusCode === 'DONE') {
+                    setContext(context => ({
+                        ...context,
+                        user: {
+                            ...context.user,
+                            email,
+                            givenName,
+                            familyName,
+                        },
+                    }));
+                }
             })
             .catch(() => triggerToast(false));
-
-        setContext(context => ({
-            ...context,
-            user: {
-                ...context.user,
-                email,
-                givenName,
-                familyName,
-            },
-        }));
     }
 
     return (

@@ -13,7 +13,7 @@ export default function UserProfileModifyAddress({
 }) {
     const formId = 'modify-address';
 
-    const [latlng, setLatlng] = useState({ lat: -1, lng: -1 });
+    const [latlng, setLatlng] = useState({ lat: -1, long: -1 });
     const [roamingPref, setRoamingPref] = useState(
         roaming === 'ACCEPTED' ? true : false
     );
@@ -107,7 +107,7 @@ export default function UserProfileModifyAddress({
     }, [placesAutocomplete, setAddress]);
 
     function onSubmit() {
-        if (address !== null && latlng.lat !== -1 && latlng.lng !== -1) {
+        if (address !== null && latlng.lat !== -1 && latlng.long !== -1) {
             fetcher(`${API_ENDPOINT}/profile/address`, {
                 json: true,
                 method: 'PUT',
@@ -121,6 +121,28 @@ export default function UserProfileModifyAddress({
                             ? 'Your address has been changed'
                             : false
                     );
+
+                    if (statusCode === 'DONE') {
+                        setContext(context => ({
+                            ...context,
+                            user: {
+                                ...context.user,
+                                addresses: [
+                                    ...context.user.addresses.filter(
+                                        ({ type }) => type !== 'PRIMARY'
+                                    ),
+                                    {
+                                        ...address,
+                                        point: {
+                                            x: latlng.lat,
+                                            y: latlng.long,
+                                        },
+                                        type: 'PRIMARY',
+                                    },
+                                ],
+                            },
+                        }));
+                    }
                 })
                 .catch(() => triggerToast(false));
         } else {

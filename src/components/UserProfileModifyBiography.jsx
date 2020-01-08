@@ -30,7 +30,7 @@ export default function UserProfileModifyBiography({
             isValid: isABiographyValid,
             setIsValid: setBiographyIsValid,
             textarea: true,
-            min: 1
+            min: 1,
         },
     ];
 
@@ -53,16 +53,18 @@ export default function UserProfileModifyBiography({
                         : false,
                     statusCode === 'BIOGRAPHY_INCORRECT'
                 );
+
+                if (statusCode === 'DONE') {
+                    setContext(context => ({
+                        ...context,
+                        user: {
+                            ...context.user,
+                            biography,
+                        },
+                    }));
+                }
             })
             .catch(() => triggerToast(false));
-
-        setContext(context => ({
-            ...context,
-            user: {
-                ...context.user,
-                biography,
-            },
-        }));
     }
 
     return (
