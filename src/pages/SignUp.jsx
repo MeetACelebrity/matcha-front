@@ -64,6 +64,7 @@ export default function SignUp() {
             isValid: isUsernameValid,
             setIsValid: setUsernameIsValid,
             min: 3,
+            max: 20,
         },
         {
             name: 'given-name',
@@ -74,6 +75,7 @@ export default function SignUp() {
             isValid: isGivenNameValid,
             setIsValid: setGivenNameIsValid,
             min: 3,
+            max: 20,
         },
         {
             name: 'family-name',
@@ -84,6 +86,7 @@ export default function SignUp() {
             isValid: isFamilyNameValid,
             setIsValid: setFamilyNameIsValid,
             min: 3,
+            max: 20,
         },
         {
             name: 'new-password',
