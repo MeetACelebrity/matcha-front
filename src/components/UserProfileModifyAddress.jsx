@@ -63,6 +63,14 @@ export default function UserProfileModifyAddress({
     const [isValid, Form] = useForm({ fields });
 
     useEffect(() => {
+        const { point: { x, y } = {} } = primaryAddress;
+
+        if (!(x && y)) return;
+
+        setLatlng({ lat: x, long: y });
+    }, [primaryAddress]);
+
+    useEffect(() => {
         addressTextFieldRef.current = document.getElementById(
             addressTextFieldId
         );
