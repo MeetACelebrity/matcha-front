@@ -310,7 +310,7 @@ export default function ProfileCard({
 
                 <ProfileCardTags tags={tags} mini={preview === true} />
 
-                {isCurrentUser && preview === false && (
+                {isCurrentUser && !preview && !flat && (
                     <LinksContainer>
                         <Button text to="/my-visitors">
                             My visitors
