@@ -63,7 +63,7 @@ export default function UserProfileModifyOtherInformations({
             mask: [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/],
             min: 10,
             max: 11,
-            isDate: true
+            minYears: 18,
         },
         {
             label: 'Gender',

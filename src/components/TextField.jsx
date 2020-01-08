@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import MaskedInput from 'react-text-mask';
 
 import Input from './Input.jsx';
+import { calculateAge } from '../constants.js';
 
 function isCorrectEmail(text) {
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -30,6 +31,26 @@ function isValidDate(string) {
     return !Number.isNaN(+new Date(string)) || 'Invalid date';
 }
 
+function minYearsOf(minYears) {
+    return string => {
+        const date = new Date(string);
+
+        if (Number.isNaN(+date)) {
+            return 'Invalid date';
+        }
+
+        const years = calculateAge(date);
+        if (Number.isNaN(years)) {
+            return 'Invalid date';
+        }
+        if (years < minYears) {
+            return `Invalid date : ${minYears} year(s) minimum`;
+        }
+
+        return true;
+    };
+}
+
 export default function TextField(props) {
     const [errors, setErrors] = useState([]);
     const [hasBeenUsed, setHasBeenUsed] = useState(false);
@@ -49,6 +70,7 @@ export default function TextField(props) {
         mask,
         label,
         isDate,
+        minYears,
     } = props;
 
     function setValue(value) {
@@ -70,7 +92,8 @@ export default function TextField(props) {
 
         if (min > -1) checkers.push(isMinRespected(min));
 
-        if (isDate === true) checkers.push(isValidDate);
+        if (typeof minYears === 'number') checkers.push(minYearsOf(minYears));
+        else if (isDate === true) checkers.push(isValidDate);
 
         if (
             // If a validation has been requested explicitly
@@ -102,6 +125,7 @@ export default function TextField(props) {
         triggerValidation,
         disableValidation,
         isDate,
+        minYears,
     ]);
 
     if (Array.isArray(mask)) {
