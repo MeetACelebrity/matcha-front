@@ -86,7 +86,9 @@ export default function App() {
             credentials: 'include',
         })
             .then(res => res.json())
-            .catch(() => {})
+            .catch(() => {
+                setLoaded(true);
+            })
             .then(user => {
                 const loggedIn =
                     user === null || user === undefined ? false : true;
@@ -107,10 +109,9 @@ export default function App() {
                     }));
                 }
 
-                return user;
-            })
-            .finally(() => {
                 setLoaded(true);
+
+                return user;
             })
             .then(async user => {
                 if (

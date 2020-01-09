@@ -154,6 +154,8 @@ class WS {
                     case WS_RESPONSES_TYPES.NEW_CONVERSATION: {
                         const { uuid, users, messages } = message.payload;
 
+                        this.onChange('conversations');
+
                         this.pubsub._publish(uuid, {
                             uuid,
                             users,
@@ -166,7 +168,6 @@ class WS {
                             messages: Array.isArray(messages) ? messages : [],
                         });
 
-                        this.onChange('conversations');
                         break;
                     }
                     case WS_RESPONSES_TYPES.DELETE_CONVERSATION: {

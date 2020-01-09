@@ -4,7 +4,11 @@ import useForm, { useFormField } from '../components/Form.jsx';
 import UserProfileModifyEditionGroup from './UserProfileModifyEditionGroup.jsx';
 import { API_ENDPOINT } from '../constants';
 
-export default function UserProfileModifyGeneral({ user, triggerToast }) {
+export default function UserProfileModifyGeneral({
+    user,
+    triggerToast,
+    setContext,
+}) {
     const formId = 'modify-general';
 
     const [email, setEmail, isEmailValid, setEmailIsValid] = useFormField('');
@@ -49,7 +53,8 @@ export default function UserProfileModifyGeneral({ user, triggerToast }) {
             setValue: setGivenName,
             isValid: isGivenNameValid,
             setIsValid: setGivenNameIsValid,
-            min: 1,
+            min: 3,
+            max: 20,
         },
         {
             label: 'Family name',
@@ -57,7 +62,8 @@ export default function UserProfileModifyGeneral({ user, triggerToast }) {
             setValue: setFamilyName,
             isValid: isFamilyNameValid,
             setIsValid: setFamilyNameIsValid,
-            min: 1,
+            min: 3,
+            max: 20,
         },
     ];
 
@@ -79,6 +85,18 @@ export default function UserProfileModifyGeneral({ user, triggerToast }) {
                         ? 'Your informations have been changed'
                         : false
                 );
+
+                if (statusCode === 'DONE') {
+                    setContext(context => ({
+                        ...context,
+                        user: {
+                            ...context.user,
+                            email,
+                            givenName,
+                            familyName,
+                        },
+                    }));
+                }
             })
             .catch(() => triggerToast(false));
     }

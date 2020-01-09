@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
+import { toast } from 'react-toastify';
 
 import { API_ENDPOINT, fetcher, useIsMounted } from '../constants.js';
 
@@ -80,21 +81,43 @@ export default function Profile() {
         fetch(`${API_ENDPOINT}/user/${action}/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        }).catch(() => {});
+        })
+            .catch(() => {})
+            .finally(() => {
+                toast(`You ${action}d ${user.username}`, {
+                    type: 'success',
+                });
+            });
     }
 
     function onBlock() {
         fetch(`${API_ENDPOINT}/user/block/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        }).catch(() => {});
+        })
+            .catch(() => {})
+            .finally(() => {
+                toast(`You blocked ${user.username}`, {
+                    type: 'success',
+                });
+
+                if (!isMounted.current) return;
+
+                setUser(null);
+            });
     }
 
     function onReport() {
         fetch(`${API_ENDPOINT}/user/report/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        }).catch(() => {});
+        })
+            .catch(() => {})
+            .finally(() => {
+                toast(`You reported ${user.username}`, {
+                    type: 'success',
+                });
+            });
     }
 
     if (isLoading === false && user === null) {

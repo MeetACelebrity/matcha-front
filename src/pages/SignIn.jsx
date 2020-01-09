@@ -73,7 +73,8 @@ export default function SignUp() {
             setValue: setUsername,
             isValid: isUsernameValid,
             setIsValid: setUsernameIsValid,
-            min: 1,
+            min: 3,
+            max: 20,
         },
         {
             label: 'Password',

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import MaskedInput from 'react-text-mask';
 
 import Input from './Input.jsx';
+import { calculateAge } from '../constants.js';
 
 function isCorrectEmail(text) {
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -26,6 +27,39 @@ function isMinRespected(minimum) {
     };
 }
 
+function isValidDate(string) {
+    return !Number.isNaN(+new Date(string)) || 'Invalid date';
+}
+
+function minYearsOf(minYears) {
+    return string => {
+        const date = new Date(string);
+
+        if (Number.isNaN(+date)) {
+            return 'Invalid date';
+        }
+
+        const years = calculateAge(date);
+        if (Number.isNaN(years)) {
+            return 'Invalid date';
+        }
+        if (years < minYears) {
+            return `Invalid date : ${minYears} year(s) minimum`;
+        }
+
+        return true;
+    };
+}
+
+function isPasswordCorrect(value) {
+    return (
+        (value.length >= 6 &&
+            /\d+/.test(value) &&
+            /[\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+/.test(value)) ||
+        'Invalid password : at least one number and one special characters'
+    );
+}
+
 export default function TextField(props) {
     const [errors, setErrors] = useState([]);
     const [hasBeenUsed, setHasBeenUsed] = useState(false);
@@ -44,6 +78,10 @@ export default function TextField(props) {
         triggerValidation,
         mask,
         label,
+        isDate,
+        minYears,
+        notTrim = false,
+        type,
     } = props;
 
     function setValue(value) {
@@ -52,6 +90,12 @@ export default function TextField(props) {
         if (typeof setParentValue === 'function') {
             setParentValue(value);
         }
+    }
+
+    function trimOnBlur() {
+        if (typeof value !== 'string' || notTrim || type === 'password') return;
+
+        setParentValue(value.trim());
     }
 
     useEffect(() => {
@@ -64,6 +108,11 @@ export default function TextField(props) {
         if (max > -1) checkers.push(isMaxRespected(max));
 
         if (min > -1) checkers.push(isMinRespected(min));
+
+        if (type === 'password') checkers.push(isPasswordCorrect);
+
+        if (typeof minYears === 'number') checkers.push(minYearsOf(minYears));
+        else if (isDate === true) checkers.push(isValidDate);
 
         if (
             // If a validation has been requested explicitly
@@ -94,6 +143,9 @@ export default function TextField(props) {
         hasBeenUsed,
         triggerValidation,
         disableValidation,
+        isDate,
+        minYears,
+        type,
     ]);
 
     if (Array.isArray(mask)) {
@@ -105,6 +157,7 @@ export default function TextField(props) {
                 errors={errors}
                 defaultValue={value}
                 setValue={setValue}
+                onBlur={trimOnBlur}
                 render={(ref, maskedProps) => {
                     inputRef.current = ref;
 
@@ -115,6 +168,12 @@ export default function TextField(props) {
     }
 
     return (
-        <Input {...props} isOk={isValid} errors={errors} setValue={setValue} />
+        <Input
+            {...props}
+            isOk={isValid}
+            errors={errors}
+            setValue={setValue}
+            onBlur={trimOnBlur}
+        />
     );
 }

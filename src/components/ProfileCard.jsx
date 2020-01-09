@@ -140,7 +140,7 @@ function Biography({ biography }) {
     );
 }
 
-function LikeButton({ onLike, profilePicturesCount, likeStatus }) {
+function LikeButton({ onLike, disabled, likeStatus }) {
     let text = '';
 
     switch (likeStatus) {
@@ -159,7 +159,7 @@ function LikeButton({ onLike, profilePicturesCount, likeStatus }) {
     }
 
     return (
-        <Button text onClick={onLike} disabled={profilePicturesCount === 0}>
+        <Button text onClick={onLike} disabled={disabled}>
             {text}
         </Button>
     );
@@ -195,10 +195,7 @@ export default function ProfileCard({
     const [images, setImages] = useState([]);
     const {
         context: {
-            user: {
-                uuid: currentUserUuid,
-                images: { length: profilePicturesCount },
-            },
+            user: { uuid: currentUserUuid, images: userImages },
         },
     } = useContext(AppContext);
 
@@ -224,6 +221,10 @@ export default function ProfileCard({
 
         return formatAddress({ name, county, country, city });
     }, [addresses, distance]);
+
+    const disableLikeButton = useMemo(() => {
+        return !userImages.some(({ imageNumber }) => imageNumber === 0);
+    }, [userImages]);
 
     useEffect(() => {
         if (profilePicture === undefined) {
@@ -293,7 +294,7 @@ export default function ProfileCard({
                     <ActionsButtonsContainer>
                         <LikeButton
                             onLike={onLike}
-                            profilePicturesCount={profilePicturesCount}
+                            disabled={disableLikeButton}
                             likeStatus={likeStatus}
                         />
                         <Button text red onClick={onBlock}>
@@ -309,7 +310,7 @@ export default function ProfileCard({
 
                 <ProfileCardTags tags={tags} mini={preview === true} />
 
-                {isCurrentUser && preview === false && (
+                {isCurrentUser && !preview && !flat && (
                     <LinksContainer>
                         <Button text to="/my-visitors">
                             My visitors
@@ -327,7 +328,7 @@ export default function ProfileCard({
                 <ProfileCardFloatingButton
                     edit={isCurrentUser}
                     floating={preview === false}
-                    disabled={profilePicturesCount === 0}
+                    disabled={disableLikeButton}
                     likeStatus={likeStatus}
                     onLike={onLike}
                 />

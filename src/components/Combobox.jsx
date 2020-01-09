@@ -210,7 +210,16 @@ export default function Combobox({
                 if (newItem === '') {
                     onPropositionSelect(propositionSelected);
                 } else {
+                    setNewItem('');
+
                     let item = queryMatchingPropositions[propositionSelected];
+
+                    const alreadyPresent = items.some(
+                        ({ text: itemText }) => itemText === newItem
+                    );
+                    if (alreadyPresent) {
+                        break;
+                    }
 
                     if (item === undefined && typeof onAddItem === 'function') {
                         item = {
@@ -224,8 +233,6 @@ export default function Combobox({
                     if (item !== undefined) {
                         setItems([...items, item]);
                     }
-
-                    setNewItem('');
                 }
 
                 break;

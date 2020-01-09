@@ -88,10 +88,12 @@ export default function ConversationsList({ id, className }) {
                 method: 'PUT',
             }).catch(() => {});
 
-            setContext(context => ({
-                ...context,
-                newDataConversations: false,
-            }));
+            setTimeout(() => {
+                setContext(context => ({
+                    ...context,
+                    newDataConversations: false,
+                }));
+            }, 100);
 
             setConversations(conversations);
         }

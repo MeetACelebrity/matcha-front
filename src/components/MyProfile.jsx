@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 
 import { AppContext } from '../app-context.js';
+import { calculateAge } from '../constants.js';
 import ProfileCard from './ProfileCard.jsx';
 
 export default function MyProfile(props) {
@@ -12,12 +13,6 @@ export default function MyProfile(props) {
 
     const age = useMemo(() => {
         if (birthday === null) return null;
-
-        function calculateAge(birthday) {
-            const ageDifMs = Date.now() - birthday;
-            const ageDate = new Date(ageDifMs);
-            return Math.abs(ageDate.getUTCFullYear() - 1970);
-        }
 
         return calculateAge(new Date(birthday));
     }, [birthday]);

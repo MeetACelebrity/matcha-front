@@ -164,6 +164,11 @@ export default function Home() {
     }
 
     function onLike(uuid) {
+        const matchingUser = profiles.find(
+            ({ uuid: profileUuid }) => profileUuid === uuid
+        );
+        if (matchingUser === undefined) return;
+
         setProfiles(profiles =>
             profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
         );
@@ -171,7 +176,15 @@ export default function Home() {
         fetch(`${API_ENDPOINT}/user/like/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        }).catch(() => {});
+        })
+            .catch(() => {})
+            .finally(() => {
+                const { username } = matchingUser;
+
+                toast(`You liked ${username}`, {
+                    type: 'success',
+                });
+            });
     }
 
     function onFiltersUpdate({

@@ -44,9 +44,7 @@ const NoDataContainer = styled.div`
 
 function NoData() {
     return (
-        <NoDataContainer>
-            No one celebrity wants to have s** with you
-        </NoDataContainer>
+        <NoDataContainer>No one celebrity matches the criteria</NoDataContainer>
     );
 }
 

@@ -99,6 +99,7 @@ function Input(
         errors,
         onChange,
         hidden = false,
+        ...extra
     },
     ref
 ) {
@@ -131,6 +132,7 @@ function Input(
 
                         setValue(e.target.value);
                     }}
+                    {...extra}
                 />
 
                 {type === 'password' && PasswordIcon({ show, setShow })}

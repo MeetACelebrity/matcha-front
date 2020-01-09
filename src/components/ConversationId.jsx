@@ -9,8 +9,10 @@ import React, {
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeathersIcon from 'feather-icons-react';
+import { useLocation } from 'react-router-dom';
 
 import { AppContext } from '../app-context.js';
+import { API_ENDPOINT, useIsMounted } from '../constants.js';
 
 const Container = styled.div`
     ${tw`w-full min-h-full relative flex flex-col justify-between items-stretch bg-white`}
@@ -71,6 +73,10 @@ const Input = styled.input`
     &::placeholder {
         ${tw`text-gray-800`}
     }
+
+    &:focus {
+        ${tw`outline-none`}
+    }
 `;
 
 const SendButton = styled.button`
@@ -85,9 +91,13 @@ export default function ConversationId({ id }) {
             user: me,
             user: { uuid: currentUserUuid },
         },
+        setContext,
     } = useContext(AppContext);
+    const location = useLocation();
     const [message, setMessage] = useState('');
     const [conversation, setConversation] = useState(undefined);
+
+    const isMounted = useIsMounted();
 
     const messagesContainerRef = useRef(null);
 
@@ -108,10 +118,22 @@ export default function ConversationId({ id }) {
     useEffect(() => {
         if (!pubsub) return;
 
-        let exit = false;
-
         function onData(data) {
-            if (exit) return;
+            if (!isMounted) return;
+
+            if (!['/chat', '/chat/'].includes(location.pathname)) {
+                fetch(`${API_ENDPOINT}/user/chat/saw-messages`, {
+                    credentials: 'include',
+                    method: 'PUT',
+                }).catch(() => {});
+
+                setTimeout(() => {
+                    setContext(context => ({
+                        ...context,
+                        newDataConversations: false,
+                    }));
+                }, 100);
+            }
 
             setConversation(data);
         }
@@ -119,10 +141,9 @@ export default function ConversationId({ id }) {
         pubsub.subscribe(id, onData);
 
         return () => {
-            exit = true;
             pubsub.unsubscribe(id, onData);
         };
-    }, [id, pubsub]);
+    }, [id, isMounted, location.pathname, pubsub, setContext]);
 
     useLayoutEffect(() => {
         if (messagesContainerRef.current === null) return;
@@ -140,9 +161,11 @@ export default function ConversationId({ id }) {
 
         setMessage('');
 
-        if (conversation === undefined) return
+        const trimmedMessage = message.trim();
 
-        ws.publishMessage(id, message);
+        if (conversation === undefined || trimmedMessage.length === 0) return;
+
+        ws.publishMessage(id, trimmedMessage);
 
         pubsub._publish(id, {
             ...conversation,
@@ -152,7 +175,7 @@ export default function ConversationId({ id }) {
                     authorUuid: currentUserUuid,
                     authorUsername: me.username,
                     createdAt: +new Date(),
-                    payload: message,
+                    payload: trimmedMessage,
                 },
             ],
         });
