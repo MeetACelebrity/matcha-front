@@ -161,9 +161,11 @@ export default function ConversationId({ id }) {
 
         setMessage('');
 
-        if (conversation === undefined) return;
+        const trimmedMessage = message.trim();
 
-        ws.publishMessage(id, message);
+        if (conversation === undefined || trimmedMessage.length === 0) return;
+
+        ws.publishMessage(id, trimmedMessage);
 
         pubsub._publish(id, {
             ...conversation,
@@ -173,7 +175,7 @@ export default function ConversationId({ id }) {
                     authorUuid: currentUserUuid,
                     authorUsername: me.username,
                     createdAt: +new Date(),
-                    payload: message,
+                    payload: trimmedMessage,
                 },
             ],
         });
