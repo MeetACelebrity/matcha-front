@@ -313,6 +313,8 @@ function Filters({ search, onHide, onConfirm }) {
                 setCountCommonTags(([min]) => [min, trunc(maxCommonTags)]);
             })
             .catch(() => {
+                if (!isMounted.current) return;
+
                 setIntervalLoaded(false);
             });
     }, [
