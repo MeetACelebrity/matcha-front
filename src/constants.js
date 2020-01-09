@@ -1,7 +1,8 @@
 import { useRef, useEffect } from 'react';
 
-export const API_ENDPOINT = 'http://localhost:8080';
-export const CLOUD_ENDPOINT = 'http://localhost:8081';
+export const CLOUD_ENDPOINT = `http://${process.env.CLOUD_HOST}:${process.env.CLOUD_PORT}`;
+export const FRONT_ENDPOINT = `http://${process.env.FRONT_HOST}:${process.env.FRONT_PORT}`;
+export const API_ENDPOINT = `http://${process.env.BACK_HOST}:${process.env.BACK_PORT}`;
 
 export const SIGN_IN_MESSAGES = new Map([
     ['DONE', 'You have been successfully authenticated 🎉'],
