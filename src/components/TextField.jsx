@@ -51,6 +51,15 @@ function minYearsOf(minYears) {
     };
 }
 
+function isPasswordCorrect(value) {
+    return (
+        (value.length >= 6 &&
+            /\d+/.test(value) &&
+            /[\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+/.test(value)) ||
+        'Invalid password : at least one number and one special characters'
+    );
+}
+
 export default function TextField(props) {
     const [errors, setErrors] = useState([]);
     const [hasBeenUsed, setHasBeenUsed] = useState(false);
@@ -71,6 +80,8 @@ export default function TextField(props) {
         label,
         isDate,
         minYears,
+        notTrim = false,
+        type,
     } = props;
 
     function setValue(value) {
@@ -79,6 +90,12 @@ export default function TextField(props) {
         if (typeof setParentValue === 'function') {
             setParentValue(value);
         }
+    }
+
+    function trimOnBlur() {
+        if (typeof value !== 'string' || notTrim || type === 'password') return;
+
+        setParentValue(value.trim());
     }
 
     useEffect(() => {
@@ -91,6 +108,8 @@ export default function TextField(props) {
         if (max > -1) checkers.push(isMaxRespected(max));
 
         if (min > -1) checkers.push(isMinRespected(min));
+
+        if (type === 'password') checkers.push(isPasswordCorrect);
 
         if (typeof minYears === 'number') checkers.push(minYearsOf(minYears));
         else if (isDate === true) checkers.push(isValidDate);
@@ -126,6 +145,7 @@ export default function TextField(props) {
         disableValidation,
         isDate,
         minYears,
+        type,
     ]);
 
     if (Array.isArray(mask)) {
@@ -137,6 +157,7 @@ export default function TextField(props) {
                 errors={errors}
                 defaultValue={value}
                 setValue={setValue}
+                onBlur={trimOnBlur}
                 render={(ref, maskedProps) => {
                     inputRef.current = ref;
 
@@ -147,6 +168,12 @@ export default function TextField(props) {
     }
 
     return (
-        <Input {...props} isOk={isValid} errors={errors} setValue={setValue} />
+        <Input
+            {...props}
+            isOk={isValid}
+            errors={errors}
+            setValue={setValue}
+            onBlur={trimOnBlur}
+        />
     );
 }
