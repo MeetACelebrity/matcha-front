@@ -151,6 +151,9 @@ export default function UserProfileModifyPictures({
         fetch(`${API_ENDPOINT}/profile/pics`, {
             credentials: 'include',
             method: 'POST',
+            header: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
             body: formData,
         })
             .then(res => res.json())
