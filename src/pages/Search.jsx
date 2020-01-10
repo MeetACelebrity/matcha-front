@@ -121,6 +121,7 @@ export default function Search() {
         setProfiles(profiles =>
             profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
         );
+        setOffset(offset => offset - 1);
 
         fetch(`${API_ENDPOINT}/user/like/${uuid}`, {
             method: 'POST',
@@ -145,6 +146,7 @@ export default function Search() {
         setProfiles(profiles =>
             profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
         );
+        setOffset(offset => offset - 1);
 
         fetch(`${API_ENDPOINT}/user/not-interested/${uuid}`, {
             method: 'POST',
