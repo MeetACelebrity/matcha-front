@@ -63,6 +63,7 @@ function ProfilesContainer(
         preview = false,
         loading = false,
         onLike = () => {},
+        onDismiss = () => {},
         onFiltersUpdate = () => {},
         fetchMore = () => {},
         hasMore = false,
@@ -106,6 +107,7 @@ function ProfilesContainer(
                                     key={uuid}
                                     preview={preview}
                                     onLike={onLike}
+                                    onDismiss={onDismiss}
                                 />
                             );
                         })}

@@ -187,6 +187,23 @@ export default function Home() {
             });
     }
 
+    function onDismiss(uuid) {
+        const matchingUser = profiles.find(
+            ({ uuid: profileUuid }) => profileUuid === uuid
+        );
+        if (matchingUser === undefined) return;
+
+        setProfiles(profiles =>
+            profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
+        );
+
+        fetch(`${API_ENDPOINT}/user/not-interested/${uuid}`, {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .catch(() => {})
+    }
+
     function onFiltersUpdate({
         sortBy,
         sortOrder,
@@ -234,6 +251,7 @@ export default function Home() {
                 ref={homeViewRef}
                 profiles={profiles}
                 onLike={onLike}
+                onDismiss={onDismiss}
                 onFiltersUpdate={onFiltersUpdate}
                 preview={true}
                 loading={loading}

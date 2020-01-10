@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
+import { toast } from 'react-toastify';
 
 import ProfilesContainer from '../components/ProfilesContainer.jsx';
 import { API_ENDPOINT, fetcher, useIsMounted } from '../constants.js';
@@ -111,6 +112,46 @@ export default function Search() {
         fetchData(0, body, searchText, false);
     }
 
+    function onLike(uuid) {
+        const matchingUser = profiles.find(
+            ({ uuid: profileUuid }) => profileUuid === uuid
+        );
+        if (matchingUser === undefined) return;
+
+        setProfiles(profiles =>
+            profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
+        );
+
+        fetch(`${API_ENDPOINT}/user/like/${uuid}`, {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .catch(() => {})
+            .finally(() => {
+                const { username } = matchingUser;
+
+                toast(`You liked ${username}`, {
+                    type: 'success',
+                });
+            });
+    }
+
+    function onDismiss(uuid) {
+        const matchingUser = profiles.find(
+            ({ uuid: profileUuid }) => profileUuid === uuid
+        );
+        if (matchingUser === undefined) return;
+
+        setProfiles(profiles =>
+            profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
+        );
+
+        fetch(`${API_ENDPOINT}/user/not-interested/${uuid}`, {
+            method: 'POST',
+            credentials: 'include',
+        }).catch(() => {});
+    }
+
     return (
         <Container>
             <Title>Search celebrities</Title>
@@ -123,6 +164,8 @@ export default function Search() {
                 loading={loading}
                 fetchMore={fetchMore}
                 hasMore={hasMore}
+                onLike={onLike}
+                onDismiss={onDismiss}
             />
         </Container>
     );

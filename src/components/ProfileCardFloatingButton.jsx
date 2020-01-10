@@ -4,27 +4,42 @@ import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
-import FloatingButton from './FloatingButton.jsx';
+const Container = styled.div`
+    ${tw`flex justify-center items-center w-full`}
 
-const notFloating = tw`static mx-auto my-0 bg-pink-500`;
+    & > * {
+        ${tw`mx-2`}
+    }
+`;
+
 const liked = tw`bg-pink-500`;
 const notLiked = tw`bg-white text-pink-500`;
 
-const Button = styled(FloatingButton)`
-    ${({ floating }) => floating === false && notFloating}
+const Button = styled.button`
+    ${tw`flex justify-center items-center h-12 w-12 shadow-lg rounded-full bg-blue-800 text-white`}
 
-    ${({ floating, liked: state }) =>
-        floating === false && (state ? liked : notLiked)}
+    transition: color 150ms, background-color 150ms;
+
+    &:hover,
+    &:focus {
+        ${tw`outline-none`}
+    }
+
+    &:disabled {
+        ${tw`bg-gray-300 text-gray-700`}
+    }
+
+    ${({ ignore, liked: state }) => !ignore && (state ? liked : notLiked)}
 `;
 
 const ButtonNav = styled(Button)``;
 
 export default function ProfileCardFloatingButton({
     edit = false,
-    floating = true,
     likeStatus = 'VIRGIN',
     disabled = false,
     onLike,
+    onDismiss,
 }) {
     const title = useMemo(() => {
         if (disabled === true) return 'Add a profile picture to like';
@@ -45,24 +60,37 @@ export default function ProfileCardFloatingButton({
     const liked = likeStatus !== 'VIRGIN';
     const Icon = <FeatherIcon icon={edit === true ? 'edit-2' : 'heart'} />;
 
-    if (edit === true) {
-        return (
+    const likeButton =
+        edit === true ? (
             <ButtonNav as={Link} to={to}>
                 {Icon}
             </ButtonNav>
+        ) : (
+            <Button
+                name={liked ? 'unlike-profile' : 'like-profile'}
+                disabled={disabled}
+                liked={liked}
+                onClick={onLike}
+                title={title}
+            >
+                {Icon}
+            </Button>
         );
-    }
 
     return (
-        <Button
-            name={liked ? 'unlike-profile' : 'like-profile'}
-            floating={floating}
-            disabled={disabled}
-            liked={liked}
-            onClick={onLike}
-            title={title}
-        >
-            {Icon}
-        </Button>
+        <Container className={edit === true ? 'mb-6' : ''}>
+            {likeButton}
+
+            {edit === false && (
+                <Button
+                    name="dismiss"
+                    onClick={onDismiss}
+                    title="Dismiss this profile"
+                    ignore
+                >
+                    <FeatherIcon icon="thumbs-down" />
+                </Button>
+            )}
+        </Container>
     );
 }

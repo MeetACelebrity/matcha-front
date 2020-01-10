@@ -185,6 +185,7 @@ export default function ProfileCard({
     lastSeen,
     score,
     onLike,
+    onDismiss = () => {},
     onBlock,
     onReport,
     children,
@@ -327,10 +328,10 @@ export default function ProfileCard({
             {flat === false && (
                 <ProfileCardFloatingButton
                     edit={isCurrentUser}
-                    floating={preview === false}
                     disabled={disableLikeButton}
                     likeStatus={likeStatus}
                     onLike={onLike}
+                    onDismiss={onDismiss}
                 />
             )}
         </Container>

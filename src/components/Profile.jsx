@@ -11,7 +11,7 @@ const Container = styled.article`
 `;
 
 export default function Profile(props) {
-    const { uuid, pictures, images, onLike } = props;
+    const { uuid, pictures, images, onLike, onDismiss } = props;
 
     return (
         <Container>
@@ -19,6 +19,7 @@ export default function Profile(props) {
                 {...props}
                 pictures={(pictures || images || []).slice(0, 1)}
                 onLike={() => onLike(uuid)}
+                onDismiss={() => onDismiss(uuid)}
             />
         </Container>
     );
