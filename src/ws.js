@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { w3cwebsocket as WebSocketClient } from 'websocket';
 import { toast } from 'react-toastify';
+import { WS_ENDPOINT } from './constants';
 
 class PubSub {
     constructor() {
@@ -91,7 +92,7 @@ export const WS_RESPONSES_TYPES = {
 
 class WS {
     constructor(pubsub, onChange, pushNotification) {
-        this.ws = new WebSocketClient('ws://localhost:8080/', 'echo-protocol');
+        this.ws = new WebSocketClient(WS_ENDPOINT, 'echo-protocol');
         this.pubsub = pubsub;
         this.onChange = onChange;
         this.pushNotification = pushNotification;
