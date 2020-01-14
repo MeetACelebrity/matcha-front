@@ -26,15 +26,22 @@ export default function Search() {
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(false);
 
-    const offsetsFetchedRef = useRef(new Set());
+    const offsetsFetchedRef = useRef([]);
+    const currentlyRunOffset = useRef(0);
 
     const isMounted = useIsMounted();
 
     const fetchData = useCallback(
         (offset, body, searchText, hideLoader = false) => {
-            if (offsetsFetchedRef.current.has(offset)) return;
+            if (offsetsFetchedRef.current.includes(offset)) return;
 
-            offsetsFetchedRef.current.add(offset);
+            offsetsFetchedRef.current = [
+                ...offsetsFetchedRef.current.filter(
+                    fetchedOffset => fetchedOffset < offset
+                ),
+                offset,
+            ];
+            currentlyRunOffset.current = offset;
 
             setLoading(!hideLoader);
 
@@ -49,7 +56,18 @@ export default function Search() {
             )
                 .then(res => res.json())
                 .then(({ result: { datas: newProfiles, hasMore } }) => {
-                    if (!isMounted.current) return;
+                    if (
+                        !isMounted.current ||
+                        currentlyRunOffset.current !== offset
+                    ) {
+                        if (isMounted.current) {
+                            offsetsFetchedRef.current = offsetsFetchedRef.current.filter(
+                                fetchedOffset => fetchedOffset !== offset
+                            );
+                        }
+
+                        return;
+                    }
 
                     if (
                         Array.isArray(newProfiles) &&
@@ -107,7 +125,7 @@ export default function Search() {
         setBody(body);
         setOffset(0);
         setProfiles([]);
-        offsetsFetchedRef.current.clear();
+        offsetsFetchedRef.current = [];
 
         fetchData(0, body, searchText, false);
     }
@@ -118,12 +136,38 @@ export default function Search() {
         );
         if (matchingUser === undefined) return;
 
-        setProfiles(profiles =>
-            profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
-        );
-        setOffset(offset => offset - 1);
+        let newLikeStatus = '';
 
-        fetch(`${API_ENDPOINT}/user/like/${uuid}`, {
+        switch (matchingUser.likeStatus) {
+            case 'VIRGIN':
+                newLikeStatus = 'LIKED_IT';
+                break;
+            case 'HAS_LIKED_US':
+                newLikeStatus = 'MATCH';
+                break;
+            case 'LIKED_IT':
+                newLikeStatus = 'VIRGIN';
+                break;
+            case 'MATCH':
+                newLikeStatus = 'HAS_LIKED_US';
+                break;
+            default:
+                return;
+        }
+
+        const isLiking = ['VIRGIN', 'HAS_LIKED_US'].includes(
+            matchingUser.likeStatus
+        );
+
+        setProfiles(profiles =>
+            profiles.map(user => ({
+                ...user,
+                likeStatus:
+                    user.uuid !== uuid ? user.likeStatus : newLikeStatus,
+            }))
+        );
+
+        fetch(`${API_ENDPOINT}/user/${isLiking ? 'like' : 'unlike'}/${uuid}`, {
             method: 'POST',
             credentials: 'include',
         })
@@ -131,27 +175,10 @@ export default function Search() {
             .finally(() => {
                 const { username } = matchingUser;
 
-                toast(`You liked ${username}`, {
+                toast(`You ${isLiking ? 'liked' : 'unliked'} ${username}`, {
                     type: 'success',
                 });
             });
-    }
-
-    function onDismiss(uuid) {
-        const matchingUser = profiles.find(
-            ({ uuid: profileUuid }) => profileUuid === uuid
-        );
-        if (matchingUser === undefined) return;
-
-        setProfiles(profiles =>
-            profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
-        );
-        setOffset(offset => offset - 1);
-
-        fetch(`${API_ENDPOINT}/user/not-interested/${uuid}`, {
-            method: 'POST',
-            credentials: 'include',
-        }).catch(() => {});
     }
 
     return (
@@ -167,7 +194,6 @@ export default function Search() {
                 fetchMore={fetchMore}
                 hasMore={hasMore}
                 onLike={onLike}
-                onDismiss={onDismiss}
             />
         </Container>
     );

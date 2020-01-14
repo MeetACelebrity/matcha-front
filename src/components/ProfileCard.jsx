@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'tailwind.macro';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import FeathersIcon from 'feather-icons-react';
 
 import { formatAddress } from '../constants.js';
@@ -199,8 +199,10 @@ export default function ProfileCard({
             user: { uuid: currentUserUuid, images: userImages },
         },
     } = useContext(AppContext);
+    const { pathname } = useLocation();
 
     const isCurrentUser = uuid === currentUserUuid;
+    const hideDismiss = pathname === '/search';
 
     const address = useMemo(() => {
         if (distance !== undefined) {
@@ -329,6 +331,7 @@ export default function ProfileCard({
                 <ProfileCardFloatingButton
                     edit={isCurrentUser}
                     disabled={disableLikeButton}
+                    hideDismiss={hideDismiss}
                     likeStatus={likeStatus}
                     onLike={onLike}
                     onDismiss={onDismiss}

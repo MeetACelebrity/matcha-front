@@ -81,18 +81,26 @@ export default function Home() {
     const homeViewRef = useRef(null);
     const [body, setBody] = useState({});
     const [profiles, setProfiles] = useState([]);
-    const offsetsFetchedRef = useRef(new Set());
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    const offsetsFetchedRef = useRef([]);
+    const currentlyRunOffset = useRef(0);
 
     const isMounted = useIsMounted();
 
     const fetchData = useCallback(
         (offset, body, hideLoader = false) => {
-            if (offsetsFetchedRef.current.has(offset)) return;
+            if (offsetsFetchedRef.current.includes(offset)) return;
 
-            offsetsFetchedRef.current.add(offset);
+            offsetsFetchedRef.current = [
+                ...offsetsFetchedRef.current.filter(
+                    fetchedOffset => fetchedOffset < offset
+                ),
+                offset,
+            ];
+            currentlyRunOffset.current = offset;
 
             setLoading(!hideLoader);
 
@@ -104,7 +112,18 @@ export default function Home() {
             })
                 .then(res => res.json())
                 .then(({ result: { data, hasMore } = {}, statusCode }) => {
-                    if (!isMounted.current) return;
+                    if (
+                        !isMounted.current ||
+                        currentlyRunOffset.current !== offset
+                    ) {
+                        if (isMounted.current) {
+                            offsetsFetchedRef.current = offsetsFetchedRef.current.filter(
+                                fetchedOffset => fetchedOffset !== offset
+                            );
+                        }
+
+                        return;
+                    }
 
                     if (typeof statusCode === 'string') {
                         if (statusCode === 'INCOMPLETE_PROFILE') {
@@ -163,16 +182,26 @@ export default function Home() {
         }
     }
 
+    function resetFetch() {
+        if (offset === 1) {
+            offsetsFetchedRef.current = [];
+            setOffset(0);
+            fetchData(0, body);
+        }
+    }
+
     function onLike(uuid) {
         const matchingUser = profiles.find(
             ({ uuid: profileUuid }) => profileUuid === uuid
         );
         if (matchingUser === undefined) return;
 
+        resetFetch();
+
         setProfiles(profiles =>
             profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
         );
-        setOffset(offset => offset - 1)
+        setOffset(offset => (offset === 0 ? offset : offset - 1));
 
         fetch(`${API_ENDPOINT}/user/like/${uuid}`, {
             method: 'POST',
@@ -194,16 +223,17 @@ export default function Home() {
         );
         if (matchingUser === undefined) return;
 
+        resetFetch();
+
         setProfiles(profiles =>
             profiles.filter(({ uuid: profileUuid }) => profileUuid !== uuid)
         );
-        setOffset(offset => offset - 1)
+        setOffset(offset => (offset === 0 ? offset : offset - 1));
 
         fetch(`${API_ENDPOINT}/user/not-interested/${uuid}`, {
             method: 'POST',
             credentials: 'include',
-        })
-            .catch(() => {})
+        }).catch(() => {});
     }
 
     function onFiltersUpdate({
@@ -227,10 +257,10 @@ export default function Home() {
             maxCommonTags: countCommonTags[1] | 0,
         };
 
-        offsetsFetchedRef.current.clear();
         setBody(body);
         setOffset(0);
         setProfiles([]);
+        offsetsFetchedRef.current = [];
 
         fetchData(0, body, false);
     }

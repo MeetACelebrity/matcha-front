@@ -40,6 +40,7 @@ export default function ProfileCardFloatingButton({
     disabled = false,
     onLike,
     onDismiss,
+    hideDismiss = false,
 }) {
     const title = useMemo(() => {
         if (disabled === true) return 'Add a profile picture to like';
@@ -81,7 +82,7 @@ export default function ProfileCardFloatingButton({
         <Container className={edit === true ? 'mb-6' : ''}>
             {likeButton}
 
-            {edit === false && (
+            {edit === false && !hideDismiss && (
                 <Button
                     name="dismiss"
                     onClick={onDismiss}
