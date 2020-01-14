@@ -147,6 +147,8 @@ function Filters({ search, onHide, onConfirm }) {
 
     const addressTextFieldRef = useRef(null);
 
+    const controller = useMemo(() => new AbortController(), []);
+
     const isMounted = useIsMounted();
 
     const fields =
@@ -295,6 +297,7 @@ function Filters({ search, onHide, onConfirm }) {
 
         fetch(`${API_ENDPOINT}/match/interval`, {
             credentials: 'include',
+            signal: controller.signal,
         })
             .then(res => res.json())
             .then(({ maxAge, maxScore, maxDistance, maxCommonTags }) => {
@@ -324,6 +327,7 @@ function Filters({ search, onHide, onConfirm }) {
         setCountCommonTags,
         setDistanceRange,
         setPopularityRange,
+        controller,
     ]);
 
     useEffect(() => {
@@ -362,6 +366,12 @@ function Filters({ search, onHide, onConfirm }) {
             setPlacesAutocomplete(placesAutocomplete);
         }
     }, [isMounted, placesAutocomplete, setLocation]);
+
+    useEffect(() => {
+        return () => {
+            controller.abort();
+        };
+    }, [controller]);
 
     const seperation = search === true ? 3 : 2;
 

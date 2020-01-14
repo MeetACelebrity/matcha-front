@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useRef,
+    useMemo,
+    useEffect,
+} from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import { toast } from 'react-toastify';
@@ -28,6 +34,7 @@ export default function Search() {
 
     const offsetsFetchedRef = useRef([]);
     const currentlyRunOffset = useRef(0);
+    const controller = useMemo(() => new AbortController(), []);
 
     const isMounted = useIsMounted();
 
@@ -52,6 +59,7 @@ export default function Search() {
                     method: 'POST',
                     body,
                     json: true,
+                    signal: controller.signal,
                 }
             )
                 .then(res => res.json())
@@ -88,8 +96,14 @@ export default function Search() {
                     setLoading(false);
                 });
         },
-        [isMounted]
+        [isMounted, controller.signal]
     );
+
+    useEffect(() => {
+        return () => {
+            controller.abort();
+        };
+    }, [controller]);
 
     function fetchMore() {
         fetchData(offset, body, searchText, true);

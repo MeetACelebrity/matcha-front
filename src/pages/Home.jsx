@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, {
+    useState,
+    useRef,
+    useMemo,
+    useEffect,
+    useCallback,
+} from 'react';
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 import FeatherIcon from 'feather-icons-react';
@@ -87,6 +93,7 @@ export default function Home() {
 
     const offsetsFetchedRef = useRef([]);
     const currentlyRunOffset = useRef(0);
+    const controller = useMemo(() => new AbortController(), []);
 
     const isMounted = useIsMounted();
 
@@ -109,6 +116,7 @@ export default function Home() {
                 method: 'POST',
                 body,
                 json: true,
+                signal: controller.signal,
             })
                 .then(res => res.json())
                 .then(({ result: { data, hasMore } = {}, statusCode }) => {
@@ -155,13 +163,19 @@ export default function Home() {
                     setLoading(false);
                 });
         },
-        [isMounted]
+        [isMounted, controller.signal]
     );
 
     useEffect(() => {
         // Fetch data on first load
         fetchData(0, {});
     }, [fetchData]);
+
+    useEffect(() => {
+        return () => {
+            controller.abort();
+        };
+    }, [controller]);
 
     function fetchMore() {
         fetchData(offset, body, true);
