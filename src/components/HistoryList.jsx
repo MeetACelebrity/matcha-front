@@ -45,7 +45,7 @@ const Item = styled.div`
 `;
 
 const Picture = styled.img`
-    ${tw`w-16 h-16 rounded-full mr-6`}
+    ${tw`w-16 h-16 rounded-full mr-6 object-cover`}
 `;
 
 const Username = styled.h3`
@@ -69,7 +69,7 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
 
             offsetsFetchedRef.current.add(offset);
 
-            setLoading(true)
+            setLoading(true);
 
             return fetch(
                 `${API_ENDPOINT}/user/${type}/history/${LIMIT}/${offset}`,
@@ -100,9 +100,9 @@ export default function HistoryList({ title, type, noData, dataProperty }) {
                     toast('An error occured during data fetching');
                 })
                 .finally(() => {
-                    if (!isMounted.current) return
+                    if (!isMounted.current) return;
 
-                    setLoading(false)
+                    setLoading(false);
                 });
         },
         [dataProperty, isMounted, type]
