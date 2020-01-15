@@ -47,11 +47,19 @@ const Item = styled.div`
 `;
 
 const Avatar = styled.img`
-    ${tw`h-12 w-12 rounded-full bg-blue-700 mr-3`}
+    ${tw`h-12 w-12 rounded-full bg-blue-700 mr-3 object-cover`}
 `;
 
 const ItemContent = styled.div`
-    ${tw`flex flex-col`}
+    ${tw`flex flex-col overflow-hidden`}
+
+    & > * {
+        ${tw`overflow-hidden whitespace-no-wrap`}
+
+        ${css`
+            text-overflow: ellipsis;
+        `}
+    }
 `;
 
 const Correspondant = styled.h4`
