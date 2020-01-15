@@ -128,9 +128,13 @@ export default function App() {
                 );
                 if (officialAddress === null) return;
 
+                const currentAddress = user.addresses.find(
+                    ({ type }) => type === 'CURRENT'
+                );
+
                 const {
                     point: { x: lat, y: lng },
-                } = officialAddress;
+                } = currentAddress || officialAddress;
 
                 try {
                     const {
@@ -216,7 +220,7 @@ export default function App() {
                     requests.push([
                         'profile/address/delete',
                         {
-                            crendentials: 'include',
+                            credentials: 'include',
                             method: 'DELETE',
                             body: {},
                             json: true,
