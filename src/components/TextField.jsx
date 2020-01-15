@@ -151,6 +151,7 @@ export default function TextField(props) {
     if (Array.isArray(mask)) {
         return (
             <MaskedInput
+                {...props}
                 mask={mask}
                 label={label}
                 isOk={isValid}

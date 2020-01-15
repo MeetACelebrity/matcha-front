@@ -10,6 +10,20 @@ const intl = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
 });
 
+function padStart(targetString, targetLength, padString) {
+    targetLength = targetLength >> 0;
+    padString = String(typeof padString !== 'undefined' ? padString : ' ');
+    if (targetString.length > targetLength) {
+        return String(targetString);
+    } else {
+        targetLength = targetLength - targetString.length;
+        if (targetLength > padString.length) {
+            padString += padString.repeat(targetLength / padString.length);
+        }
+        return padString.slice(0, targetLength) + String(targetString);
+    }
+}
+
 export default function UserProfileModifyOtherInformations({
     user,
     setContext,
@@ -39,7 +53,20 @@ export default function UserProfileModifyOtherInformations({
             setSexualOrientation(user.sexualOrientation);
         if (user.birthday) {
             try {
-                setBirthday(intl.format(new Date(user.birthday)));
+                const formattedDate = intl.format(new Date(user.birthday));
+                const [months, days, years] = formattedDate.split('/');
+                if (formattedDate.length !== 10) {
+                    setBirthday(
+                        `${padStart(months, 2, '0')}/${padStart(
+                            days,
+                            2,
+                            '0'
+                        )}/${padStart(years, 4, '0')}`
+                    );
+                    return;
+                }
+
+                setBirthday(formattedDate);
             } catch (e) {
                 return;
             }
