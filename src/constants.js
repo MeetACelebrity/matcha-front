@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import { differenceInYears } from 'date-fns';
 
 export const CLOUD_ENDPOINT = `http://${process.env.REACT_APP_CLOUD_HOST}:${process.env.REACT_APP_CLOUD_PORT}`;
 export const FRONT_ENDPOINT = `http://${process.env.REACT_APP_FRONT_HOST}:${process.env.REACT_APP_FRONT_PORT}`;
@@ -125,7 +126,5 @@ export function useIsMounted() {
 }
 
 export function calculateAge(birthday) {
-    const ageDifMs = Date.now() - birthday;
-    const ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+    return differenceInYears(new Date(), birthday);
 }

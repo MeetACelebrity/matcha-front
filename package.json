@@ -7,6 +7,7 @@
         "@types/websocket": "^1.0.0",
         "abort-controller": "^3.0.0",
         "classnames": "^2.2.6",
+        "date-fns": "^2.9.0",
         "feather-icons-react": "^0.3.2",
         "places.js": "^1.17.1",
         "react": "^16.12.0",
