@@ -22,7 +22,7 @@ export default function UserProfileModifyAddress({
         setAddress,
         isAddressValid,
         setAddressIsValid,
-    ] = useFormField('');
+    ] = useFormField({});
 
     const addressTextFieldRef = useRef(null);
     const [placesAutocomplete, setPlacesAutocomplete] = useState(null);
@@ -61,6 +61,18 @@ export default function UserProfileModifyAddress({
     ];
 
     const [isValid, Form] = useForm({ fields });
+
+    useEffect(() => {
+        const { name, administrative, county, country, city } = primaryAddress;
+
+        setAddress({
+            name,
+            administrative,
+            county,
+            country,
+            city,
+        });
+    }, [primaryAddress, setAddress]);
 
     useEffect(() => {
         const { point: { x, y } = {} } = primaryAddress;
