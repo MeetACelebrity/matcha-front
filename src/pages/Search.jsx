@@ -121,7 +121,7 @@ export default function Search() {
         commonTags,
     }) {
         const body = {
-            location,
+            ...location,
             tagsArray: commonTags,
             orderBy: sortBy,
             order: sortOrder,
